@@ -70,7 +70,7 @@
             }
         }
 
-        .controls, .output-card {
+        .controls, .output-card, .history-card {
             background-color: var(--surface-color);
             background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1IiBoZWlnaHQ9IjUiPgo8cmVjdCB3aWR0aD0iNSIgaGVpZ2h0PSI1IiBmaWxsPSIjZmRmNWU2Ij48L3JlY3Q+CjxwYXRoIGQ9Ik0wIDVMNSAwWk02IDRMNCA2Wk0tMSAxTDEgLTFaIiBzdHJva2U9IiNlYWU5ZDAiIHN0cm9rZS13aWR0aD0iMSI+PC9wYXRoPgo8L3N2Zz4=');
             border: 2px solid #5a3d3b;
@@ -237,14 +237,6 @@
             display: block;
         }
         
-        .copy-container {
-            margin-top: 1rem;
-        }
-
-        .copy-container button {
-            width: 100%;
-        }
-
         #copy-feedback {
             display: block;
             text-align: center;
@@ -254,6 +246,146 @@
             font-weight: bold;
             opacity: 0;
             transition: opacity 0.3s;
+        }
+
+        /* History Styles */
+        .history {
+            max-width: 1200px;
+            margin: 1.5rem auto 0;
+        }
+
+        .history-card h2 {
+            font-family: var(--font-heading);
+            font-size: 1.8rem;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        #history-list {
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 10px;
+            margin-bottom: 1rem;
+        }
+
+        .history-item {
+            background-color: #f4eade;
+            border: 1px solid var(--border-color);
+            border-radius: 3px;
+            margin-bottom: 0.5rem;
+            transition: box-shadow 0.2s;
+        }
+        
+        .history-item[open] {
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .history-item summary {
+            padding: 0.5rem 0.75rem;
+            cursor: pointer;
+            font-weight: bold;
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .history-item summary::-webkit-details-marker {
+          display: none;
+        }
+
+        .history-item summary::after {
+            content: '+';
+            font-size: 1.5rem;
+            line-height: 1;
+            transition: transform 0.2s;
+            color: var(--primary-color);
+        }
+
+        .history-item[open] > summary::after {
+            transform: rotate(45deg);
+        }
+
+        .history-item-header {
+            flex-grow: 1;
+        }
+
+        .history-item-header h3 {
+            font-size: 1.1rem;
+            font-family: var(--font-body);
+            margin: 0;
+            color: var(--text-color);
+        }
+
+        .history-item-header p {
+            font-size: 0.9rem;
+            color: var(--label-color);
+            font-style: italic;
+            margin: 0;
+            font-weight: normal;
+        }
+
+        .history-item-body {
+            padding: 0.75rem;
+            border-top: 1px solid var(--border-color);
+            background: rgba(255, 255, 255, 0.5);
+        }
+        
+        .history-item-body .output-group p {
+             margin-left: 0;
+             border-left: 3px solid var(--border-color);
+             padding-left: 1rem;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+
+        .modal-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background-color: var(--surface-color);
+            padding: 2rem;
+            border-radius: 5px;
+            border: 2px solid #5a3d3b;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            transform: translateY(-20px);
+            transition: transform 0.3s;
+        }
+
+        .modal-overlay.visible .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-content h2 {
+            font-family: var(--font-heading);
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-content p {
+            margin-bottom: 1.5rem;
+            color: var(--label-color);
         }
     </style>
 </head>
@@ -342,17 +474,47 @@
                     <strong>Secret</strong>
                     <p id="secret-text" class="hidden">(Click to reveal)</p>
                 </div>
-                <div class="copy-container">
+                <div class="button-group">
                     <button id="copy" class="btn-primary">Copy NPC</button>
-                    <span id="copy-feedback"></span>
+                    <button id="save" class="btn-secondary">Save NPC</button>
                 </div>
+                <span id="copy-feedback"></span>
             </div>
         </section>
     </main>
+    
+    <section class="history">
+        <div class="history-card">
+            <h2>Saved NPCs</h2>
+            <div id="history-list">
+                <p>No NPCs saved yet. Generate and save an NPC to see it here!</p>
+            </div>
+            <div class="button-group">
+                <button id="export-history" class="btn-secondary">Export History</button>
+                <button id="clear-history" class="btn-secondary">Clear History</button>
+            </div>
+        </div>
+    </section>
+
+    <div id="export-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h2>Export Options</h2>
+            <p>Choose a format to export your saved NPCs.</p>
+            <div class="button-group">
+                <button id="export-json" class="btn-secondary">Export as JSON</button>
+                <button id="export-csv" class="btn-secondary">Export as CSV</button>
+                <button id="export-md" class="btn-secondary">Export as Markdown</button>
+                <button id="export-pdf" class="btn-primary">Export as PDF</button>
+            </div>
+            <button id="close-modal" class="btn-secondary full-width" style="margin-top: 1rem;">Close</button>
+        </div>
+    </div>
+
 
     <script>
         console.log("InstantForge: NPCs script loaded.");
         let npcData;
+        let savedNpcs = [];
 
         // --- UTILITY FUNCTIONS ---
         const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
@@ -375,40 +537,19 @@
             offers: [],
         };
 
-        /**
-         * Picks a random element from an array, attempting to avoid
-         * elements that have been picked in the last `HISTORY_LIMIT` generations.
-         * @param {string[]} arr The array of options to pick from.
-         * @param {string} historyKey The key for the history queue in `generationHistory`.
-         * @returns {string} A randomly selected string.
-         */
         function pickUnique(arr, historyKey) {
             if (!arr || arr.length === 0) return "";
-            
             const historyQueue = generationHistory[historyKey];
             if (!historyQueue) {
                 console.warn(`No history queue found for key: ${historyKey}`);
-                return pick(arr); // Fallback to original pick
+                return pick(arr);
             }
-
-            // Filter out items that are already in the history
             const uniqueOptions = arr.filter(option => !historyQueue.includes(option));
-            
-            let chosen;
-            // If we have unique options, pick from them. Otherwise, pick from the original array.
-            if (uniqueOptions.length > 0) {
-                chosen = pick(uniqueOptions);
-            } else {
-                console.log(`All options for ${historyKey} are recent. Re-using one.`);
-                chosen = pick(arr);
-            }
-
-            // Update history: add to front, trim from end
+            let chosen = (uniqueOptions.length > 0) ? pick(uniqueOptions) : pick(arr);
             historyQueue.unshift(chosen); 
             if (historyQueue.length > HISTORY_LIMIT) {
                 historyQueue.pop();
             }
-            
             return chosen;
         }
 
@@ -424,6 +565,7 @@
             generateBtn: document.getElementById('generate'),
             randomizeBtn: document.getElementById('randomize'),
             copyBtn: document.getElementById('copy'),
+            saveBtn: document.getElementById('save'),
             clearBtn: document.getElementById('clear'),
             copyFeedback: document.getElementById('copy-feedback'),
             outputName: document.getElementById('output-name'),
@@ -435,6 +577,15 @@
             outputGoalOffer: document.getElementById('output-goal-offer'),
             secretContainer: document.getElementById('secret-container'),
             secretText: document.getElementById('secret-text'),
+            historyList: document.getElementById('history-list'),
+            exportHistoryBtn: document.getElementById('export-history'),
+            clearHistoryBtn: document.getElementById('clear-history'),
+            exportModal: document.getElementById('export-modal'),
+            closeModalBtn: document.getElementById('close-modal'),
+            exportJsonBtn: document.getElementById('export-json'),
+            exportCsvBtn: document.getElementById('export-csv'),
+            exportMdBtn: document.getElementById('export-md'),
+            exportPdfBtn: document.getElementById('export-pdf'),
         };
 
         // --- GENERATION LOGIC ---
@@ -443,7 +594,6 @@
             const raceData = npcData.data[race];
             const namesList = raceData.names[gender];
             let firstName = "";
-
             if (namesList && namesList.length > 0) {
                 firstName = pick(namesList);
             } else {
@@ -456,39 +606,30 @@
                     if (pattern.includes("S")) builtName += pick(syllables.suffix);
                     firstName = capitalize(builtName);
                 } else {
-                    // Ultimate fallback
                     firstName = "Nameless";
                 }
             }
-
             const lastName = pick(raceData.lastNames);
             return `${firstName} ${lastName}`;
         }
         
         function generateAppearance(race, gender) {
             const appearanceData = npcData.data[race].appearance;
-            
             let physicalTraits = [...appearanceData.shared.physical];
             let clothingTraits = [...appearanceData.shared.clothing];
-
             if (appearanceData.gender[gender]) {
                 physicalTraits.push(...appearanceData.gender[gender].physical);
                 clothingTraits.push(...appearanceData.gender[gender].clothing);
             }
-            
-            // Avoid impossible combos
             if (gender === 'female' || gender === 'neutral') {
                 if (race === 'human' || race === 'elf' || race === 'halfling') {
                      physicalTraits = physicalTraits.filter(t => !t.toLowerCase().includes('beard'));
                 }
             }
-
-            const numPhysical = Math.floor(Math.random() * 2) + 2; // 2-3
-            const numClothing = Math.floor(Math.random() * 2) + 1; // 1-2
-
+            const numPhysical = Math.floor(Math.random() * 2) + 2;
+            const numClothing = Math.floor(Math.random() * 2) + 1;
             const selectedPhysical = sample(physicalTraits, numPhysical);
             const selectedClothing = sample(clothingTraits, numClothing);
-
             return [...selectedPhysical, ...selectedClothing].join('; ');
         }
         
@@ -499,7 +640,6 @@
         }
 
         function generateNpc(forceRandomize = false) {
-            // 1. Get values, generating if needed
             const race = (forceRandomize || !ui.race.value) ? pick(npcData.races) : ui.race.value;
             const gender = (forceRandomize || !ui.gender.value) ? pick(['male', 'female', 'neutral']) : ui.gender.value;
             const job = (forceRandomize || !ui.job.value) ? pick(npcData.jobs) : ui.job.value;
@@ -508,7 +648,6 @@
             const appearance = (forceRandomize || !ui.appearance.value) ? generateAppearance(race, gender) : ui.appearance.value;
             const details = (forceRandomize || !ui.details.value) ? generateDetails() : ui.details.value;
             
-            // 2. Update form inputs with newly generated values
             ui.race.value = race;
             ui.gender.value = gender;
             ui.job.value = job;
@@ -516,7 +655,6 @@
             ui.appearance.value = appearance;
             ui.details.value = details;
 
-            // 3. Generate roleplay block
             const context = ui.context.value || 'the area';
             const jobFlavor = npcData.jobFlavor[job];
 
@@ -531,7 +669,6 @@
             const voice = pickUnique(npcData.voices, 'voices');
             const mannerism = pickUnique(npcData.mannerisms, 'mannerisms');
             
-            // 4. Update the output display
             ui.outputName.textContent = name;
             ui.outputSubtitle.textContent = `${capitalize(race)} ${job} (${gender})`;
             ui.outputAppearance.textContent = appearance;
@@ -540,14 +677,12 @@
             ui.outputHook.textContent = hook;
             ui.outputGoalOffer.textContent = `${goal} They can offer: ${offer}.`;
             
-            // Reset secret visibility
             ui.secretText.classList.remove('visible');
             ui.secretText.classList.add('hidden');
             ui.secretContainer.classList.remove('revealed');
             
-            const originalSecret = secret;
             ui.secretText.textContent = "(Click to reveal)";
-            ui.secretText.dataset.secret = originalSecret;
+            ui.secretText.dataset.secret = secret;
         }
 
         function populateSelects() {
@@ -567,7 +702,6 @@
         
         function copyToClipboard() {
             const name = ui.outputName.textContent;
-            const subtitle = ui.outputSubtitle.textContent;
             if (name === "Your NPC Appears Here") {
                 showCopyFeedback("Generate an NPC first!", true);
                 return;
@@ -575,7 +709,7 @@
 
             const textToCopy = `
 Name: ${name}
-${subtitle}
+${ui.outputSubtitle.textContent}
 ---
 Appearance: ${ui.outputAppearance.textContent}
 Details: ${ui.outputDetails.textContent}
@@ -603,13 +737,11 @@ Secret: ${ui.secretText.dataset.secret || ui.secretText.textContent}
         }
 
         function clearAll() {
-            // Clear inputs
             const inputs = [ui.name, ui.appearance, ui.details, ui.context];
             inputs.forEach(input => input.value = '');
             const selects = [ui.race, ui.gender, ui.job];
             selects.forEach(select => select.value = '');
 
-            // Clear outputs
             ui.outputName.textContent = 'Your NPC Appears Here';
             ui.outputSubtitle.textContent = '';
             ui.outputAppearance.textContent = '';
@@ -618,7 +750,6 @@ Secret: ${ui.secretText.dataset.secret || ui.secretText.textContent}
             ui.outputHook.textContent = '';
             ui.outputGoalOffer.textContent = '';
             
-            // Reset secret
             ui.secretText.classList.remove('visible');
             ui.secretText.classList.add('hidden');
             ui.secretContainer.classList.remove('revealed');
@@ -627,10 +758,170 @@ Secret: ${ui.secretText.dataset.secret || ui.secretText.textContent}
                 delete ui.secretText.dataset.secret;
             }
             
-            // Clear any lingering copy feedback
             ui.copyFeedback.style.opacity = 0;
-            setTimeout(() => { ui.copyFeedback.textContent = ''; }, 300); // Clear text after fade
+            setTimeout(() => { ui.copyFeedback.textContent = ''; }, 300);
         }
+        
+        // --- HISTORY & EXPORT FUNCTIONS ---
+        
+        function saveNpc() {
+            if (ui.outputName.textContent === "Your NPC Appears Here") {
+                showCopyFeedback("Generate an NPC first!", true);
+                return;
+            }
+            const npc = {
+                name: ui.outputName.textContent,
+                subtitle: ui.outputSubtitle.textContent,
+                appearance: ui.outputAppearance.textContent,
+                details: ui.outputDetails.textContent,
+                voiceMannerism: ui.outputVoiceMannerism.textContent,
+                hook: ui.outputHook.textContent,
+                goalOffer: ui.outputGoalOffer.textContent,
+                secret: ui.secretText.dataset.secret,
+                id: Date.now()
+            };
+            
+            savedNpcs.unshift(npc);
+            localStorage.setItem('savedNpcs', JSON.stringify(savedNpcs));
+            renderHistory();
+            showCopyFeedback("NPC Saved!");
+        }
+        
+        function renderHistory() {
+            ui.historyList.innerHTML = '';
+            if (savedNpcs.length === 0) {
+                ui.historyList.innerHTML = '<p>No NPCs saved yet. Generate and save one!</p>';
+                return;
+            }
+            
+            savedNpcs.forEach(npc => {
+                const item = document.createElement('details');
+                item.className = 'history-item';
+                item.innerHTML = `
+                    <summary>
+                        <div class="history-item-header">
+                            <h3>${npc.name}</h3>
+                            <p>${npc.subtitle}</p>
+                        </div>
+                    </summary>
+                    <div class="history-item-body">
+                        <div class="output-group"><strong>Appearance</strong><p>${npc.appearance}</p></div>
+                        <div class="output-group"><strong>Details</strong><p>${npc.details}</p></div>
+                        <hr>
+                        <div class="output-group"><strong>Voice & Mannerism</strong><p>${npc.voiceMannerism}</p></div>
+                        <div class="output-group"><strong>Hook</strong><p>${npc.hook}</p></div>
+                        <div class="output-group"><strong>Goal & Offer</strong><p>${npc.goalOffer}</p></div>
+                        <div class="output-group"><strong>Secret</strong><p>${npc.secret}</p></div>
+                    </div>
+                `;
+                ui.historyList.appendChild(item);
+            });
+        }
+        
+        function loadHistory() {
+            const historyData = localStorage.getItem('savedNpcs');
+            if (historyData) {
+                savedNpcs = JSON.parse(historyData);
+            }
+            renderHistory();
+        }
+
+        function clearHistory() {
+            if (savedNpcs.length === 0) return;
+            if (confirm("Are you sure you want to clear all saved NPCs? This cannot be undone.")) {
+                savedNpcs = [];
+                localStorage.removeItem('savedNpcs');
+                renderHistory();
+                showCopyFeedback("History Cleared");
+            }
+        }
+        
+        function showExportModal() { ui.exportModal.classList.add('visible'); }
+        function hideExportModal() { ui.exportModal.classList.remove('visible'); }
+        
+        function downloadFile(content, filename, mimeType) {
+            const blob = new Blob([content], { type: mimeType });
+            const url = URL.createObjectURL(blob);
+            const downloadNode = document.createElement('a');
+            downloadNode.href = url;
+            downloadNode.download = filename;
+            document.body.appendChild(downloadNode);
+            downloadNode.click();
+            downloadNode.remove();
+            URL.revokeObjectURL(url);
+        }
+
+        function exportAsJson() {
+            if (savedNpcs.length === 0) { showCopyFeedback("No history to export.", true); return; }
+            const dataStr = JSON.stringify(savedNpcs, null, 2);
+            downloadFile(dataStr, "instantforge_npc_history.json", "application/json");
+            hideExportModal();
+        }
+
+        function exportAsCsv() {
+            if (savedNpcs.length === 0) { showCopyFeedback("No history to export.", true); return; }
+            const headers = ['name', 'subtitle', 'appearance', 'details', 'voiceMannerism', 'hook', 'goalOffer', 'secret'];
+            const escapeCsv = (str) => `"${(str || '').replace(/"/g, '""').replace(/\r?\n|\r/g, ' ')}"`;
+            let csvContent = headers.join(',') + '\n';
+            savedNpcs.forEach(npc => {
+                const row = headers.map(header => escapeCsv(npc[header]));
+                csvContent += row.join(',') + '\n';
+            });
+            downloadFile(csvContent, "instantforge_npc_history.csv", "text/csv;charset=utf-8;");
+            hideExportModal();
+        }
+        
+        function exportAsMarkdown() {
+            if (savedNpcs.length === 0) { showCopyFeedback("No history to export.", true); return; }
+            const markdownContent = savedNpcs.map(npc => {
+                return `## ${npc.name}\n*${npc.subtitle}*\n\n**Appearance**\n${npc.appearance}\n\n**Details**\n${npc.details}\n\n**Voice & Mannerism**\n${npc.voiceMannerism}\n\n**Hook**\n${npc.hook}\n\n**Goal & Offer**\n${npc.goalOffer}\n\n**Secret**\n${npc.secret}`;
+            }).join('\n\n---\n\n');
+            downloadFile(markdownContent, "instantforge_npc_history.md", "text/markdown;charset=utf-8;");
+            hideExportModal();
+        }
+
+        function exportAsPdf() {
+            if (savedNpcs.length === 0) { showCopyFeedback("No history to export.", true); return; }
+            const npcHtml = savedNpcs.map(npc => `
+                <div class="npc-page">
+                    <h2>${npc.name}</h2>
+                    <p class="subtitle"><em>${npc.subtitle}</em></p>
+                    <div class="output-group"><strong>Appearance</strong><p>${npc.appearance}</p></div>
+                    <div class="output-group"><strong>Details</strong><p>${npc.details}</p></div>
+                    <hr>
+                    <div class="output-group"><strong>Voice & Mannerism</strong><p>${npc.voiceMannerism}</p></div>
+                    <div class="output-group"><strong>Hook</strong><p>${npc.hook}</p></div>
+                    <div class="output-group"><strong>Goal & Offer</strong><p>${npc.goalOffer}</p></div>
+                    <div class="output-group"><strong>Secret</strong><p>${npc.secret}</p></div>
+                </div>
+            `).join('');
+
+            const printStyles = `
+                <style>
+                    @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=MedievalSharp&display=swap');
+                    body { font-family: 'Lora', serif; color: #333; }
+                    h1 { font-family: 'MedievalSharp', cursive; }
+                    h2 { font-family: 'MedievalSharp', cursive; font-size: 22pt; margin-bottom: 0; }
+                    .subtitle { font-size: 11pt; color: #666; margin-top: 0; }
+                    .output-group { margin-bottom: 1em; }
+                    .output-group strong { color: #8B0000; display: block; font-size: 10pt; text-transform: uppercase; letter-spacing: 1px; }
+                    .output-group p { margin: 0.25em 0 0 0; padding-left: 1em; border-left: 2px solid #ccc; }
+                    hr { border: 0; height: 1px; background: #ccc; margin: 1em 0; }
+                    .npc-page { page-break-inside: avoid; margin-bottom: 2em; border-bottom: 1px solid #ccc; padding-bottom: 1em; }
+                    @media print { .npc-page { border-bottom: none; } }
+                </style>
+            `;
+
+            const htmlContent = `<!DOCTYPE html><html><head><title>InstantForge NPC History</title>${printStyles}</head><body><h1>Saved NPCs</h1>${npcHtml}</body></html>`;
+
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(htmlContent);
+            printWindow.document.close();
+            printWindow.focus();
+            setTimeout(() => { printWindow.print(); }, 250);
+            hideExportModal();
+        }
+
 
         // --- EVENT LISTENERS & INITIALIZATION ---
         document.addEventListener('DOMContentLoaded', async () => {
@@ -641,12 +932,24 @@ Secret: ${ui.secretText.dataset.secret || ui.secretText.textContent}
                 }
                 npcData = await response.json();
 
-                // Once data is loaded, initialize the app
                 populateSelects();
+                loadHistory();
+                
                 ui.generateBtn.addEventListener('click', () => generateNpc(false));
                 ui.randomizeBtn.addEventListener('click', () => generateNpc(true));
                 ui.copyBtn.addEventListener('click', copyToClipboard);
+                ui.saveBtn.addEventListener('click', saveNpc);
                 ui.clearBtn.addEventListener('click', clearAll);
+                ui.clearHistoryBtn.addEventListener('click', clearHistory);
+                
+                // Export modal listeners
+                ui.exportHistoryBtn.addEventListener('click', showExportModal);
+                ui.closeModalBtn.addEventListener('click', hideExportModal);
+                ui.exportModal.addEventListener('click', (e) => { if (e.target === ui.exportModal) hideExportModal(); });
+                ui.exportJsonBtn.addEventListener('click', exportAsJson);
+                ui.exportCsvBtn.addEventListener('click', exportAsCsv);
+                ui.exportMdBtn.addEventListener('click', exportAsMarkdown);
+                ui.exportPdfBtn.addEventListener('click', exportAsPdf);
 
                 ui.secretContainer.addEventListener('click', () => {
                     if (ui.secretText.classList.contains('hidden') && ui.secretText.dataset.secret) {
