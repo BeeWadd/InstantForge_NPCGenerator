@@ -149,6 +149,20 @@
             border-bottom-width: 1px;
         }
 
+        button:disabled, button[disabled] {
+            background-color: #9e9e9e;
+            border-color: #757575;
+            border-bottom-color: #616161;
+            cursor: not-allowed;
+            color: #e0e0e0;
+            text-shadow: none;
+        }
+        
+        button:disabled:active, button[disabled]:active {
+            transform: none;
+            border-bottom-width: 3px;
+        }
+
         .btn-primary {
             background-color: var(--primary-color);
             color: white;
@@ -286,24 +300,27 @@
             font-weight: bold;
             list-style: none;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            gap: 1rem;
+            gap: 0.75rem;
         }
 
         .history-item summary::-webkit-details-marker {
           display: none;
         }
-
-        .history-item summary::after {
-            content: '+';
+        
+        .expand-icon {
             font-size: 1.5rem;
             line-height: 1;
             transition: transform 0.2s;
             color: var(--primary-color);
+            flex-shrink: 0;
+            display: inline-block;
+            font-weight: normal;
+            width: 1em;
+            text-align: center;
         }
 
-        .history-item[open] > summary::after {
+        .history-item[open] > summary .expand-icon {
             transform: rotate(45deg);
         }
 
@@ -336,6 +353,29 @@
              margin-left: 0;
              border-left: 3px solid var(--border-color);
              padding-left: 1rem;
+        }
+        
+        .btn-delete-item {
+            background-color: transparent;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 0.25rem 0.75rem;
+            border-radius: 3px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-shadow: none;
+            flex-shrink: 0;
+        }
+
+        .btn-delete-item:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-delete-item:active {
+            transform: translateY(1px);
         }
 
         /* Modal Styles */
@@ -490,8 +530,8 @@
                 <p>No NPCs saved yet. Generate and save an NPC to see it here!</p>
             </div>
             <div class="button-group">
-                <button id="export-history" class="btn-secondary">Export History</button>
                 <button id="clear-history" class="btn-secondary">Clear History</button>
+                <button id="export-history" class="btn-secondary">Export History</button>
             </div>
         </div>
     </section>
@@ -578,8 +618,8 @@
             secretContainer: document.getElementById('secret-container'),
             secretText: document.getElementById('secret-text'),
             historyList: document.getElementById('history-list'),
-            exportHistoryBtn: document.getElementById('export-history'),
             clearHistoryBtn: document.getElementById('clear-history'),
+            exportHistoryBtn: document.getElementById('export-history'),
             exportModal: document.getElementById('export-modal'),
             closeModalBtn: document.getElementById('close-modal'),
             exportJsonBtn: document.getElementById('export-json'),
@@ -790,19 +830,26 @@ Secret: ${ui.secretText.dataset.secret || ui.secretText.textContent}
         function renderHistory() {
             ui.historyList.innerHTML = '';
             if (savedNpcs.length === 0) {
-                ui.historyList.innerHTML = '<p>No NPCs saved yet. Generate and save one!</p>';
+                ui.historyList.innerHTML = '<p>No NPCs saved yet. Generate and save an NPC to see it here!</p>';
+                ui.exportHistoryBtn.disabled = true;
+                ui.clearHistoryBtn.disabled = true;
                 return;
             }
             
+            ui.exportHistoryBtn.disabled = false;
+            ui.clearHistoryBtn.disabled = false;
+
             savedNpcs.forEach(npc => {
                 const item = document.createElement('details');
                 item.className = 'history-item';
                 item.innerHTML = `
                     <summary>
+                        <span class="expand-icon" aria-hidden="true">+</span>
                         <div class="history-item-header">
                             <h3>${npc.name}</h3>
                             <p>${npc.subtitle}</p>
                         </div>
+                        <button class="btn-delete-item" data-id="${npc.id}" title="Remove ${npc.name}">Remove</button>
                     </summary>
                     <div class="history-item-body">
                         <div class="output-group"><strong>Appearance</strong><p>${npc.appearance}</p></div>
@@ -814,6 +861,16 @@ Secret: ${ui.secretText.dataset.secret || ui.secretText.textContent}
                         <div class="output-group"><strong>Secret</strong><p>${npc.secret}</p></div>
                     </div>
                 `;
+
+                const deleteBtn = item.querySelector('.btn-delete-item');
+                deleteBtn.addEventListener('click', (e) => {
+                    e.preventDefault(); // Prevent details from toggling
+                    const npcId = parseInt(e.currentTarget.dataset.id, 10);
+                    if (!isNaN(npcId)) {
+                        deleteNpc(npcId);
+                    }
+                });
+
                 ui.historyList.appendChild(item);
             });
         }
@@ -826,13 +883,19 @@ Secret: ${ui.secretText.dataset.secret || ui.secretText.textContent}
             renderHistory();
         }
 
+        function deleteNpc(idToDelete) {
+            savedNpcs = savedNpcs.filter(npc => npc.id !== idToDelete);
+            localStorage.setItem('savedNpcs', JSON.stringify(savedNpcs));
+            renderHistory();
+        }
+
         function clearHistory() {
             if (savedNpcs.length === 0) return;
-            if (confirm("Are you sure you want to clear all saved NPCs? This cannot be undone.")) {
+            if (confirm("Are you sure you want to delete all saved NPCs? This cannot be undone.")) {
                 savedNpcs = [];
-                localStorage.removeItem('savedNpcs');
+                localStorage.setItem('savedNpcs', JSON.stringify(savedNpcs));
                 renderHistory();
-                showCopyFeedback("History Cleared");
+                showCopyFeedback("History Cleared.");
             }
         }
         

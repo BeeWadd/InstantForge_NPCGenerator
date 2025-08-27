@@ -1,6 +1,6 @@
 
 {
-    "races": ["human", "elf", "dwarf", "halfling", "gnome", "half_orc", "dragonborn"],
+    "races": ["human", "elf", "dwarf", "halfling", "gnome", "half_orc", "dragonborn", "tiefling"],
     "jobs": [
         "Scribe",
         "Blacksmith",
