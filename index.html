@@ -361,6 +361,56 @@
             return shuffled.slice(0, n);
         };
         const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);
+        
+        // --- UNIQUENESS GUARD ---
+        const HISTORY_LIMIT = 10;
+        let generationHistory = {
+            personalities: [],
+            quirks: [],
+            voices: [],
+            mannerisms: [],
+            secrets: [],
+            hooks: [],
+            goals: [],
+            offers: [],
+        };
+
+        /**
+         * Picks a random element from an array, attempting to avoid
+         * elements that have been picked in the last `HISTORY_LIMIT` generations.
+         * @param {string[]} arr The array of options to pick from.
+         * @param {string} historyKey The key for the history queue in `generationHistory`.
+         * @returns {string} A randomly selected string.
+         */
+        function pickUnique(arr, historyKey) {
+            if (!arr || arr.length === 0) return "";
+            
+            const historyQueue = generationHistory[historyKey];
+            if (!historyQueue) {
+                console.warn(`No history queue found for key: ${historyKey}`);
+                return pick(arr); // Fallback to original pick
+            }
+
+            // Filter out items that are already in the history
+            const uniqueOptions = arr.filter(option => !historyQueue.includes(option));
+            
+            let chosen;
+            // If we have unique options, pick from them. Otherwise, pick from the original array.
+            if (uniqueOptions.length > 0) {
+                chosen = pick(uniqueOptions);
+            } else {
+                console.log(`All options for ${historyKey} are recent. Re-using one.`);
+                chosen = pick(arr);
+            }
+
+            // Update history: add to front, trim from end
+            historyQueue.unshift(chosen); 
+            if (historyQueue.length > HISTORY_LIMIT) {
+                historyQueue.pop();
+            }
+            
+            return chosen;
+        }
 
         // --- DOM ELEMENTS ---
         const ui = {
@@ -443,7 +493,9 @@
         }
         
         function generateDetails() {
-            return `${pick(npcData.personalities)}; ${pick(npcData.quirks)}.`;
+            const personality = pickUnique(npcData.personalities, 'personalities');
+            const quirk = pickUnique(npcData.quirks, 'quirks');
+            return `${personality}; ${quirk}.`;
         }
 
         function generateNpc(forceRandomize = false) {
@@ -468,12 +520,16 @@
             const context = ui.context.value || 'the area';
             const jobFlavor = npcData.jobFlavor[job];
 
-            const hook = pick(jobFlavor?.hooks || npcData.globalHooks).replace('{place}', context);
-            const goal = pick(jobFlavor?.goals || npcData.globalGoals).replace('{place}', context);
-            const offer = pick(jobFlavor?.offers || npcData.globalOffers).replace('{place}', context);
-            const secret = pick(npcData.secrets).replace('{place}', context);
-            const voice = pick(npcData.voices);
-            const mannerism = pick(npcData.mannerisms);
+            const hooksArr = jobFlavor?.hooks || npcData.globalHooks;
+            const goalsArr = jobFlavor?.goals || npcData.globalGoals;
+            const offersArr = jobFlavor?.offers || npcData.globalOffers;
+
+            const hook = pickUnique(hooksArr, 'hooks').replace('{place}', context);
+            const goal = pickUnique(goalsArr, 'goals').replace('{place}', context);
+            const offer = pickUnique(offersArr, 'offers').replace('{place}', context);
+            const secret = pickUnique(npcData.secrets, 'secrets').replace('{place}', context);
+            const voice = pickUnique(npcData.voices, 'voices');
+            const mannerism = pickUnique(npcData.mannerisms, 'mannerisms');
             
             // 4. Update the output display
             ui.outputName.textContent = name;
