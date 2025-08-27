@@ -352,318 +352,7 @@
 
     <script>
         console.log("InstantForge: NPCs script loaded.");
-
-        const npcData = {
-            races: ["human", "elf", "dwarf", "halfling", "gnome", "half_orc", "dragonborn"],
-            jobs: ["Scribe", "Blacksmith", "Alchemist", "Guard", "Merchant", "Herbalist", "Innkeeper", "Bard", "Bounty Hunter", "Miner", "Farmer", "Tailor", "Thief", "Healer", "Wizard's Apprentice"],
-            personalities: ["Gruff", "Cheerful", "Suspicious", "Kind", "Arrogant", "Shy", "Cynical", "Optimistic", "World-weary", "Naive", "Ambitious", "Lazy", "Honest", "Deceitful", "Brave", "Cowardly", "Meticulous"],
-            quirks: ["Taps fingers incessantly", "Speaks in rhymes", "Has a nervous twitch", "Collects shiny objects", "Never makes eye contact", "Refers to self in third person", "Has an unusual pet", "Always smells of cinnamon", "Mispronounces common words", "Finishes other people's sentences", "Has a phobia of chickens", "Hums constantly", "Is a terrible liar but does it often", "Overly formal speech", "Carries a tattered book everywhere"],
-            voices: ["Deep and gravelly", "High-pitched and squeaky", "Slow and deliberate", "Fast and excitable", "Soft and whispery", "Loud and booming", "Monotonous and flat", "Smooth and melodic", "Hoarse and raspy", "Has a noticeable lisp", "Stutters when nervous", "Has a foreign accent"],
-            mannerisms: ["Paces while talking", "Constantly adjusts their clothing", "Gesticulates wildly", "Strokes their chin thoughtfully", "Avoids sitting still", "Fiddles with a coin", "Cracks their knuckles", "Rubs their hands together", "Bites their lip", "Raises one eyebrow frequently", "Leans in too close when speaking", "Scratches their neck when thinking"],
-            secrets: [
-                "Is secretly a member of a revolutionary group in {place}.",
-                "Owes a massive debt to a dangerous criminal.",
-                "Is an imposter who stole their current identity.",
-                "Has a hidden stash of treasure buried near {place}.",
-                "Is responsible for a crime everyone has forgotten.",
-                "Knows the location of a rare magical artifact in {place}.",
-                "Is secretly in love with someone they shouldn't be.",
-                "Is an informant for the local guard... or a rival faction.",
-                "Has a cursed item they can't get rid of.",
-                "Believes {place} is doomed and is preparing to flee.",
-                "Once belonged to a noble family but was disowned.",
-                "Has a child they've never met.",
-                "Is slowly being poisoned and doesn't know by whom."
-            ],
-            globalHooks: [
-                "I've lost a precious family heirloom in {place}, can you find it?",
-                "Someone has been threatening me, I need protection.",
-                "I need a rare ingredient that only grows in the dangerous parts of {place}.",
-                "I saw something strange in {place} last night, and no one believes me.",
-                "I need a message delivered, but I can't trust the usual couriers.",
-            ],
-            globalGoals: [
-                "To earn enough money to retire comfortably.",
-                "To find a lost family member.",
-                "To protect {place} from a looming threat.",
-                "To achieve recognition for their craft.",
-                "To escape their past and start a new life.",
-            ],
-            globalOffers: [
-                "I can offer a modest reward for your help.",
-                "I know a secret about {place} that could be useful to you.",
-                "I can provide you with a safe place to rest.",
-                "I have connections with influential people in {place}.",
-                "I can craft a custom item for you if you help me.",
-            ],
-            jobFlavor: {
-                Scribe: {
-                    hooks: ["A rare manuscript was stolen from my shop in {place}!", "I've intercepted a coded message I can't decipher.", "I need someone to retrieve a rare ink from a dangerous location in {place}."],
-                    goals: ["To write a definitive history of {place}.", "To uncover a lost piece of knowledge.", "To create a perfect, illuminated manuscript."],
-                    offers: ["I can forge documents for you.", "I have access to maps and records of {place}.", "I can teach you a rare language."]
-                },
-                Blacksmith: {
-                    hooks: ["My finest hammer was stolen by goblins!", "A competitor in {place} is sabotaging my forge.", "I need a rare ore from the mountains near {place}."],
-                    goals: ["To forge a legendary weapon.", "To become the most renowned blacksmith in the land.", "To earn enough to buy their own mine."],
-                    offers: ["I can repair your weapons and armor at a discount.", "I can craft masterwork gear for you.", "I know the weaknesses of different types of armor."]
-                },
-                Alchemist: {
-                    hooks: ["My laboratory in {place} exploded... again. I need help cleaning up.", "I need a very rare plant for a potion of longevity.", "A rival alchemist stole my formula for a powerful potion."],
-                    goals: ["To create the Philosopher's Stone.", "To cure a plague sweeping through {place}.", "To discover a potion with a completely new effect."],
-                    offers: ["I can brew any standard potion for you.", "I can identify magical substances.", "I'll sell you experimental (and unstable) potions cheaply."]
-                },
-                Guard: {
-                    hooks: ["I think my captain is corrupt, but I need proof.", "Smugglers are using a secret route into {place}.", "I'm supposed to be on patrol, but I need someone to check on my family."],
-                    goals: ["To become the Captain of the Guard.", "To keep the people of {place} safe.", "To solve a major unsolved crime."],
-                    offers: ["I can get you out of minor legal trouble.", "I know the patrol schedules in {place}.", "I can look the other way... for a price."]
-                },
-                Merchant: {
-                    hooks: ["A bandit crew has been raiding my caravans near {place}.", "I need an escort for a valuable shipment.", "A competitor is spreading vile rumors about my goods."],
-                    goals: ["To establish a trade empire.", "To sell a one-of-a-kind item to a noble.", "To drive their rivals out of business."],
-                    offers: ["I can give you a discount on my wares.", "I can get you rare and exotic goods from faraway lands.", "I hear all sorts of rumors from travelers."]
-                },
-                Herbalist: {
-                    hooks: ["A rare moonpetal flower is blooming tonight in {place}, but the area is dangerous.", "My supply of herbs was poisoned.", "I need someone to gather ingredients from a cursed swamp."],
-                    goals: ["To find a cure for a rare disease.", "To cultivate a garden of every known magical plant.", "To live a simple, peaceful life."],
-                    offers: ["I can provide healing poultices and remedies.", "I can identify any plant or animal in {place}.", "I know which plants are safe to eat and which are deadly."]
-                },
-                Innkeeper: {
-                    hooks: ["A rowdy group of mercenaries is causing trouble in my inn.", "My cellar is infested with giant rats.", "A ghostly presence in {place} is scaring away my customers."],
-                    goals: ["To own the most popular inn in the region.", "To pay off the debt on their establishment.", "To hear a story from every corner of the world."],
-                    offers: ["I can offer you free room and board.", "I overhear all the gossip and rumors in {place}.", "I can introduce you to interesting patrons."]
-                },
-                Bard: {
-                    hooks: ["I've lost my lucky lute.", "A rival bard in {place} stole my best song.", "I need a dramatic tale of heroism to turn into an epic ballad."],
-                    goals: ["To write a song that will be sung for centuries.", "To win the affection of a noble.", "To uncover a story that was meant to stay hidden."],
-                    offers: ["I can compose a song about your great deeds.", "My performances can create a useful distraction.", "I can use my charm to get information for you."]
-                },
-                'Bounty Hunter': {
-                    hooks: ["I'm tracking a dangerous fugitive last seen in {place}.", "I need a partner for a particularly difficult bounty.", "My target has powerful friends protecting them."],
-                    goals: ["To catch the one target that got away.", "To earn enough to retire from this dangerous life.", "To bring a true villain to justice."],
-                    offers: ["I'll split the bounty with you.", "I'm an expert tracker and fighter.", "I have contacts in the criminal underworld of {place}."]
-                },
-                Miner: {
-                    hooks: ["The mine in {place} has collapsed, trapping my friends!", "We've broken into an ancient, monster-filled cavern.", "The mining company is cheating us out of our pay."],
-                    goals: ["To strike a vein of mithril or adamantine.", "To buy their freedom from the mining company.", "To find a legendary gem said to be in the mountains near {place}."],
-                    offers: ["I know the tunnels and caves around {place} like the back of my hand.", "I can spot weak points in stone walls.", "I can get you uncut gems for cheap."]
-                }
-            },
-            data: {
-                human: {
-                    names: {
-                        male: ["Aran", "Boric", "Corbin", "Damian", "Edric", "Finnan", "Gareth", "Hadrian", "Joric", "Loric", "Merek", "Perrin", "Roric", "Stellan", "Tevan"],
-                        female: ["Alina", "Bryn", "Cora", "Elara", "Fiora", "Gwyn", "Helena", "Isolde", "Jessa", "Lyra", "Mara", "Nadia", "Roslyn", "Seraphina", "Valora"],
-                        neutral: ["Avery", "Blair", "Cameron", "Drew", "Ellis", "Finley", "Grey", "Hayden", "Jordan", "Kai", "Morgan", "Quinn", "Rowan", "Skyler", "Taylor"]
-                    },
-                    lastNames: ["Ashworth", "Blackwood", "Cartwright", "Dunfield", "Fairwind", "Greenbottle", "Highhill", "Ironhand", "Laker", "Miller", "Oakhurst", "Porter", "Silverton", "Thatcher", "Whitlock"],
-                    name_syllables: { prefix: [], middle: [], suffix: [], patterns: [] },
-                    appearance: {
-                        shared: {
-                            physical: ["Average height", "Sturdy build", "Weathered skin", "A friendly smile", "Scars from old battles", "Plain features", "Expressive eyes", "Calloused hands", "A simple haircut", "A tattoo of a family crest"],
-                            clothing: ["Simple leather tunic", "Sturdy traveler's clothes", "Worn farmer's garb", "A colorful sash", "A heavy wool cloak", "Well-worn boots", "A simple silver ring", "A pouch tied to a belt"]
-                        },
-                        gender: {
-                            male: {
-                                physical: ["A neatly trimmed beard", "Broad shoulders", "A square jaw", "A receding hairline", "A prominent scar on his cheek"],
-                                clothing: ["A blacksmith's apron", "A soldier's gambeson", "A simple vest over a linen shirt"]
-                            },
-                            female: {
-                                physical: ["Long hair in a practical braid", "Kind eyes", "A slender frame", "A dusting of freckles", "Nimble fingers"],
-                                clothing: ["A simple dress with an apron", "A warm shawl", "A necklace with a small gemstone"]
-                            },
-                            neutral: {
-                                physical: ["Androgynous features", "Short, practical hair", "A lean build", "A watchful gaze", "A single ear piercing"],
-                                clothing: ["A comfortable tunic and trousers", "A hooded cloak", "Fingerless gloves"]
-                            }
-                        }
-                    }
-                },
-                elf: {
-                    names: {
-                        male: ["Aelar", "Birel", "Caelen", "Dior", "Elros", "Faelar", "Galan", "Hador", "Ithron", "Laeron", "Mirel", "Naertho", "Riel", "Silvanus", "Taeron"],
-                        female: ["Alariel", "Celebrian", "Doriana", "Elara", "Finduilas", "Galadriel", "Ithiliel", "Luthien", "Mireth", "Nariel", "Riel", "Sariel", "Tauriel", "Yavanna"],
-                        neutral: ["Amoriel", "Elion", "Lael", "Linwe", "Nimloth", "Riellian", "Saelos", "Tiriel", "Valen"]
-                    },
-                    lastNames: ["Amastacia", "Galanodel", "Holimion", "Ilphelkiir", "Liadon", "Meliamne", "Naïlo", "Siannodel", "Xiloscient", "Elowen", "Silverfrond", "Moonshadow"],
-                    name_syllables: { prefix: [], middle: [], suffix: [], patterns: [] },
-                    appearance: {
-                        shared: {
-                            physical: ["Slender and graceful build", "Pointed ears", "Sharp, ethereal features", "Almond-shaped eyes of a striking color", "No facial hair", "Long, fine hair", "An ageless quality", "Moves with a silent grace"],
-                            clothing: ["Flowing silks in natural colors", "Elegant leather armor", "Intricate silver jewelry", "A finely crafted wooden bow on their back", "Soft, high boots", "A cloak fastened with a leaf-shaped clasp"]
-                        },
-                        gender: {
-                            male: {
-                                physical: ["A sharp, aristocratic profile", "Long hair, often braided", "A lean, muscular build", "Keen eyesight"],
-                                clothing: ["A finely woven tunic", "High leather boots", "A silver circlet"]
-                            },
-                            female: {
-                                physical: ["Delicate features", "Extremely long hair, flowing freely", "A serene expression", "Nimble, artistic hands"],
-                                clothing: ["An elegant gown of pale fabric", "A circlet of woven flowers and silver", "Delicate slippers"]
-                            },
-                            neutral: {
-                                physical: ["Perfectly balanced, androgynous features", "Hair kept in an intricate but practical style", "A calm, observant demeanor"],
-                                clothing: ["Well-fitted tunic and leggings", "A simple, elegant cloak", "Jewelry that is beautiful but not ostentatious"]
-                            }
-                        }
-                    }
-                },
-                dwarf: {
-                    names: {
-                        male: ["Balin", "Borin", "Dain", "Durin", "Fili", "Gimli", "Gloin", "Kili", "Oin", "Ori", "Thorin", "Thrain", "Dwalin", "Brokkr", "Eitri"],
-                        female: ["Astrid", "Bruna", "Dis", "Elga", "Freyda", "Gerta", "Hilda", "Ingra", "Lifsa", "Marna", "Ragna", "Siggrun", "Thora", "Vistra"],
-                        neutral: ["Baran", "Durin", "Gorm", "Helta", "Korgan", "Rurik", "Torra"]
-                    },
-                    lastNames: ["Axeworthy", "Battlehammer", "Brewbeard", "Caskborn", "Deepdelver", "Foamfist", "Goldhand", "Ironfoot", "Rockseeker", "Stoneshield", "Thunderforge", "Graybeard"],
-                    name_syllables: { prefix: [], middle: [], suffix: [], patterns: [] },
-                    appearance: {
-                        shared: {
-                            physical: ["Short and stout build", "Broad and muscular", "A ruddy complexion", "Strong hands", "A determined expression", "Eyes like chips of stone"],
-                            clothing: ["Thick leather clothing", "Heavy-duty boots", "A wide belt with numerous pouches", "A thick fur-lined cloak", "Simple, functional garb", "Steel-toed boots"]
-                        },
-                        gender: {
-                            male: {
-                                physical: ["A long, magnificent beard, often braided", "A broken nose", "Thick, hairy arms", "A booming voice"],
-                                clothing: ["A blacksmith's apron", "Chainmail under a tunic", "A horned helmet"]
-                            },
-                            female: {
-                                physical: ["A thick beard, worn with pride", "Stout, powerful arms", "Hair in thick, practical braids", "A surprisingly gentle smile"],
-                                clothing: ["A sturdy leather jerkin", "Trousers tucked into boots", "Rings on several fingers"]
-                            },
-                            neutral: {
-                                physical: ["A well-kept but practical beard", "A solid, unmovable stance", "Observant, deep-set eyes"],
-                                clothing: ["Functional miner's clothes", "A hooded cloak", "Heavy leather gloves"]
-                            }
-                        }
-                    }
-                },
-                halfling: {
-                    names: {
-                        male: ["Alton", "Cade", "Finnan", "Lyle", "Milo", "Norbert", "Orien", "Perrin", "Roscoe", "Samwise", "Tobo", "Wellby"],
-                        female: ["Bree", "Cora", "Eglantine", "Lila", "Marigold", "Portia", "Rosie", "Seraphina", "Tansy", "Willow", "Ruby"],
-                        neutral: ["Cerry", "Dell", "Pippin", "Joss", "Reed", "Shay"]
-                    },
-                    lastNames: ["Brushgather", "Goodbarrel", "Greenbottle", "High-hill", "Littlefoot", "Proudfoot", "Tealeaf", "Thornhopper", "Underbough", "Whitfoot"],
-                    name_syllables: { prefix: [], middle: [], suffix: [], patterns: [] },
-                    appearance: {
-                        shared: {
-                            physical: ["About three feet tall", "A round, pleasant face", "Curly hair", "Large, hairy feet", "A slightly pudgy build", "Quick, nimble movements", "A warm, infectious smile"],
-                            clothing: ["Comfortable, earthy-toned clothes", "A colorful vest", "No shoes", "A simple tunic and breeches", "A wide-brimmed hat for traveling", "A small leather backpack"]
-                        },
-                        gender: {
-                            male: {
-                                physical: ["Slight sideburns", "A twinkle in his eye", "A healthy appetite is apparent"],
-                                clothing: ["Often seen with a pipe", "Suspenders", "A slightly rumpled shirt"]
-                            },
-                            female: {
-                                physical: ["Hair often decorated with flowers", "Bright, curious eyes", "A gentle demeanor"],
-                                clothing: ["A simple dress with an apron", "A small pouch for collecting interesting things", "A hand-knit shawl"]
-                            },
-                            neutral: {
-                                physical: ["An open, friendly face", "A head of unruly curls", "Constantly fidgeting"],
-                                clothing: ["Overalls", "A patched-up jacket", "A satchel full of snacks"]
-                            }
-                        }
-                    }
-                },
-                gnome: {
-                    names: {
-                        male: ["Alston", "Boddynock", "Dimble", "Fonkin", "Gerbo", "Glim", "Jebeddo", "Orryn", "Roondar", "Zook"],
-                        female: ["Bimpnottin", "Ellywick", "Lilli", "Loopmottin", "Marnan", "Nissa", "Roywyn", "Tana", "Waywocket"],
-                        neutral: ["Fip", "Nix", "Pella", "Quill", "Spocket", "Zanna"]
-                    },
-                    lastNames: ["Badger", "Cobblestone", "Fizzlebang", "Geargrind", "Muddlepot", "Nackle", "Sparkhammer", "Tinker-Tots", "Wobble-Knee", "Copperpot"],
-                    name_syllables: { prefix: [], middle: [], suffix: [], patterns: [] },
-                    appearance: {
-                        shared: {
-                            physical: ["Small and slender, under four feet tall", "A large nose and ears", "Bright, intelligent eyes", "Skin tones of earthy colors", "A shock of wild hair"],
-                            clothing: ["A leather apron with many pockets", "Goggles, either on head or eyes", "Clothes often smudged with grease or soot", "A tool belt with strange contraptions", "Mismatched socks"]
-                        },
-                        gender: {
-                            male: {
-                                physical: ["A neatly trimmed, pointed beard", "A mischievous grin", "Constantly tinkering with something"],
-                                clothing: ["A waistcoat with many buttons", "Slightly too-large boots"]
-                            },
-                            female: {
-                                physical: ["Hair in wild, eccentric pigtails or buns", "A curious, tilted head", "Expressive eyebrows"],
-                                clothing: ["Colorful, patched-up clothing", "Several small, jangling pouches"]
-                            },
-                            neutral: {
-                                physical: ["Eyes that dart around, taking everything in", "A perpetually surprised expression", "Quick, bird-like movements"],
-                                clothing: ["A functional jumpsuit covered in pockets", "Fingerless gloves", "Magnifying lenses on a chain"]
-                            }
-                        }
-                    }
-                },
-                half_orc: {
-                    names: {
-                        male: ["Brak", "Dorn", "Garak", "Hosk", "Krusk", "Mog", "Rarn", "Thokk", "Vorg", "Zor"],
-                        female: ["Arha", "Bagra", "Ekk", "Gora", "Holg", "Maka", "Rela", "Sora", "Urga", "Zasha"],
-                        neutral: ["Dak", "Fen", "Grish", "Jorn", "Ror"]
-                    },
-                    lastNames: ["Bloodfist", "Doomhammer", "Fist-Smasher", "Iron-Tusk", "Rage-Claw", "Skull-Splitter", "Stone-Breaker", "The Unbent", "War-Torn"],
-                    name_syllables: {
-                        prefix: ["gr", "br", "th", "kl", "dr"],
-                        middle: ["u", "o", "a"],
-                        suffix: ["k", "g", "sh", "rg"],
-                        patterns: ["PS", "PMS"]
-                    },
-                    appearance: {
-                        shared: {
-                            physical: ["Tall and powerfully built", "Grayish or greenish skin", "Prominent lower canines (tusks)", "A heavy, jutting jaw", "Numerous scars", "Coarse black hair", "Muscular frame"],
-                            clothing: ["Practical, heavy-duty clothing", "Furs and untanned hides", "Spiked leather armor", "A necklace of teeth or bones", "Heavy, cleated boots", "Minimalist clothing, showing off muscles and scars"]
-                        },
-                        gender: {
-                            male: {
-                                physical: ["Often bald or with a topknot", "Massive, broad shoulders", "A perpetually grim expression"],
-                                clothing: ["A harness instead of a shirt", "A large, crude weapon always at hand"]
-                            },
-                            female: {
-                                physical: ["Taller than most human men", "Long hair in a thick braid", "Fierce, intelligent eyes"],
-                                clothing: ["A practical leather jerkin", "Trousers and sturdy boots", "Often wears war paint"]
-                            },
-                            neutral: {
-                                physical: ["An intimidating presence", "A muscular, solid build", "A watchful, cautious gaze"],
-                                clothing: ["A mix of practical hide and leather", "A hooded cloak to obscure their features", "Simple, unadorned gear"]
-                            }
-                        }
-                    }
-                },
-                dragonborn: {
-                    names: {
-                        male: ["Arjhan", "Balasar", "Bharash", "Donaar", "Ghesh", "Heskan", "Kriv", "Medrash", "Patrin", "Shedinn", "Torinn"],
-                        female: ["Akra", "Biri", "Daar", "Harann", "Jheri", "Kava", "Korinn", "Mishann", "Nala", "Sora", "Zofra"],
-                        neutral: ["Baeshra", "Jalan", "Klar", "Oth", "Sorin"]
-                    },
-                    lastNames: ["Clethtinthiallor", "Daardendrian", "Delmirev", "Drachedandion", "Fenkenkabradon", "Kerrhylon", "Linxakasendalor", "Myastan", "Nemmonis", "Turnuroth"],
-                    name_syllables: {
-                        prefix: ["Ar", "Bal", "Ghe", "Hes", "Pa", "She"],
-                        middle: ["jha", "sa", "sh", "ka", "tri", "di"],
-                        suffix: ["n", "r", "sh", "k", "v"],
-                        patterns: ["PS", "PMS"]
-                    },
-                    appearance: {
-                        shared: {
-                            physical: ["Covered in fine scales of a specific color (red, gold, etc.)", "A draconic, reptilian head", "Tall and strongly built", "Clawed hands and feet", "No visible hair", "A proud, upright posture"],
-                            clothing: ["Often disdains armor, relying on natural scales", "Simple harnesses and belts", "Loincloths or kilts", "Jewelry made of precious metals", "A symbol of their clan worn prominently"]
-                        },
-                        gender: {
-                            male: {
-                                physical: ["A heavier build", "Larger horns or head-frills", "A deep, resonant voice"],
-                                clothing: ["Often wears a heavy belt for weapons", "Forearm bracers"]
-                            },
-                            female: {
-                                physical: ["A more slender, sinuous build", "More subtle coloration", "Longer, more delicate horns"],
-                                clothing: ["More likely to wear decorative jewelry", "A finely crafted sash"]
-                            },
-                            neutral: {
-                                physical: ["A balanced, powerful physique", "Symmetrical head-frills", "Eyes that seem to hold ancient wisdom"],
-                                clothing: ["Simple, functional, and unadorned clothing", "A single, significant piece of jewelry"]
-                            }
-                        }
-                    }
-                }
-            }
-        };
+        let npcData;
 
         // --- UTILITY FUNCTIONS ---
         const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
@@ -887,22 +576,35 @@ Secret: ${ui.secretText.dataset.secret || ui.secretText.textContent}
             setTimeout(() => { ui.copyFeedback.textContent = ''; }, 300); // Clear text after fade
         }
 
-        // --- EVENT LISTENERS ---
-        document.addEventListener('DOMContentLoaded', () => {
-            populateSelects();
-            ui.generateBtn.addEventListener('click', () => generateNpc(false));
-            ui.randomizeBtn.addEventListener('click', () => generateNpc(true));
-            ui.copyBtn.addEventListener('click', copyToClipboard);
-            ui.clearBtn.addEventListener('click', clearAll);
-
-            ui.secretContainer.addEventListener('click', () => {
-                if (ui.secretText.classList.contains('hidden')) {
-                    ui.secretText.textContent = ui.secretText.dataset.secret || "Generate an NPC first.";
-                    ui.secretText.classList.remove('hidden');
-                    ui.secretText.classList.add('visible');
-                    ui.secretContainer.classList.add('revealed');
+        // --- EVENT LISTENERS & INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const response = await fetch('npc-data.json');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
-            });
+                npcData = await response.json();
+
+                // Once data is loaded, initialize the app
+                populateSelects();
+                ui.generateBtn.addEventListener('click', () => generateNpc(false));
+                ui.randomizeBtn.addEventListener('click', () => generateNpc(true));
+                ui.copyBtn.addEventListener('click', copyToClipboard);
+                ui.clearBtn.addEventListener('click', clearAll);
+
+                ui.secretContainer.addEventListener('click', () => {
+                    if (ui.secretText.classList.contains('hidden') && ui.secretText.dataset.secret) {
+                        ui.secretText.textContent = ui.secretText.dataset.secret;
+                        ui.secretText.classList.remove('hidden');
+                        ui.secretText.classList.add('visible');
+                        ui.secretContainer.classList.add('revealed');
+                    }
+                });
+
+            } catch (error) {
+                console.error("Could not load or parse npc-data.json", error);
+                document.querySelector('main').innerHTML = `<p style="color: white; text-align: center; font-size: 1.2rem;">Error: Could not load required game data. Please refresh the page.</p>`;
+            }
         });
     </script>
 </body>
