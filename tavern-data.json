@@ -1,0 +1,115 @@
+{
+    "types": ["Roadside Coaching Inn", "Urban Tavern", "Dockside Dive", "Elven Treetop Fane", "Dwarven Mead Hall", "Halfling Burrow-Pub", "Adventurer's Guildhall", "Quiet Monastery Guesthouse"],
+    "qualities": ["Squalid", "Poor", "Modest", "Comfortable", "Wealthy"],
+    "nameTemplates": {
+        "patterns": ["The {adjective} {noun}", "The {noun} and {noun2}", "{ownerName}'s {establishment}"],
+        "adjectives": ["Gilded", "Leaky", "Prancing", "Sleeping", "Green", "Salty", "Stumbling", "Last", "Whispering", "Broken", "Singing", "Golden"],
+        "nouns": ["Dragon", "Gryphon", "Goat", "Mug", "Flagon", "Kettle", "Boot", "Anchor", "Waystone", "Grin", "Fiddle", "Crown", "Shield", "Pipe", "Hearth", "Mare", "Serpent", "Tankard"],
+        "noun2": ["Whistle", "Grin", "Fiddle", "Crown", "Shield", "Pipe", "Feather", "Coin", "Stool", "Dagger", "Rose", "Wagon"],
+        "ownerNames": ["Grizelda", "Stumbleduck", "Oakharrow", "Silas", "One-Eye", "Mistress Gable", "Old Man Willow", "Barnaby", "Fatty Bolger", "Rosie"],
+        "establishments": ["Rest", "Hole", "Taproom", "Hearth", "Inn", "Tavern", "Brewery", "Corner", "Respite", "Gamble"]
+    },
+    "descriptions": {
+        "Roadside Coaching Inn": {
+            "Squalid": "A drafty, hastily-built shack with a leaky roof and dirt floors. The air is thick with the smell of wet dog and despair. Every surface is sticky.",
+            "Poor": "This weary-looking timber building sags in the middle. The common room is smoky, filled with rickety furniture and the low murmur of tired travelers.",
+            "Modest": "A sturdy, well-maintained stop for travelers. A large, clean common room with a warm hearth provides a welcome respite from the road.",
+            "Comfortable": "A sprawling, multi-story inn with a bustling stable and a welcoming porch. The common room is spacious, with polished tables and a pleasant din of conversation.",
+            "Wealthy": "An impressive stone edifice with leaded glass windows and a liveried stablehand at the door. The interior boasts private booths, fine tapestries, and quiet, attentive service."
+        },
+        "Urban Tavern": {
+            "Squalid": "A cellar dive down a stinking alley, marked only by a faded, painted sign. The air is foul, the light is dim, and the patrons are best left alone.",
+            "Poor": "A cramped, noisy taproom on a busy street corner. The floor is covered in sawdust and spilled ale, and every chair has a wobble.",
+            "Modest": "A popular local haunt with dark wood paneling and friendly staff. It's often crowded, but the atmosphere is generally cheerful and welcoming.",
+            "Comfortable": "A well-appointed tavern in a respectable district, known for its good food and extensive drink selection. It's a favorite of merchants and guild members.",
+            "Wealthy": "An exclusive establishment with a quiet, refined atmosphere. Patrons are seated by a discerning host, and the prices are as steep as the quality is high."
+        },
+        "Dockside Dive": {
+            "Squalid": "A ramshackle lean-to built from salvaged ship parts, teetering over the murky water. The smell of cheap grog, fish guts, and desperation hangs heavy in the air.",
+            "Poor": "This place is loud, violent, and perpetually damp. Sailors from a dozen lands shout over each other, and a brawl is always just a spilled drink away.",
+            "Modest": "A reliable spot for sailors to get a hot meal and a strong drink. The common room is decorated with nautical maps, fishing nets, and trophies from the sea.",
+            "Comfortable": "A clean, well-lit tavern overlooking the harbor, popular with ship captains and merchants. It offers private rooms for business and a fine view of the ships.",
+            "Wealthy": "A lavish 'Captain's Club' with polished brass, expansive windows viewing the sea, and a membership list of the most successful mariners and traders."
+        },
+        "Elven Treetop Fane": {
+            "Squalid": "A poorly-maintained platform with frayed ropes and a drooping canvas roof. It feels less like a fane and more like an abandoned tree fort.",
+            "Poor": "A simple, open-air platform woven from living branches. The wine is thin, but the view of the forest canopy is pleasant.",
+            "Modest": "A graceful, multi-tiered structure built into the boughs of a mighty silverwood tree. Soft, magical lanterns illuminate the space, and the sound of a harp often drifts on the breeze.",
+            "Comfortable": "An elegant fane with carved railings, silken cushions, and a central waterfall that cascades into a crystal-clear pool. The service is discreet and impeccable.",
+            "Wealthy": "A breathtaking structure of living wood and crystal, so high in the canopy it pierces the clouds. It serves luminescent cocktails and food that is both art and sustenance."
+        },
+        "Dwarven Mead Hall": {
+            "Squalid": "A damp, cramped cavern with a ceiling so low most non-dwarves have to stoop. The ale tastes of mold and the benches are slick with fungus.",
+            "Poor": "A rough-hewn hall deep underground, smelling of earth, sweat, and spilled mead. The air rings with the clang of tankards and boisterous, off-key singing.",
+            "Modest": "A grand, stone hall supported by thick, carved pillars. Long trestle tables are filled with dwarves feasting and telling tales. The hearth is large enough to roast an ox.",
+            "Comfortable": "A well-appointed hall with polished stone floors, intricate tapestries depicting dwarven history, and a bar stocked with dozens of rare ales and meads.",
+            "Wealthy": "An opulent cavern with veins of gold and mithril gleaming in the walls. A river of lava flows safely behind a crystal wall, heating the hall. The service is fit for a king."
+        },
+        "Halfling Burrow-Pub": {
+            "Squalid": "A damp, smelly hole with a collapsed tunnel in the back. The ale is sour, and you have to watch out for dripping water and giant centipedes.",
+            "Poor": "A cozy but cluttered burrow with a low, rounded ceiling. The furniture is mismatched and worn, but the fire is warm and the company is friendly.",
+            "Modest": "A cheerful, well-lit pub with a round green door, a pantry full of pies, and a cellar full of excellent ale. It's the heart of the local community.",
+            "Comfortable": "A spacious and tidy burrow with whitewashed walls, embroidered cushions, and a garden visible through the round windows. They serve award-winning ciders.",
+            "Wealthy": "An expansive, luxurious burrow-suite with several common rooms, a lending library, and a menu of gourmet comfort food. It's the preferred spot for the mayor and wealthy landowners."
+        },
+         "Adventurer's Guildhall": {
+            "Squalid": "A rundown hall where the notice board is mostly empty and the few patrons are either desperate or washed-up. The roof leaks over the one good table.",
+            "Poor": "A functional but drab guildhall. The bar serves cheap ale, and the air is filled with the nervous energy of new recruits and the bored sighs of veterans.",
+            "Modest": "A bustling hub of activity. A massive notice board is covered in contracts, and the common room is filled with adventurers of all stripes planning, celebrating, or drowning their sorrows.",
+            "Comfortable": "A well-funded guildhall with a comfortable lounge, a training yard, a library, and a bar that serves surprisingly good food. A sense of professionalism pervades.",
+            "Wealthy": "An imposing fortress-like guildhall that serves only the most elite adventurers. It boasts its own forge, alchemist's lab, and a vault for storing magical treasures."
+        },
+        "Quiet Monastery Guesthouse": {
+            "Squalid": "The beds are straw pallets on a cold stone floor, and the meal is thin, watery gruel. The monks are silent and offer no comfort beyond the bare minimum.",
+            "Poor": "A simple, spartan guesthouse offering a hard bed, a clean blanket, and a meal of bread and broth. The monks expect silence and piety from their guests.",
+            "Modest": "A peaceful and well-tended guesthouse. The rooms are simple but clean, the food is wholesome, and the gardens are a tranquil place for contemplation.",
+            "Comfortable": "A serene retreat known for its beautiful scriptorium and healing herbs. The monks are learned and willing to share their knowledge with respectful guests.",
+            "Wealthy": "A famous monastery that produces legendary wines or ales. The guesthouse is surprisingly luxurious, funded by wealthy patrons seeking enlightenment (or just the famous drink)."
+        }
+    },
+    "innkeepers": {
+        "personalities": ["Gruff but fair", "Overly cheerful and nosy", "Suspicious and watchful of everyone", "Tired, world-weary, and cynical", "A bustling, motherly figure", "A former adventurer with a bad leg", "A slick, profit-obsessed charmer", "Quiet and observant, misses nothing", "A bubbly gossip who knows everything", "Stern and humorless, runs a tight ship"],
+        "quirks": ["polishes the same mug constantly", "has a pet mouse that lives in their pocket", "never gives a straight answer to a direct question", "is missing three fingers on their left hand", "hums the same sad tune when they think no one is listening", "insists on being paid in odd-numbered coins", "has an irrational fear of magic", "collects wanted posters", "can perfectly mimic any patron's voice after hearing it once", "is secretly a skilled poisoner"]
+    },
+    "signature_drinks": {
+        "Squalid": ["'Gutter Grog,' a cloudy, sour mystery liquid", "'Swampwater Ale,' which has bits floating in it", "'Orc's Piss,' a notoriously foul but potent brew", "Watered-down, flat ale", "Vinegar-like wine"],
+        "Poor": ["'The Rusty Nail,' a cheap, strong ale", "'Mug O' Brown,' a standard, forgettable beer", "Rough, throat-burning whiskey", "Sour cider from last year's press", "'Traveler's Tanglefoot,' a dark, heavy stout"],
+        "Modest": ["'Golden Grain Ale,' a crisp, refreshing local favorite", "Warm spiced cider in the winter", "A decent, robust red wine", "'The Hearthwarmer,' a smooth, dark porter", "Blackberry mead from a nearby farm"],
+        "Comfortable": ["'Starlight Lager,' an elven import with a faint shimmer", "'Dragon's Breath Chili Stout,' a spicy, warming brew", "Aged dwarven whiskey, smooth as silk", "Fine wine from a reputable vineyard", "'The Scholar's Sip,' a spiced herbal tea with a kick"],
+        "Wealthy": ["'Celestial Radiance,' a wine that glows faintly with golden light", "'Mithril Mead,' a dwarven brew aged for a century in mithril-lined casks", "Scintillating spirits from another plane", "The king's own private stock of brandy", "A cocktail that changes color and flavor with every sip"]
+    },
+    "patrons": [
+        "A grizzled bounty hunter cleaning their nails with a dagger, pointedly ignoring everyone.",
+        "A pair of young lovers whispering in a dark corner, clearly hiding from someone.",
+        "A merchant loudly complaining about road tolls to anyone who will listen.",
+        "A quiet, hooded figure in the corner nursing a single drink, watching the room from under their brim.",
+        "A group of off-duty city guards gambling loudly and cheating poorly.",
+        "A traveling bard singing a rather bawdy song for a handful of coins.",
+        "An old man with a long white beard, seemingly asleep, but his eyes are tracking the room.",
+        "A richly-dressed noble and their bored-looking bodyguard, clearly out of place.",
+        "A local farmer trying to sell a prize-winning pig to a skeptical butcher.",
+        "A half-orc mercenary sharpening a massive axe, making everyone nervous.",
+        "A gnome inventor trying to demonstrate a new, smoke-belching contraption.",
+        "An elf scholar taking meticulous notes in a leather-bound journal.",
+        "A group of dwarves challenging each other to drinking contests.",
+        "A halfling storyteller captivating a small crowd of children with a fantastical tale.",
+        "A priest of the god of travel, offering blessings for a small donation."
+    ],
+    "rumors": [
+        "They say the old well behind the inn leads to a forgotten smuggler's tunnel.",
+        "The innkeeper is in debt to the local thieves' guild and is being forced to act as an informant.",
+        "A ghostly woman in white is sometimes seen in the upstairs hallway, searching for her lost love.",
+        "A wealthy merchant is staying here incognito, looking to hire guards for a dangerous expedition.",
+        "The 'special stew' isn't made from mutton... and the local butcher has some questions about his missing dog.",
+        "There's a loose floorboard in the corner booth that hides a map to a hidden treasure.",
+        "The inn was built on an ancient burial ground, and the dead are starting to get restless.",
+        "One of the patrons is a wanted fugitive with a huge bounty on their head.",
+        "The innkeeper's daughter is in love with the leader of the local bandit crew.",
+        "The strange sigils carved into the hearth are part of a ritual to summon a powerful entity.",
+        "A secret, high-stakes card game happens in the cellar every midnight. The password is 'rusty flagon'.",
+        "The bard who plays here on weekends is actually a spy for a rival kingdom.",
+        "The 'dwarven ale' is just cheap swill mixed with goblin moonshine. The real stuff is sold to special customers.",
+        "A valuable item was recently stolen from a noble's room, and the innkeeper is covering it up.",
+        "The building itself is alive, and sometimes the rooms rearrange themselves in the dead of night."
+    ]
+}
