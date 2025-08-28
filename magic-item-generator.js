@@ -19,7 +19,7 @@ const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
 const capitalize = (str) => str ? str.charAt(0).toUpperCase() + str.slice(1) : '';
 
 // --- UNIQUENESS GUARD ---
-const HISTORY_LIMIT = 5;
+const HISTORY_LIMIT = 10;
 let generationHistory = {
     creators: [],
     histories: [],

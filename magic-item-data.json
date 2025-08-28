@@ -1,274 +1,1017 @@
-
 {
-    "types": ["Weapon", "Armor", "Potion", "Ring", "Wand", "Staff", "Rod", "Wondrous Item"],
-    "powerLevels": ["Common", "Uncommon", "Rare", "Very Rare", "Legendary"],
-    "creators": [
-        "a reclusive archmage", "an ancient dragon", "a coven of hags", "a dwarven runesmith", "an elven artisan of starlight", "a mad god", "a celestial being of pure light", "a fiendish pact-maker", "a forgotten civilization", "a gnome of impossible ingenuity", "a spirit of the earth", "a master of illusions", "a blind seer who dreamt it into existence", "a collective of dream-weavers", "a primordial earth elemental", "a forgotten demon prince", "a guild of shadow-smiths", "a heartbroken demigod", "an artificer obsessed with perfection", "a child with an impossible wish", "a society of deep-sea folk"
-    ],
-    "histories": [
-        "forged in the heart of a dying star", "stolen from the tomb of a forgotten king", "a gift from a fey monarch for a great service", "used to slay a terrible beast that terrorized a kingdom", "the last creation of a master artisan before they vanished", "lost in a legendary battle that shaped the world", "a ceremonial piece from a lost empire", "discovered in the hoard of a slain dragon", "a tool used to build a wonder of the world", "an heirloom passed down through a line of heroes", "once wielded by a notorious villain", "found at the site of a celestial convergence", "a failed attempt to contain a cosmic entity", "a prize from a deadly, otherworldly game", "worn by the first monarch of a fallen kingdom", "crafted as a peace offering between warring gods", "the key to a sealed, subterranean vault", "a symbol of a forgotten rebellion", "it fell from the sky in a shower of colored light", "it was discovered embedded in an ancient, petrified tree", "it was the dying gift of a powerful nature spirit"
-    ],
-    "curses": [
-        "Slowly corrupts the wielder's personality, making them more greedy/paranoid/aggressive.", "Attracts unwanted attention from a specific type of monster (e.g., undead, fiends).", "Cannot be willingly discarded or unequipped by the user.", "Whispers tempting but terrible secrets to its owner in their dreams.", "Requires a minor, daily sacrifice (a drop of blood, a cherished memory) to function.", "Has a mischievous and inconvenient personality, activating at the worst times.", "Functions erratically, with a chance to fail or produce an unintended effect in moments of need.", "Drains a small amount of the user's life force with each use.", "Makes the user intensely protective of the item, bordering on obsession.", "Causes the user to be distrusted by animals.", "Slowly transforms the user's appearance to resemble the item's creator.", "The user slowly loses their reflection, eventually becoming invisible to mirrors.", "Emits a high-pitched sound only vermin can hear, attracting rats and insects.", "All food and drink tastes like ash to the user.", "The user cannot tell a deliberate lie while holding/wearing the item.", "Causes non-magical plants to wither at the user's touch.", "The user's shadow occasionally moves on its own, mimicking their darkest impulses.", "The item slowly and subtly changes color, a sign of its growing influence.", "The user becomes intensely cold, their breath fogging even in summer.", "The item must be bathed in fresh blood once a week or its powers will fade."
-    ],
-    "itemData": {
-        "Weapon": {
-            "subtypes": ["Sword", "Axe", "Dagger", "Bow", "Mace", "Spear", "Hammer", "Glaive", "Scythe", "Crossbow"],
-            "nameTemplates": ["The {subtype} of {effectWord}", "{effectWord} {subtype}", "{creatorName}'s {subtype}"],
-            "creatorNames": ["Gorthaur", "Elara", "Dunewright", "Volund"],
-            "materials": ["gleaming obsidian", "polished dragonbone", "unearthly star-metal", "ancient petrified wood", "flawless silver", "condensed shadow-stuff", "unbreakable adamantine", "feather-light mithral", "fossilized bone", "crystallized moonlight", "woven nightmare-stuff", "unmelting ice"],
-            "visuals": ["glows faintly in moonlight", "hums with a low, palpable energy", "is covered with intricate, glowing runes", "feels warm to the touch", "is surprisingly lightweight", "seems to absorb light around it", "leaves a faint trail of sparks when moved", "sheds a black, light-dampening aura", "is etched with the names of its fallen wielders", "is utterly silent, making no sound when it strikes", "smells faintly of ozone after a strike"],
-            "powers": {
-                "Common": [
-                    { "name": "Illumination", "description": "Sheds a dim light in a 10-foot radius on command." },
-                    { "name": "Unstaining", "description": "Never needs sharpening, cleaning, or oiling." },
-                    { "name": "Guidance", "description": "Glows faintly when pointed towards magnetic north." }
-                ],
-                "Uncommon": [
-                    { "name": "Scorching", "description": "Deals an extra 1d4 fire damage on a hit." },
-                    { "name": "Icing", "description": "Deals an extra 1d4 cold damage on a hit." },
-                    { "name": "Shocking", "description": "Deals an extra 1d4 lightning damage on a hit." },
-                    { "name": "Venomous", "description": "Deals an extra 1d4 poison damage on a hit." },
-                    { "name": "Steadfast Courage", "description": "Grants the wielder advantage on saves against being frightened." },
-                    { "name": "Minor Magic", "description": "Can be used to cast a cantrip (e.g., Light, Message) once per day." }
-                ],
-                "Rare": [
-                    { "name": "Flame Tongue", "description": "Deals an extra 2d6 fire damage on a hit." },
-                    { "name": "Frost Brand", "description": "Deals an extra 1d6 cold damage on a hit." },
-                    { "name": "Spell Stealing", "description": "Has 3 charges, regains 1d3 daily. When you hit a creature with this weapon, you can expend a charge to steal a 1st or 2nd level spell they can cast." },
-                    { "name": "Resistance", "description": "Grants resistance to one type of damage (e.g. fire, psychic, etc.)." },
-                    { "name": "Disarming", "description": "On a critical hit, the target must make a Strength saving throw or drop one item it is holding." }
-                ],
-                "Very Rare": [
-                    { "name": "Vorpal", "description": "This weapon scores a critical hit on a roll of 19 or 20. On a critical hit against a creature with a head, it decapitates them." },
-                    { "name": "Dancing", "description": "You can use a bonus action to toss this weapon into the air and speak the command word. When you do so, the weapon begins to hover, flies up to 30 feet, and attacks one creature of your choice within 5 feet of it." },
-                    { "name": "Spell Storing", "description": "Stores one spell of up to 4th level, which can be cast from the weapon." },
-                    { "name": "Flying", "description": "Grants the wielder the ability to fly for 10 minutes per day." },
-                    { "name": "Returning", "description": "If thrown, this weapon returns to the wielder's hand at the end of the turn." }
-                ],
-                "Legendary": [
-                    { "name": "Holy Avenger", "description": "This weapon has a +3 bonus to attack and damage rolls. While you hold it, you are immune to being charmed or frightened. It deals an extra 2d10 radiant damage to fiends and undead." },
-                    { "name": "Soul Devouring", "description": "When you slay a creature with this weapon, you trap its soul. You can expend the soul to regain hit points or fuel a powerful spell." },
-                    { "name": "Dragonslaying", "description": "This weapon deals an extra 3d6 damage to dragons." },
-                    { "name": "Life-Stealing", "description": "When you score a critical hit, you regain hit points equal to half the damage dealt." }
-                ]
-            }
-        },
-        "Armor": {
-            "subtypes": ["Shield", "Helmet", "Breastplate", "Gauntlets", "Full Plate", "Greaves", "Bracers"],
-            "nameTemplates": ["{subtype} of {effectWord}", "The {effectWord} Bulwark", "{creatorName}'s Aegis"],
-            "creatorNames": ["Durin", "Kaelen", "Anya", "Bor"],
-            "materials": ["gleaming dragonscale", "polished star-metal", "unbreakable adamantine", "feather-light mithral", "enchanted elven steel", "stone from a sacred mountain", "petrified bark from an ancient tree", "hardened and polished coral", "woven spider silk, stronger than steel", "meteorite iron"],
-            "visuals": ["is always clean and polished", "is etched with protective wards", "glows faintly when danger is near", "changes color to match its surroundings", "is adorned with the crest of a forgotten order", "is covered in a fine layer of frost that never melts", "makes the wearer's footsteps nearly silent", "appears to be made of liquid shadow"],
-            "powers": {
-                "Common": [
-                    { "name": "Mending", "description": "The armor magically repairs any damage it sustains overnight." },
-                    { "name": "Quick Donning", "description": "You can don or doff this armor as an action." },
-                    { "name": "Comfort", "description": "The armor is always a comfortable temperature, regardless of the climate." }
-                ],
-                "Uncommon": [
-                    { "name": "Physical Resistance", "description": "Grants resistance to one type of non-magical damage (bludgeoning, piercing, or slashing)." },
-                    { "name": "Poison Warding", "description": "Grants advantage on saves against poison." },
-                    { "name": "Nimbleness", "description": "The wearer does not have disadvantage on Dexterity (Stealth) checks from this armor." }
-                ],
-                "Rare": [
-                    { "name": "Elemental Resistance", "description": "Grants resistance to one type of elemental damage (fire, cold, lightning, etc.)." },
-                    { "name": "Fortitude", "description": "Has 3 charges, can expend one to gain 2d6 temporary hit points. Regains 1d3 charges daily." },
-                    { "name": "Feather Fall", "description": "The wearer's rate of descent slows to 60 feet per round, as if under the effect of a Feather Fall spell." }
-                ],
-                "Very Rare": [
-                    { "name": "Etherealness", "description": "The wearer can become ethereal for 1 minute, once per day." },
-                    { "name": "Condition Immunity", "description": "Grants immunity to a specific condition (e.g., frightened, charmed)." },
-                    { "name": "Arrow Catching", "description": "Grants a +1 bonus to AC against ranged attacks. As a reaction, you can deflect a missile when you are hit by a ranged weapon attack." }
-                ],
-                "Legendary": [
-                    { "name": "Invulnerability", "description": "Grants resistance to all non-magical damage and a +2 bonus to Armor Class." },
-                    { "name": "Regeneration", "description": "The wearer regenerates 1d6 hit points at the start of their turn if they have at least 1 hit point." },
-                    { "name": "Spellguard", "description": "The wearer has advantage on saving throws against spells and other magical effects." }
-                ]
-            }
-        },
-        "Potion": {
-            "subtypes": ["Vial", "Flask", "Elixir", "Draught", "Philter", "Brew", "Tonic", "Oil"],
-            "nameTemplates": ["{subtype} of {effectWord}"],
-            "materials": ["a crystal vial", "a smoked glass flask", "a clay amphora sealed with wax", "a polished horn philter", "a faceted glass bottle", "a ceramic pot with a living vine as a cork", "a flask of swirling, captured smoke", "a metallic canteen that is cool to the touch"],
-            "visuals": ["swirls with iridescent colors when shaken", "bubbles gently without heat", "glows with a soft internal light", "is unnaturally cold to the touch", "smells of forgotten spices and summer rain", "is thick and viscous like liquid metal", "changes color based on the nearest source of magic", "emits a faint, melodic hum", "has a single, perfect flower suspended within it that blooms when opened"],
-            "powers": {
-                "Common": [
-                    { "name": "Hair Color", "description": "Makes the drinker's hair change to a random color for one hour." },
-                    { "name": "Soothed Throats", "description": "Cures minor ailments like a cough or sore throat." },
-                    { "name": "Stomach Soothing", "description": "Soothes an upset stomach or cures minor indigestion." }
-                ],
-                "Uncommon": [
-                    { "name": "Minor Healing", "description": "Restores 2d4+2 hit points." },
-                    { "name": "Water Breathing", "description": "Grants the ability to breathe underwater for 1 hour." },
-                    { "name": "Animal Friendship", "description": "Grants advantage on Charisma (Animal Handling) checks for 1 hour." },
-                    { "name": "Climbing", "description": "Grants the drinker a climbing speed equal to their walking speed for 1 hour." }
-                ],
-                "Rare": [
-                    { "name": "Greater Healing", "description": "Restores 4d4+4 hit points." },
-                    { "name": "Invisibility", "description": "Turns the drinker invisible for 1 hour." },
-                    { "name": "Haste", "description": "Grants the effect of a Haste spell for 1 minute." },
-                    { "name": "Clairvoyance", "description": "Grants the drinker the ability to see and hear a location they are familiar with for 10 minutes." }
-                ],
-                "Very Rare": [
-                    { "name": "Superior Healing", "description": "Restores 8d4+8 hit points." },
-                    { "name": "Giant Strength", "description": "Grants the drinker the strength of a Frost/Stone Giant for 1 hour." },
-                    { "name": "Flying", "description": "Grants the ability to fly for 1 hour." },
-                    { "name": "Mind Reading", "description": "Grants the ability to read the surface thoughts of one creature the drinker can see for 10 minutes." }
-                ],
-                "Legendary": [
-                    { "name": "Supreme Healing", "description": "Restores 10d4+20 hit points." },
-                    { "name": "True Sight", "description": "Grants the drinker true sight for 1 hour." },
-                    { "name": "Panacea", "description": "Cures all diseases, poisons, and curses affecting the drinker." },
-                    { "name": "Longevity", "description": "Reduces the drinker's age by 1d6+6 years, to a minimum of 13 years." }
-                ]
-            }
-        },
-        "Ring": {
-            "subtypes": ["Ring", "Band", "Signet", "Loop"],
-            "nameTemplates": ["{subtype} of {effectWord}"],
-            "materials": ["flawless silver", "gleaming gold", "carved jade", "polished obsidian", "interwoven metals", "a single, perfect crystal", "a loop of solidified smoke", "carved from a siren's tooth", "a braid of metallic, unearthly vines"],
-            "visuals": ["is inscribed with tiny, glowing runes", "feels warm to the touch", "changes color based on the wearer's mood", "is a simple, unadorned band that seems to absorb light", "features a gemstone that seems to hold a tiny star", "the gemstone's facet shows a shifting, miniature landscape", "it is always cool to the touch, even in fire", "it is invisible to all but the wearer"],
-            "powers": {
-                "Common": [
-                    { "name": "Illumination", "description": "The ring can be made to glow with a faint light on command." },
-                    { "name": "Warmth", "description": "The ring always feels pleasantly warm, protecting the wearer's hand from cold." },
-                    { "name": "Flavor", "description": "The wearer can make any food or drink they touch taste like their favorite meal." }
-                ],
-                "Uncommon": [
-                    { "name": "Minor Spellcasting", "description": "Grants the ability to cast a cantrip (e.g., Mage Hand) at will." },
-                    { "name": "Animal Influence", "description": "Allows the wearer to speak with small animals." },
-                    { "name": "Water Walking", "description": "Allows the wearer to walk on the surface of any liquid as if it were solid ground." }
-                ],
-                "Rare": [
-                    { "name": "Spell Storing", "description": "Stores one spell of up to 3rd level, cast into it by the wearer. It can be cast from the ring later." },
-                    { "name": "Mind Shielding", "description": "Grants resistance to psychic damage and immunity to magical scrying." },
-                    { "name": "Feather Falling", "description": "The wearer is constantly under the effect of the Feather Fall spell." }
-                ],
-                "Very Rare": [
-                    { "name": "Invisibility", "description": "Allows the wearer to become invisible at will by turning the ring on their finger." },
-                    { "name": "Regeneration", "description": "The wearer regenerates 1 hit point every minute." },
-                    { "name": "Telekinesis", "description": "Grants the wearer the ability to cast Telekinesis once per day." }
-                ],
-                "Legendary": [
-                    { "name": "Three Wishes", "description": "This ring holds up to 3 wishes. Once all wishes are used, it becomes a non-magical item." },
-                    { "name": "Elemental Command", "description": "Grants the wearer control over a specific element (e.g., fire, water), allowing them to cast powerful elemental spells." },
-                    { "name": "Planar Jaunt", "description": "Allows the wearer to cast Plane Shift once per day." }
-                ]
-            }
-        },
-        "Wand": {
-            "subtypes": ["Wand", "Scepter", "Baton", "Sprig"],
-            "nameTemplates": ["{subtype} of {effectWord}"],
-            "materials": ["twisted rowan wood", "a single, large crystal", "polished dragonbone", "carved ivory", "ebonwood tipped with silver", "a shard of obsidian from the heart of a volcano", "a branch from the first tree", "a core of solidified lightning"],
-            "visuals": ["crackles with faint sparks", "is warm to the touch", "is carved with swirling patterns that seem to move", "has a gemstone at its tip that pulses with light", "hums with a low, magical energy", "it leaves a faint trail of rainbow motes in the air", "it is covered in barnacles that whisper secrets of the deep", "it feels strangely weightless"],
-            "powers": {
-                "Common": [
-                    { "name": "Harmless Sparks", "description": "Can create a shower of harmless, colorful sparks on command." },
-                    { "name": "Tidying", "description": "Can be used to magically light or extinguish a candle, or neatly stack a pile of papers." },
-                    { "name": "Mending", "description": "Can be used to cast the Mending cantrip." }
-                ],
-                "Uncommon": [
-                    { "name": "Magic Missiles", "description": "Has 3 charges, regains 1d3 daily. Can cast Magic Missile (1st level) for 1 charge." },
-                    { "name": "Magic Detection", "description": "Can cast Detect Magic at will." },
-                    { "name": "Web", "description": "Has 3 charges, regains 1d3 daily. Can cast Web (2nd level) for 2 charges." }
-                ],
-                "Rare": [
-                    { "name": "Fireballs", "description": "Has 7 charges, regains 1d6+1 daily. Can cast Fireball (3rd level) for 3 charges, or Burning Hands (1st level) for 1 charge." },
-                    { "name": "Lightning Bolts", "description": "Has 7 charges, regains 1d6+1 daily. Can cast Lightning Bolt (3rd level) for 3 charges." },
-                    { "name": "Fear", "description": "Has 7 charges, regains 1d6+1 daily. Can cast Fear (3rd level) for 3 charges." }
-                ],
-                "Very Rare": [
-                    { "name": "Polymorph", "description": "Has 7 charges, regains 1d6+1 daily. Can cast Polymorph (4th level) for 4 charges." },
-                    { "name": "Paralysis", "description": "Has 7 charges, regains 1d6+1 daily. Can cast Hold Monster (5th level) for 5 charges." },
-                    { "name": "Enemy Detection", "description": "This wand has 7 charges. While holding it, you can expend 1 charge as an action to detect the distance and direction to the nearest creature hostile to you within 1 mile." }
-                ],
-                "Legendary": [
-                    { "name": "The War Mage", "description": "Has 20 charges, regains 2d8+4 daily. Contains a variety of powerful evocation spells up to 7th level. Grants +2 to spell attack rolls." },
-                    { "name": "Wonder", "description": "Roll on a random effects table each time this wand is used, with unpredictable and chaotic results." },
-                    { "name": "Binding", "description": "This wand has 7 charges. Can cast Hold Monster (5 charges) or Dominate Person (5 charges). Regains 1d6+1 daily." }
-                ]
-            }
-        },
-        "Staff": {
-            "subtypes": ["Staff", "Quarterstaff", "Greatstaff", "Crosier", "Walking Stick"],
-            "nameTemplates": ["Staff of {effectWord}"],
-            "materials": ["gnarled oak", "ironwood bound in cold iron", "twisted crystal", "petrified weirwood", "a dragon's spinal column", "a length of petrified cloud", "a staff of living, twisted wood", "a pillar of pure, solid ice that does not melt"],
-            "visuals": ["has a crystal at its tip that glows with inner light", "has runes carved along its length that shift and move", "is constantly wreathed in a faint mist", "sprouts small leaves in the spring", "whispers faintly when held", "the top is carved into the shape of a grasping claw", "it is surrounded by orbiting motes of light", "it makes no sound when it strikes the ground"],
-            "powers": {
-                "Rare": [
-                    { "name": "Healing", "description": "Has 10 charges, regains 1d6+4 daily. Can cast Cure Wounds, Lesser Restoration, and other healing spells." },
-                    { "name": "the Woodlands", "description": "Has 10 charges, regains 1d6+4 daily. Can cast various nature-themed spells like Barkskin, Speak with Animals, and Grasping Vine." },
-                    { "name": "Charming", "description": "Has 10 charges, regains 1d6+4 daily. Can cast Charm Person, Command, and Suggestion." }
-                ],
-                "Very Rare": [
-                    { "name": "Power", "description": "Has 20 charges, regains 2d8+2 daily. A powerful tool for any wizard, it can cast spells like Fireball, Lightning Bolt, and Wall of Force. It can also be used to absorb spells." },
-                    { "name": "the Magi", "description": "Has 50 charges, regains 4d6+2 daily. Contains a wide array of powerful spells and grants a +2 bonus to spell attack rolls. One of the most coveted items for an arcane caster." },
-                    { "name": "Frost", "description": "Has 10 charges, regains 1d6+4 daily. Can cast spells like Ice Storm, Cone of Cold, and Wall of Ice. Grants resistance to cold damage." }
-                ],
-                "Legendary": [
-                    { "name": "the Forgotten One", "description": "This staff is a sentient artifact with its own personality and goals. It grants its wielder immense power over a school of magic (e.g., necromancy, illusion) but may try to influence their actions." },
-                    { "name": "World-Forgetting", "description": "Has 10 charges, regains 1d8+2 daily. Once per day, the wielder can expend 10 charges to cast a spell that erases a specific event from the memory of everyone in a one-mile radius." },
-                    { "name": "Striking", "description": "Functions as a +3 magical quarterstaff. You can expend charges to deal extra force damage on a hit." }
-                ]
-            }
-        },
-        "Rod": {
-            "subtypes": ["Rod", "Scepter", "Baton"],
-            "nameTemplates": ["Rod of {effectWord}"],
-            "materials": ["unbreakable adamantine", "flawless silver", "gleaming obsidian", "celestial bronze", "a bar of polished, solidified sound", "a rod of pure, unblemished gold", "a petrified serpent"],
-            "visuals": ["is topped with a symbol of rulership", "is perfectly smooth and cold to the touch", "absorbs all light, creating a small area of shadow around it", "pulses with a faint, rhythmic light", "it is strangely flexible, bending without breaking", "it glows with a soft, silver light in the presence of lies", "it is covered in geometric patterns that shift and rearrange"],
-            "powers": {
-                "Rare": [
-                    { "name": "Alertness", "description": "While holding this rod, you have advantage on initiative rolls and Perception checks, and you cannot be surprised." },
-                    { "name": "The Pact Keeper", "description": "This rod has 3 charges, regaining 1d3 daily. You can use it to cast spells like Command or Suggestion. It grants advantage on checks to enforce a contract or oath." },
-                    { "name": "Immovability", "description": "You can use an action to plant this rod in the ground, rendering it immovable by anything less than a god." }
-                ],
-                "Very Rare": [
-                    { "name": "Absorption", "description": "Can absorb spells that target only you. It can store up to 50 levels of spell energy and use that energy to cast spells you know." },
-                    { "name": "Rulership", "description": "You can use an action to present the rod and command obedience from creatures that can see or hear you. Those who fail a saving throw are charmed by you for 8 hours." },
-                    { "name": "Security", "description": "Can be used to cast Arcane Lock, Alarm, and can detect traps and secret doors." }
-                ],
-                "Legendary": [
-                    { "name": "Resurrection", "description": "This rod has 5 charges. You can expend a charge to cast the Resurrection spell. It regains one charge at dawn." },
-                    { "name": "Lordly Might", "description": "This rod has several powerful abilities: it functions as a +3 mace, can paralyze foes, drain life, and cast powerful divine spells." },
-                    { "name": "Cancellation", "description": "As a reaction, you can point this rod at a magical effect to cancel it, as if by Dispel Magic cast at 9th level. It has 3 charges, regaining one at dawn." }
-                ]
-            }
-        },
-        "Wondrous Item": {
-            "subtypes": ["Amulet", "Boots", "Cloak", "Gloves", "Figurine", "Orb", "Tome", "Bag", "Brooch", "Lens", "Mask", "Incense", "Ioun Stone"],
-            "nameTemplates": ["{subtype} of {effectWord}"],
-            "materials": ["enchanted leather", "spun starlight", "carved ivory", "gleaming silver", "a dragon's tooth", "a perfect crystal sphere", "spun moonlight", "a piece of a fallen star", "a tear of a god, solidified"],
-            "visuals": ["is embroidered with shimmering thread", "is lighter than it should be", "is covered in strange, unreadable script", "seems to shift and change when you're not looking directly at it", "is always a comfortable temperature", "it seems to be out of focus to everyone but the owner", "it chimes softly in the presence of magic", "it is covered in a patina of age that cannot be cleaned"],
-            "powers": {
-                "Common": [
-                    { "name": "Dramatic Billowing", "description": "A cloak that billows dramatically on command." },
-                    { "name": "Cleanliness", "description": "Boots that magically clean themselves of any mud or dirt." },
-                    { "name": "Unbreakable", "description": "An Unbreakable Arrow, which cannot be broken by non-magical means." }
-                ],
-                "Uncommon": [
-                    { "name": "Holding", "description": "A Bag of Holding, which can contain a massive amount of items in an extradimensional space." },
-                    { "name": "Elvenkind", "description": "Boots of Elvenkind, which make the wearer's steps completely silent." },
-                    { "name": "Comprehension", "description": "A Helm of Comprehending Languages, allowing the wearer to understand any spoken language." }
-                ],
-                "Rare": [
-                    { "name": "Scrying", "description": "A Crystal Ball that can be used to see and hear events happening in other places." },
-                    { "name": "Wondrous Power", "description": "A Figurine of Wondrous Power (e.g., Silver Raven, Serpentine Owl) that can transform into a living creature for a set amount of time." },
-                    { "name": "Displacement", "description": "A Cloak of Displacement, which projects an illusion of the wearer, making them harder to hit." }
-                ],
-                "Very Rare": [
-                    { "name": "Flying", "description": "A Carpet of Flying that can carry several people through the air." },
-                    { "name": "Planar Travel", "description": "An Amulet of the Planes that allows the wearer to travel to other dimensions." },
-                    { "name": "Scintillating", "description": "A Robe of Scintillating Colors, which can be used to stun creatures that can see the wearer." }
-                ],
-                "Legendary": [
-                    { "name": "Annihilation", "description": "A Sphere of Annihilation, a black hole that obliterates anything it touches." },
-                    { "name": "Many Things", "description": "A Deck of Many Things, a set of cards with powerful and unpredictable magical effects, from granting wishes to summoning demons." },
-                    { "name": "Universal Solvent", "description": "A vial containing a fluid that can dissolve any adhesive or bond." }
-                ]
-            }
-        }
+  "types": ["Weapon", "Armor", "Potion", "Ring", "Wand", "Staff", "Rod", "Wondrous Item"],
+  "powerLevels": ["Common", "Uncommon", "Rare", "Very Rare", "Legendary"],
+  "creators": [
+    "a reclusive archmage", "an ancient dragon", "a coven of hags", "a dwarven runesmith", "an elven artisan of starlight", "a mad god", "a celestial being of pure light", "a fiendish pact-maker", "a forgotten civilization", "a gnome of impossible ingenuity", "a spirit of the earth", "a master of illusions", "a blind seer who dreamt it into existence", "a collective of dream-weavers", "a primordial earth elemental", "a forgotten demon prince", "a guild of shadow-smiths", "a heartbroken demigod", "an artificer obsessed with perfection", "a child with an impossible wish", "a society of deep-sea folk"
+  ],
+  "histories": [
+    "forged in the heart of a dying star", "stolen from the tomb of a forgotten king", "a gift from a fey monarch for a great service", "used to slay a terrible beast that terrorized a kingdom", "the last creation of a master artisan before they vanished", "lost in a legendary battle that shaped the world", "a ceremonial piece from a lost empire", "discovered in the hoard of a slain dragon", "a tool used to build a wonder of the world", "an heirloom passed down through a line of heroes", "once wielded by a notorious villain", "found at the site of a celestial convergence", "a failed attempt to contain a cosmic entity", "a prize from a deadly, otherworldly game", "worn by the first monarch of a fallen kingdom", "crafted as a peace offering between warring gods", "the key to a sealed, subterranean vault", "a symbol of a forgotten rebellion", "it fell from the sky in a shower of colored light", "it was discovered embedded in an ancient, petrified tree", "it was the dying gift of a powerful nature spirit"
+  ],
+  "curses": [
+    "Slowly corrupts the wielder's personality, making them more greedy/paranoid/aggressive.", "Attracts unwanted attention from a specific type of monster (e.g., undead, fiends).", "Cannot be willingly discarded or unequipped by the user.", "Whispers tempting but terrible secrets to its owner in their dreams.", "Requires a minor, daily sacrifice (a drop of blood, a cherished memory) to function.", "Has a mischievous and inconvenient personality, activating at the worst times.", "Functions erratically, with a chance to fail or produce an unintended effect in moments of need.", "Drains a small amount of the user's life force with each use.", "Makes the user intensely protective of the item, bordering on obsession.", "Causes the user to be distrusted by animals.", "Slowly transforms the user's appearance to resemble the item's creator.", "The user slowly loses their reflection, eventually becoming invisible to mirrors.", "Emits a high-pitched sound only vermin can hear, attracting rats and insects.", "All food and drink tastes like ash to the user.", "The user cannot tell a deliberate lie while holding/wearing the item.", "Causes non-magical plants to wither at the user's touch.", "The user's shadow occasionally moves on its own, mimicking their darkest impulses.", "The item slowly and subtly changes color, a sign of its growing influence.", "The user becomes intensely cold, their breath fogging even in summer.", "The item must be bathed in fresh blood once a week or its powers will fade."
+  ],
+  "itemData": {
+    "Weapon": {
+      "subtypes": ["Sword", "Axe", "Dagger", "Bow", "Mace", "Spear", "Hammer", "Glaive", "Scythe", "Crossbow"],
+      "nameTemplates": ["The {subtype} of {effectWord}", "{effectWord} {subtype}", "{creatorName}'s {subtype}"],
+      "creatorNames": ["Gorthaur", "Elara", "Dunewright", "Volund", "Seraphine Emberglass", "Master Korr the Tempered", "Hadrik of the Four Forges", "Alira Starbound", "Thorn Blackiron", "Vesha of the Singing Anvil", "Elder Brannoc", "Kael the Ash-forger", "Ysrielle Moonvane", "Rurik Stonehand", "Mira of the Hundred Hammers", "Jorek Emberbrand", "Nalara Brightsteel", "The Orphan-Smith", "Ishka Coilheart", "Tamsin the Runecaller"],
+      "materials": ["gleaming obsidian", "polished dragonbone", "unearthly star-metal", "ancient petrified wood", "flawless silver", "condensed shadow-stuff", "unbreakable adamantine", "feather-light mithral", "fossilized bone", "crystallized moonlight", "woven nightmare-stuff", "unmelting ice", "smoked meteoric iron", "storm-forged steel", "sunglass from a volcano’s lip", "sea-cured coralbone", "thorned ironwood", "aurichalcum alloy", "whalespine ivory", "amber-trapped lightning"],
+      "visuals": ["glows faintly in moonlight", "hums with a low, palpable energy", "is covered with intricate, glowing runes", "feels warm to the touch", "is surprisingly lightweight", "seems to absorb light around it", "leaves a faint trail of sparks when moved", "sheds a black, light-dampening aura", "is etched with the names of its fallen wielders", "is utterly silent, making no sound when it strikes", "smells faintly of ozone after a strike", "flickers with phantom flames when drawn", "leaves a shadow one heartbeat behind", "drips illusory blood that vanishes on touch", "its edge reflects distant stars", "the grip tightens subtly to your hand", "a hair-thin mist coils around the blade", "tiny runes crawl and settle like ants", "its reflection lags in mirrors", "sings softly when pointed at an oathbreaker"],
+      "powers": {
+        "Common": [
+          { "name": "Illumination", "description": "Sheds a dim light in a 10-foot radius on command." },
+          { "name": "Unstaining", "description": "Never needs sharpening, cleaning, or oiling." },
+          { "name": "Guidance", "description": "Glows faintly when pointed towards magnetic north." },
+          { "name": "Sure Grip", "description": "You cannot be disarmed by effects that would forcibly open your hand." },
+          { "name": "Balance", "description": "Grants advantage on the first Acrobatics check you make each day." },
+          { "name": "True Edge", "description": "Once per short rest, you can reroll a damage die and use the new result." },
+          { "name": "Rallying Cry", "description": "When drawn, allies within 10 feet gain 1 temporary hit point." },
+          { "name": "Spark-Guard", "description": "When you parry, harmless sparks fly, imposing disadvantage on the next attack against you before your next turn." },
+          { "name": "Grave Quiet", "description": "Attacks with this weapon make no sound." },
+          { "name": "Tally Marks", "description": "Notches appear along the hilt, counting creatures you’ve defeated." },
+          { "name": "Lantern-Break", "description": "Once per long rest, the blade flares, shedding bright light 20 ft. for 1 minute." },
+          { "name": "Hunter’s Whiff", "description": "Faint ozone scent warns you of hidden tripwires or mundane traps within 10 ft." },
+          { "name": "River Stroke", "description": "You have advantage on checks to avoid being disarmed by water currents or strong winds." },
+          { "name": "Grip of the Foundry", "description": "You can safely handle heated metal up to the heat of a forge while holding the weapon." },
+          { "name": "Echoing Name", "description": "Speaking the weapon’s name echoes faintly toward the nearest hostile creature." },
+          { "name": "Minor Bane: Vermin", "description": "Deals +1 damage to Tiny beasts and swarms." },
+          { "name": "Campfire Edge", "description": "Once per day, touch the blade to ignite a small campfire." },
+          { "name": "Pathfinder’s Point", "description": "The blade points toward the nearest road or trail on command." },
+          { "name": "Low Ward", "description": "You gain +1 to initiative rolls while the weapon is unsheathed." },
+          { "name": "Traveler’s Tune", "description": "When tapped twice, emits a quiet tone audible to allies within 60 ft." }
+        ],
+        "Uncommon": [
+          { "name": "Scorching", "description": "Deals an extra 1d4 fire damage on a hit." },
+          { "name": "Icing", "description": "Deals an extra 1d4 cold damage on a hit." },
+          { "name": "Shocking", "description": "Deals an extra 1d4 lightning damage on a hit." },
+          { "name": "Venomous", "description": "Deals an extra 1d4 poison damage on a hit." },
+          { "name": "Steadfast Courage", "description": "Grants the wielder advantage on saves against being frightened." },
+          { "name": "Minor Magic", "description": "Can be used to cast a cantrip (e.g., Light, Message) once per day." },
+          { "name": "Piercing Clarity", "description": "You ignore half cover when making attacks with this weapon." },
+          { "name": "Grasping Return", "description": "Once per short rest, the weapon leaps to your hand from up to 20 ft." },
+          { "name": "Ashen Wound", "description": "On a hit, target’s speed is reduced by 5 ft. until the start of your next turn." },
+          { "name": "Guardian’s Beat", "description": "When you take the Dodge action while wielding this, you gain +1 AC." },
+          { "name": "Echo Strike", "description": "Your first missed attack each short rest deals half damage instead." },
+          { "name": "Sparking Arc", "description": "Once per day, the weapon emits a harmless flash that can dazzle nearby foes (Con save or disadvantage on next attack)." },
+          { "name": "Steelsong", "description": "The weapon hums faintly; allies within 5 ft. gain +1 to saving throws vs. fear." },
+          { "name": "Feathered Swing", "description": "You may reduce falling damage by 1d6 while holding the weapon." },
+          { "name": "Ghost Touch", "description": "Can strike incorporeal creatures as though they were solid." }
+        ],
+        "Rare": [
+          { "name": "Flame Tongue", "description": "Deals an extra 2d6 fire damage on a hit." },
+          { "name": "Frost Brand", "description": "Deals an extra 1d6 cold damage on a hit." },
+          { "name": "Spell Stealing", "description": "Has 3 charges, regains 1d3 daily. On hit, expend a charge to steal a 1st or 2nd level spell." },
+          { "name": "Resistance", "description": "Grants resistance to one type of damage (e.g. fire, psychic, etc.)." },
+          { "name": "Disarming", "description": "On a critical hit, the target must make a Strength saving throw or drop one item it is holding." },
+          { "name": "Wounding Cut", "description": "Critical hits cause an extra 1d4 ongoing bleed (Con save ends). " },
+          { "name": "Phase Edge", "description": "Once per short rest, swing passes through walls up to 1 ft. thick." },
+          { "name": "Earthshaker", "description": "On a critical hit, creatures within 5 ft. must succeed on a Dex save or be knocked prone." },
+          { "name": "Mirror Bite", "description": "Once per day, the weapon can copy the magical damage type of the last spell that struck you." },
+          { "name": "Rune-Bound", "description": "Three glowing runes can be invoked per long rest, granting +2 to attack rolls for 1 minute." },
+          { "name": "Silencer", "description": "On hit, the target cannot cast spells with verbal components until the end of its next turn." },
+          { "name": "Leaping Strike", "description": "You can jump an extra 10 ft. when making a melee attack with this weapon." },
+          { "name": "Spiritbound", "description": "Once per day, summon a spectral warrior to fight for 1 minute." },
+          { "name": "Sunderer", "description": "Weapon can damage nonmagical objects as though adamantine." },
+          { "name": "Blood Oath", "description": "If you drop to 0 hit points while wielding, you may make one final attack before falling unconscious." }
+        ],
+        "Very Rare": [
+          { "name": "Vorpal", "description": "This weapon scores a critical hit on a roll of 19 or 20. On a critical hit against a creature with a head, it decapitates them." },
+          { "name": "Dancing", "description": "Bonus action: toss this weapon into the air, it hovers and attacks on its own for 1 minute." },
+          { "name": "Spell Storing", "description": "Stores one spell of up to 4th level, which can be cast from the weapon." },
+          { "name": "Flying", "description": "Grants the wielder the ability to fly for 10 minutes per day." },
+          { "name": "Returning", "description": "If thrown, this weapon returns to the wielder's hand at the end of the turn." },
+          { "name": "Stormcaller", "description": "On a critical hit, thunder booms; creatures within 5 ft. must save or be deafened." },
+          { "name": "Severing", "description": "Critical hits lop off non-vital limbs (DM adjudication)." },
+          { "name": "Firestorm", "description": "Weapon can cast Fireball (3rd level) once per day." },
+          { "name": "Shadowmeld", "description": "Wielder can merge with shadows, gaining advantage on Stealth checks for 1 minute once per day." },
+          { "name": "Bloodthirsty", "description": "Critical hits heal you for damage dealt up to 10 HP once per short rest." },
+          { "name": "Blinkstrike", "description": "Once per day, teleport up to 30 ft. as part of an attack." },
+          { "name": "Chainbreaker", "description": "Deals double damage to constructs and objects." },
+          { "name": "Radiant Nova", "description": "Once per day, release 20-ft burst of radiant energy (3d8 damage, Con save halves)." },
+          { "name": "Windcutter", "description": "Attacks extend reach by 5 ft. while weapon is drawn." },
+          { "name": "Whisperfang", "description": "Each critical hit forces Wisdom save or silence target for 1 round." }
+        ],
+        "Legendary": [
+          { "name": "Holy Avenger", "description": "This weapon has a +3 bonus to attack and damage rolls. While you hold it, you are immune to being charmed or frightened. It deals an extra 2d10 radiant damage to fiends and undead." },
+          { "name": "Soul Devouring", "description": "When you slay a creature with this weapon, you trap its soul. You can expend the soul to regain hit points or fuel a powerful spell." },
+          { "name": "Dragonslaying", "description": "This weapon deals an extra 3d6 damage to dragons." },
+          { "name": "Life-Stealing", "description": "When you score a critical hit, you regain hit points equal to half the damage dealt." },
+          { "name": "Worldbreaker", "description": "Once per day, you can cause an earthquake (as per spell) centered on your strike." },
+          { "name": "Godslayer", "description": "Forged to harm divine beings; deals an extra 4d10 radiant or necrotic damage against celestials." },
+          { "name": "Eternal Flame", "description": "Weapon burns with inextinguishable fire; sheds bright light 40 ft., deals +3d6 fire." },
+          { "name": "Frozen Eternity", "description": "Critical hits encase target in ice until the end of its next turn." },
+          { "name": "Stormbringer", "description": "Calls down a lightning bolt (8d6) once per day when you strike." },
+          { "name": "Doomblade", "description": "Weapon is sentient, feeds on fear; creatures hit must make a Wisdom save or be frightened." },
+          { "name": "Bloodsong", "description": "Each slain creature strengthens you; gain +1 to attack/damage rolls until the end of combat (max +5)." },
+          { "name": "Time-Cleaver", "description": "Once per long rest, strike to cast Time Stop for 1d4+1 rounds." },
+          { "name": "Starforged", "description": "Weapon glows with starlight; once per day cast Meteor Swarm centered 1 mile above." },
+          { "name": "Oblivion Edge", "description": "Critical hits erase memories; victim forgets last 24 hours (Int save negates)." },
+          { "name": "Chains of Fate", "description": "On hit, target must succeed on a Cha save or be bound by spectral chains for 1 minute." }
+        ]
+      }
+    },
+    "Armor": {
+      "subtypes": ["Shield", "Helmet", "Breastplate", "Gauntlets", "Full Plate", "Greaves", "Bracers"],
+      "nameTemplates": ["{subtype} of {effectWord}", "The {effectWord} Bulwark", "{creatorName}'s Aegis"],
+      "creatorNames": ["Durin", "Kaelen", "Anya", "Bor", "Lady Veska the Vigilant", "Hargrund Oathbinder", "Sir Elidran of the White Wall", "Matra Coilplate", "Jannis the Riveter", "Orel of Seven Layers", "Dame Ysabet", "Grix Copperknuckle", "Rhaen Silverkeep", "The Unnamed Armorer", "Tordek Shieldfather", "Avela Steelweave", "Morr the Quiet Hammer", "Fenrik Frostguard", "Illyra Crestwright", "Borin Ironsigil"],
+      "materials": ["gleaming dragonscale", "polished star-metal", "unbreakable adamantine", "feather-light mithral", "enchanted elven steel", "stone from a sacred mountain", "petrified bark from an ancient tree", "hardened and polished coral", "woven spider silk, stronger than steel", "meteorite iron", "wyrmhide cured in moonlight", "layered hornplate", "silvered basalt tiles", "auric chain links", "crystal-reinforced leather", "storm-tempered bronze", "mirror-bright tinsteel", "embroidered runethread", "obsidian flake-lamellar", "deep-sea shellscale"],
+      "visuals": ["is always clean and polished", "is etched with protective wards", "glows faintly when danger is near", "changes color to match its surroundings", "is adorned with the crest of a forgotten order", "is covered in a fine layer of frost that never melts", "makes the wearer's footsteps nearly silent", "appears to be made of liquid shadow", "casts no reflection in dim light", "sheds grit like sandfall when struck", "its seams breathe like sleeping lungs", "runes bead with dew at dawn", "feels weightless when donned, heavy when removed", "edges shimmer as if wet", "leaves no imprint in fresh snow", "emits a single chime when a lie is spoken nearby"],
+      "powers": {
+        "Common": [
+          { "name": "Mending", "description": "The armor magically repairs any damage it sustains overnight." },
+          { "name": "Quick Donning", "description": "You can don or doff this armor as an action." },
+          { "name": "Comfort", "description": "The armor is always a comfortable temperature, regardless of the climate." },
+          { "name": "Quiet Buckles", "description": "Straps never squeak or jingle." },
+          { "name": "Drystep", "description": "Repels water, keeping the wearer dry." },
+          { "name": "Sentry Gleam", "description": "Once per long rest, armor glows faintly in a 10-ft radius for 10 minutes." },
+          { "name": "Easy Breathe", "description": "Filters smoke and dust, granting advantage on saves vs. mundane inhalation hazards." },
+          { "name": "Warm Lining", "description": "Wearer is always comfortable in cold, nonmagical weather." },
+          { "name": "Cooling Weave", "description": "Wearer is always comfortable in hot, nonmagical weather." },
+          { "name": "Skirmisher", "description": "Gain +5 ft. speed on the first round of combat." }
+        ],
+        "Uncommon": [
+          { "name": "Physical Resistance", "description": "Grants resistance to one type of non-magical damage (bludgeoning, piercing, or slashing)." },
+          { "name": "Poison Warding", "description": "Grants advantage on saves against poison." },
+          { "name": "Nimbleness", "description": "The wearer does not have disadvantage on Dexterity (Stealth) checks from this armor." },
+          { "name": "Echo Dampening", "description": "Disadvantage on Perception checks to hear wearer." },
+          { "name": "Tangle Release", "description": "Advantage on checks to escape mundane restraints." },
+          { "name": "Second Wind", "description": "Once per long rest, regain 1d8+2 hit points as a bonus action." },
+          { "name": "Guardian’s Grip", "description": "You can brace and grant half cover to a creature standing directly behind you." },
+          { "name": "Ember Shield", "description": "Minor fire resistance: reduce fire damage by 1 point each instance." },
+          { "name": "Frost Shield", "description": "Minor cold resistance: reduce cold damage by 1 point each instance." },
+          { "name": "Gustbreaker", "description": "Advantage on saves against being pushed or knocked prone by wind." },
+          { "name": "Barkskin Memory", "description": "Your AC cannot be less than 13 while wearing, even if armor type is lower." },
+          { "name": "Silent Step", "description": "Once per short rest, negate disadvantage from Stealth for 10 minutes." },
+          { "name": "Spirit Ward", "description": "Gain advantage on saves vs. possession effects." },
+          { "name": "Iron Resolve", "description": "Once per day, roll an attack that hits against you with disadvantage." },
+          { "name": "Stone Weight", "description": "When standing still, you cannot be forcibly moved more than 5 ft." }
+        ],
+        "Rare": [
+          { "name": "Elemental Resistance", "description": "Grants resistance to one type of elemental damage (fire, cold, lightning, etc.)." },
+          { "name": "Fortitude", "description": "3 charges, spend one for 2d6 temp HP. Regains 1d3 daily." },
+          { "name": "Feather Fall", "description": "Slows falls as per Feather Fall spell." },
+          { "name": "Bulwark Stance", "description": "Reaction: reduce damage taken by 1d8 once per short rest." },
+          { "name": "Reflective", "description": "Once per long rest, reflect a ray or line spell back at caster (Dex save to negate)." },
+          { "name": "Shadow Cloak", "description": "Gain advantage on Stealth checks in dim light or darkness." },
+          { "name": "Battle Cry", "description": "Once per long rest, shout grants allies within 10 ft. advantage on their next attack roll." },
+          { "name": "Ward of Purity", "description": "Immune to mundane diseases while worn." },
+          { "name": "Shock Absorb", "description": "First time struck each combat, reduce damage by 3." },
+          { "name": "Rune Guard", "description": "Can cast Shield spell once per day." },
+          { "name": "Stalwart", "description": "Advantage on Strength saves to avoid being knocked prone." },
+          { "name": "Moonlit Aegis", "description": "Glows with bright light 10 ft. in moonlight; advantage on Wis saves vs. fear at night." },
+          { "name": "Soundbreaker", "description": "You and allies within 5 ft. have advantage on saves vs. thunder damage." },
+          { "name": "Blessed Crest", "description": "Once per day, gain +2 AC until the start of your next turn as a reaction." },
+          { "name": "Steel Shroud", "description": "Attacks that miss by 1 instead deal no damage at all, once per short rest." }
+        ],
+        "Very Rare": [
+          { "name": "Etherealness", "description": "The wearer can become ethereal for 1 minute, once per day." },
+          { "name": "Condition Immunity", "description": "Grants immunity to a specific condition (frightened, charmed, etc.)." },
+          { "name": "Arrow Catching", "description": "Grants +1 AC vs. ranged attacks; reaction to deflect a missile." },
+          { "name": "Mirror Ward", "description": "Once per day, impose disadvantage on a spell attack targeting you." },
+          { "name": "Elemental Absorption", "description": "Absorb elemental damage once per day, regaining HP equal to damage taken." },
+          { "name": "Phase Armor", "description": "Once per day, pass through solid wall up to 5 ft. thick." },
+          { "name": "Skyguard", "description": "Grants feather fall constantly and advantage vs. flying creatures’ attacks." },
+          { "name": "Dragon Ward", "description": "Resistance to dragon breath of one chosen type." },
+          { "name": "Stoneform", "description": "Bonus action: turn skin to stone, +2 AC for 1 minute (1/day)." },
+          { "name": "Soul Barrier", "description": "When reduced to 0 HP, remain at 1 HP once per long rest." },
+          { "name": "Hero’s Rally", "description": "Allies within 10 ft. gain 5 temp HP when you roll initiative." },
+          { "name": "Blazing Aegis", "description": "Once per long rest, cloak in fire aura, 2d6 fire dmg to adjacent attackers for 1 minute." },
+          { "name": "Frozen Bastion", "description": "Grants immunity to cold damage for 10 minutes once per day." },
+          { "name": "Lightning Reflex", "description": "Advantage on all Dex saves for 1 minute, once per day." },
+          { "name": "Guardian’s Stand", "description": "You can’t be pushed, pulled, or knocked prone while conscious." }
+        ],
+        "Legendary": [
+          { "name": "Invulnerability", "description": "Resistance to all non-magical damage and +2 AC." },
+          { "name": "Regeneration", "description": "Regain 1d6 hit points at start of turn if you have at least 1 HP." },
+          { "name": "Spellguard", "description": "Advantage on saving throws against spells and magical effects." },
+          { "name": "Celestial Aegis", "description": "Once per long rest, wings of radiant light grant flight for 1 hour." },
+          { "name": "Infernal Carapace", "description": "Immunity to fire and resistance to necrotic; attackers take 1d6 fire damage." },
+          { "name": "Eternal Watch", "description": "Armor never allows wearer to sleep through danger; cannot be surprised." },
+          { "name": "Godward Plate", "description": "Grants immunity to radiant and necrotic damage for 1 minute, once per long rest." },
+          { "name": "Stormplate", "description": "Lightning arcs around you; attackers take 2d6 lightning damage on a hit." },
+          { "name": "Mirror of Eternity", "description": "When reduced to 0 HP, you instead shatter into light and reform with half HP once per week." },
+          { "name": "Titan’s Might", "description": "Wearer gains advantage on all Strength checks/saves and counts as one size larger for carrying capacity." },
+          { "name": "Soulforged", "description": "Armor is sentient; grants +3 AC but constantly whispers its own agenda." },
+          { "name": "Dragonheart", "description": "Absorb energy of slain dragon; once per week, unleash its breath weapon." },
+          { "name": "Starlit Bulwark", "description": "Sheds 30-ft bright light; while lit, allies within 10 ft. gain +1 to saving throws." },
+          { "name": "Phantom Guard", "description": "Armor projects a ghostly copy; once per long rest, it takes damage for you instead." },
+          { "name": "Crownshield", "description": "Wearer is treated as nobility; creatures of lower CR hesitate to attack (Wis save to resist)." }
+        ]
+      }
+    },
+    "Potion": {
+      "subtypes": ["Vial", "Flask", "Elixir", "Draught", "Philter", "Brew", "Tonic", "Oil"],
+      "nameTemplates": ["{subtype} of {effectWord}"],
+      "materials": [
+        "shimmering golden syrup",
+        "thick crimson ichor",
+        "translucent smoke-grey liquid",
+        "sparkling nectar with flecks of gold",
+        "viscous green slime that glows faintly",
+        "thin silver-blue liquid like melted moonlight",
+        "amber-colored draught with tiny motes suspended",
+        "milky opalescent fluid",
+        "oily black essence that clings to glass",
+        "pale pink froth that never settles",
+        "translucent violet jelly",
+        "liquid fire that emits faint sparks",
+        "watery blue draught with floating silver flakes",
+        "syrupy emerald fluid",
+        "hazy misty draught, more vapor than liquid",
+        "gleaming bronze fluid with metallic sheen",
+        "pearly white essence that swirls slowly",
+        "bubbling crimson wine-like potion",
+        "liquid shadow that absorbs nearby light",
+        "glittering rainbow swirl"
+      ],
+      "visuals": [
+        "emits a faint, melodic hum when uncorked",
+        "gives off a cool mist that lingers around the bottle",
+        "shifts in brightness depending on the phase of the moon",
+        "faint runes glow across the surface when near magic",
+        "tiny sparks crackle inside when shaken",
+        "produces a soft chiming sound when moved",
+        "the liquid settles into shapes resembling constellations",
+        "inside, faint silhouettes of creatures swim briefly before vanishing",
+        "drips of light cling to the glass whenever it’s poured",
+        "glows brighter when danger is near",
+        "forms a perfect spiral when at rest",
+        "a soft heartbeat can be heard when held close",
+        "the bottle feels heavier or lighter depending on the drinker’s mood",
+        "small motes orbit lazily above the open container",
+        "casts shifting colored shadows against nearby surfaces",
+        "seems blurred or out of focus unless stared at directly",
+        "the cork leaks faint wisps of harmless vapor",
+        "the liquid briefly freezes into crystal shapes when touched",
+        "the potion hums faintly in harmony with nearby voices",
+        "leaves faint, glowing residue wherever it spills"
+      ],
+      "powers": {
+        "Common": [
+          { "name": "Hair Color", "description": "Makes the drinker's hair change to a random color for one hour." },
+          { "name": "Soothed Throats", "description": "Cures minor ailments like a cough or sore throat." },
+          { "name": "Stomach Soothing", "description": "Soothes an upset stomach or cures minor indigestion." },
+          { "name": "Voice Change", "description": "Alters the drinker’s voice pitch for 1 hour." },
+          { "name": "Glowtongue", "description": "The drinker’s tongue glows like a torch for 10 minutes." },
+          { "name": "Fresh Breath", "description": "Eliminates bad breath and leaves a minty scent for 24 hours." },
+          { "name": "Wakefulness", "description": "Negates the need for sleep for 4 hours (fatigue still accumulates normally)."},
+          { "name": "Tiny Illumination", "description": "Causes the drinker’s eyes to emit dim light for 1 hour." },
+          { "name": "Minor Levitation", "description": "Objects the drinker touches float a few inches for 10 minutes." },
+          { "name": "Sweetened Blood", "description": "Insects avoid the drinker for 1 day." },
+          { "name": "Minor Courage", "description": "Advantage on the next saving throw against being frightened." },
+          { "name": "Dewdrop", "description": "The drinker sweats pure water, hydrating nearby plants." },
+          { "name": "Quickstep", "description": "Gain +5 ft. movement speed for 10 minutes." },
+          { "name": "Feather Voice", "description": "The drinker’s words can be heard clearly up to 300 feet for 10 minutes." },
+          { "name": "Illusory Aroma", "description": "Exudes a harmless, pleasant scent of the drinker’s choice for 1 hour." }
+        ],
+        "Uncommon": [
+          { "name": "Minor Healing", "description": "Restores 2d4+2 hit points." },
+          { "name": "Water Breathing", "description": "Grants the ability to breathe underwater for 1 hour." },
+          { "name": "Animal Friendship", "description": "Advantage on Charisma (Animal Handling) checks for 1 hour." },
+          { "name": "Climbing", "description": "Grants the drinker a climbing speed equal to their walking speed for 1 hour." },
+          { "name": "Darkvision", "description": "Gain 60 ft. darkvision for 1 hour." },
+          { "name": "Jumping", "description": "Triple jump distance for 1 hour." },
+          { "name": "Feather Fall", "description": "The next time you fall, you descend slowly as per the spell." },
+          { "name": "Spider Climb", "description": "Walk on walls and ceilings for 10 minutes." },
+          { "name": "Silent Step", "description": "Your footsteps make no sound for 1 hour." },
+          { "name": "Quick Recovery", "description": "Removes exhaustion by 1 level." },
+          { "name": "Charm Tongue", "description": "Advantage on Persuasion checks for 10 minutes." },
+          { "name": "Gills & Fins", "description": "Hands and feet webbed; swimming speed equals walking speed for 1 hour." },
+          { "name": "Minor Shielding", "description": "Gain +1 AC for 10 minutes." },
+          { "name": "Stone Skin", "description": "Skin hardens slightly, granting 5 temporary hit points." },
+          { "name": "Minor Luck", "description": "Reroll one d20 result within the next hour." }
+        ],
+        "Rare": [
+          { "name": "Greater Healing", "description": "Restores 4d4+4 hit points." },
+          { "name": "Invisibility", "description": "Turns the drinker invisible for 1 hour." },
+          { "name": "Haste", "description": "Grants the effect of a Haste spell for 1 minute." },
+          { "name": "Clairvoyance", "description": "See and hear a known location for 10 minutes." },
+          { "name": "Heroism", "description": "Gain 10 temporary hit points and immunity to fear for 1 hour." },
+          { "name": "Tongues", "description": "Understand all spoken languages for 1 hour." },
+          { "name": "Blindsight", "description": "Gain blindsight out to 30 ft. for 10 minutes." },
+          { "name": "Gas Form", "description": "Turn into harmless mist for 10 minutes." },
+          { "name": "Fire Breath", "description": "Exhale a 15 ft. cone of fire (4d6 damage, Dex save half) three times before effect fades." },
+          { "name": "Night Eye", "description": "Gain darkvision 120 ft. for 8 hours." },
+          { "name": "Minor Regeneration", "description": "Regain 1 hit point every 10 minutes for 1 hour." },
+          { "name": "Luck Draught", "description": "Gain advantage on one attack, check, or save within the next hour." },
+          { "name": "Stoneblood", "description": "Resistance to bludgeoning damage for 1 hour." },
+          { "name": "Silver Tongue", "description": "Advantage on Deception checks for 1 hour." },
+          { "name": "Sounding Voice", "description": "Speak and be heard clearly up to 1 mile away for 10 minutes." }
+        ],
+        "Very Rare": [
+          { "name": "Superior Healing", "description": "Restores 8d4+8 hit points." },
+          { "name": "Giant Strength", "description": "Strength equals a Frost or Stone Giant for 1 hour." },
+          { "name": "Flying", "description": "Gain a flying speed equal to walking speed for 1 hour." },
+          { "name": "Mind Reading", "description": "Read surface thoughts of a creature you can see for 10 minutes." },
+          { "name": "Etherealness", "description": "Shift to the Ethereal Plane for 10 minutes." },
+          { "name": "Stoneskin", "description": "Gain resistance to nonmagical bludgeoning, piercing, and slashing for 1 hour." },
+          { "name": "Sunfire", "description": "Glow with radiant light, dealing 2d6 radiant damage to adjacent undead for 10 minutes." },
+          { "name": "Aquatic Adaptation", "description": "Gain a swim speed of 60 ft. and water breathing for 24 hours." },
+          { "name": "Shadowmeld", "description": "Blend into shadows, gaining invisibility in dim light/darkness for 1 hour." },
+          { "name": "Dragonsbreath", "description": "Exhale a chosen elemental breath weapon three times before effect ends." },
+          { "name": "Elemental Immunity", "description": "Immune to one chosen element (fire, cold, lightning, etc.) for 10 minutes." },
+          { "name": "Unstoppable", "description": "Immune to paralysis and restraint for 1 hour." },
+          { "name": "Phoenix Tear", "description": "If you die within 1 hour, you are automatically revived at 1 hit point." },
+          { "name": "Ghostwalk", "description": "Move through solid objects as if difficult terrain for 10 minutes." },
+          { "name": "Mythic Vitality", "description": "Gain advantage on all saving throws for 1 hour." }
+        ],
+        "Legendary": [
+          { "name": "Supreme Healing", "description": "Restores 10d4+20 hit points." },
+          { "name": "True Sight", "description": "Gain truesight 120 ft. for 1 hour." },
+          { "name": "Panacea", "description": "Cures all diseases, poisons, and curses affecting the drinker." },
+          { "name": "Longevity", "description": "Reduces age by 1d6+6 years, to a minimum of 13 years." },
+          { "name": "Divine Favor", "description": "For 1 hour, you roll with advantage on all attack rolls and saving throws." },
+          { "name": "Immortality (Temporary)", "description": "For 24 hours, you cannot be reduced below 1 hit point." },
+          { "name": "Reincarnation", "description": "If you die within 1 day, you are immediately reincarnated into a new body." },
+          { "name": "Time Dilation", "description": "For 1 minute, you take two turns each round." },
+          { "name": "Apotheosis", "description": "For 10 minutes, you gain a flying speed of 60 ft., resistance to all damage, and emit bright light 30 ft." },
+          { "name": "Elemental Ascendance", "description": "Transform into a chosen elemental for 1 hour." },
+          { "name": "Blood of the Phoenix", "description": "When you die within 24 hours, you are reborn from flame at full HP." },
+          { "name": "Memory Draught", "description": "Drink to perfectly recall any memory or gain knowledge of a forgotten secret." },
+          { "name": "Cosmic Vision", "description": "For 10 minutes, see into the Astral Plane and invisible creatures automatically." },
+          { "name": "Starlight Elixir", "description": "Once, cast Wish without material components. Bottle crumbles after use." },
+          { "name": "Endless Youth", "description": "Stops aging for 1 year." }
+        ]
+      }
+    },
+    "Ring": {
+      "subtypes": ["Ring", "Band", "Signet", "Loop", "Circlet", "Coil"],
+      "nameTemplates": ["{subtype} of {effectWord}"],
+      "materials": [
+        "flawless silver band",
+        "gleaming gold filigree",
+        "carved jade circlet",
+        "polished obsidian loop",
+        "interwoven meteoric metals",
+        "a single, perfect crystal ring",
+        "solidified smoke coil",
+        "carved from a siren’s tooth",
+        "woven metallic vines",
+        "black iron etched with stars",
+        "band of living wood",
+        "transparent quartz loop",
+        "molten brass cooled into form",
+        "loop of petrified coral",
+        "braided dragon sinew hardened like steel",
+        "pure platinum ring",
+        "opal-studded band",
+        "band of condensed starlight",
+        "obsidian etched with silver veins",
+        "amber coil with trapped motes of light"
+      ],
+      "visuals": [
+        "inscribed with tiny runes that glow faintly when worn",
+        "feels warm or cold depending on the wearer’s mood",
+        "casts double shadows under candlelight",
+        "emits a faint chime when touched by moonlight",
+        "shimmers faintly when submerged in water",
+        "projects fleeting illusions of the wearer’s face at odd angles",
+        "occasionally vibrates softly as though resonating with unseen forces",
+        "a dim aura surrounds it, visible only to the wearer",
+        "faint whispers emanate when the ring is placed on a surface",
+        "produces a flicker of light when its magic is activated",
+        "glows faintly in the presence of lies",
+        "the gemstone (if present) shows shifting constellations",
+        "creates a faint breeze around the wearer’s hand",
+        "appears blurry to anyone but the wearer",
+        "faint lines of energy occasionally trace its edges",
+        "leaves behind a phantom imprint on the wearer’s skin",
+        "makes nearby reflections ripple unnaturally",
+        "a soft heartbeat can be felt when worn too long",
+        "creates tiny sparks when struck against metal",
+        "responds to spoken oaths with a pulse of light"
+      ],
+      "powers": {
+        "Common": [
+          { "name": "Illumination", "description": "The ring can glow with a faint light on command." },
+          { "name": "Warmth", "description": "Protects the wearer’s hand from mundane cold." },
+          { "name": "Flavor", "description": "Makes food or drink the wearer touches taste like their favorite meal." },
+          { "name": "Mood Hue", "description": "The ring shifts color with the wearer’s emotions." },
+          { "name": "Comfort Fit", "description": "Always resizes to perfectly fit the wearer’s finger." },
+          { "name": "Trinket Bond", "description": "The wearer always knows where the ring is if separated." },
+          { "name": "Soothing Pulse", "description": "Radiates a calming vibration when clenched." },
+          { "name": "Minor Ward", "description": "Advantage on the first saving throw against fear each day." },
+          { "name": "Tinkering Spark", "description": "Once per day, conjure a harmless shower of sparks." },
+          { "name": "Water Drop", "description": "Produces one drop of clean water per round when tapped." },
+          { "name": "Harmless Echo", "description": "Amplifies the wearer’s voice faintly in quiet rooms." },
+          { "name": "Minor Glamour", "description": "Once per day, change the ring’s appearance." },
+          { "name": "Lucky Flicker", "description": "Reroll a natural 1 on initiative once per long rest." },
+          { "name": "Messenger Tone", "description": "Emits a soft chime audible only to the wearer when their name is spoken nearby." },
+          { "name": "Minor Sparkle", "description": "Sprinkles faint motes of light when removed." }
+        ],
+        "Uncommon": [
+          { "name": "Minor Spellcasting", "description": "Grants the ability to cast a cantrip (e.g., Mage Hand) at will." },
+          { "name": "Animal Influence", "description": "Allows the wearer to speak with small animals." },
+          { "name": "Water Walking", "description": "Walk on liquid surfaces as if solid ground." },
+          { "name": "Hidden Step", "description": "Once per long rest, turn invisible until your next action ends." },
+          { "name": "Clarity", "description": "Advantage on Wisdom (Insight) checks for 1 hour after donning." },
+          { "name": "Minor Shield", "description": "Grants +1 AC for 10 minutes once per short rest." },
+          { "name": "Mind Whisper", "description": "Once per day, send 25 words to a familiar creature." },
+          { "name": "Climber’s Aid", "description": "Advantage on Strength (Athletics) checks to climb." },
+          { "name": "Whispered Secrets", "description": "The ring whispers small facts about locations once per day." },
+          { "name": "Calm Nerves", "description": "Advantage on the next saving throw against being frightened." },
+          { "name": "Minor Resistance", "description": "Reduce one type of elemental damage by 1 per instance." },
+          { "name": "Light Step", "description": "Once per day, ignore difficult terrain for 10 minutes." },
+          { "name": "Minor Charm", "description": "Advantage on Persuasion checks against one creature once per day." },
+          { "name": "Magic Detection", "description": "Detect Magic once per day." },
+          { "name": "Slumber Ward", "description": "Immune to magical effects that would disturb natural sleep." }
+        ],
+        "Rare": [
+          { "name": "Spell Storing", "description": "Store one spell of up to 3rd level for later use." },
+          { "name": "Mind Shielding", "description": "Resist psychic damage and immune to scrying." },
+          { "name": "Feather Falling", "description": "Constant effect of Feather Fall spell." },
+          { "name": "Fire Resistance", "description": "Grants resistance to fire damage." },
+          { "name": "Life Bond", "description": "Once per long rest, transfer half of damage taken to a willing ally within 10 ft." },
+          { "name": "Truth’s Glow", "description": "Glows faintly when a lie is spoken nearby." },
+          { "name": "Echo Memory", "description": "Once per day, recall with perfect clarity the last 10 minutes." },
+          { "name": "Shadowslip", "description": "Advantage on Stealth checks while in dim light or darkness." },
+          { "name": "Ward of Silence", "description": "Suppresses sound within 5 ft. once per day for 1 minute." },
+          { "name": "Gravitic Balance", "description": "Advantage on checks to resist being shoved or knocked prone." },
+          { "name": "Cold Resistance", "description": "Grants resistance to cold damage." },
+          { "name": "Shared Sight", "description": "Once per day, link vision with a willing ally within 30 ft. for 10 minutes." },
+          { "name": "Barrier Pulse", "description": "As a reaction, gain +2 AC against one attack once per short rest." },
+          { "name": "Charm Resistance", "description": "Advantage on saving throws against being charmed." },
+          { "name": "Whisper Step", "description": "Movement is silent as long as you wear the ring." }
+        ],
+        "Very Rare": [
+          { "name": "Invisibility", "description": "Turn invisible at will until you attack or cast a spell." },
+          { "name": "Regeneration", "description": "Regain 1 hit point every minute." },
+          { "name": "Telekinesis", "description": "Cast Telekinesis once per day." },
+          { "name": "Mind Link", "description": "Communicate telepathically with any creature within 60 ft." },
+          { "name": "Displacement", "description": "Once per short rest, blur your form, imposing disadvantage on attacks against you for 1 minute." },
+          { "name": "Shadowform", "description": "Transform into a living shadow for 1 minute, once per long rest." },
+          { "name": "Flight", "description": "Gain a fly speed equal to walking speed for 10 minutes, once per day." },
+          { "name": "Phase Shift", "description": "Step through solid walls up to 5 ft. thick once per short rest." },
+          { "name": "Earthshaker", "description": "Once per day, stomp to cast Earth Tremor (2nd level)."},
+          { "name": "Mirror Guard", "description": "Redirect one spell targeting you to another within 30 ft. once per long rest." },
+          { "name": "Guardian’s Ward", "description": "Allies within 10 ft. gain +1 AC while you wear the ring." },
+          { "name": "Arcane Well", "description": "Stores up to 3 levels of spell slots, which can be recovered by the wearer." },
+          { "name": "Elemental Command", "description": "Control minor aspects of one element (gusts of air, small flames, etc.)." },
+          { "name": "Vision Beyond", "description": "See invisible creatures and objects for 1 minute once per day." },
+          { "name": "Echo Step", "description": "Teleport 10 ft. as a bonus action once per round for 1 minute (1/day)." }
+        ],
+        "Legendary": [
+          { "name": "Three Wishes", "description": "This ring holds up to 3 wishes before becoming mundane." },
+          { "name": "Elemental Mastery", "description": "Grants full control over one element (fire, water, air, earth) while worn." },
+          { "name": "Planar Jaunt", "description": "Cast Plane Shift once per day." },
+          { "name": "Immortality’s Veil", "description": "The wearer ceases aging and cannot die of old age while worn." },
+          { "name": "Void Ward", "description": "Immune to necrotic and psychic damage." },
+          { "name": "Crown of Command", "description": "Influence the minds of creatures within 60 ft. (as Mass Suggestion once/day)." },
+          { "name": "Time Anchor", "description": "Immune to time stop and similar effects; once per day cast Time Stop yourself." },
+          { "name": "Reality Tear", "description": "Once per long rest, open a rift that functions as Gate spell." },
+          { "name": "Godsbane", "description": "Critical hits against celestials, fiends, or undead deal triple damage." },
+          { "name": "Eternal Return", "description": "If slain, wearer resurrects at dawn once per week." },
+          { "name": "Mind Dominion", "description": "Unlimited telepathy, and once per day Dominate Monster." },
+          { "name": "Infinity Bond", "description": "Link life force with an ally; damage split between both until removed." },
+          { "name": "Cosmic Sight", "description": "Constant true sight, see into Astral and Ethereal Planes." },
+          { "name": "Starforged Halo", "description": "Sheds sunlight in 30 ft. radius; fiends/undead in light take 10 radiant dmg/round." },
+          { "name": "Ring of Worlds", "description": "Allows the wearer to freely travel to any plane known to them, once per day." }
+        ]
+      }
+    },
+    "Wand": {
+      "subtypes": ["Wand", "Scepter", "Baton", "Sprig", "Switch", "Twig"],
+      "nameTemplates": ["{subtype} of {effectWord}"],
+      "materials": [
+        "twisted rowan wood",
+        "a single flawless crystal",
+        "polished dragonbone",
+        "carved ivory with golden veins",
+        "ebonwood tipped with silver",
+        "obsidian shard from a volcano",
+        "branch of the first tree",
+        "solidified lightning core",
+        "fossilized coral branch",
+        "ash wood from a phoenix’s pyre",
+        "sinew-wrapped crystal rod",
+        "petrified serpent fang",
+        "meteorite iron wand",
+        "quartz branch infused with frost",
+        "thorned vine hardened into wood",
+        "molten brass cooled into a rod",
+        "shard of enchanted mirror",
+        "serpent-scale inlaid stafflet",
+        "bone of an ancient wyrm",
+        "opal-studded ebony sprig"
+      ],
+      "visuals": [
+        "crackles with faint static when lifted",
+        "emits motes of light that drift upward and vanish",
+        "pulses softly in rhythm with the wielder’s heartbeat",
+        "creates faint afterimages when waved",
+        "whispers arcane syllables only the wielder hears",
+        "casts flickering shadow patterns on walls",
+        "tip glows faintly in the presence of magic",
+        "creates a brief chill in the air when activated",
+        "occasionally sparks harmless embers",
+        "draws faint lines of light in the air when moved",
+        "hums like a tuning fork when near spellcasters",
+        "illusions of tiny stars orbit the tip at night",
+        "glows faintly blue under moonlight",
+        "emits the faint scent of ozone",
+        "tiny crystalline motes fall from it and vanish",
+        "surface patterns shift like rippling water",
+        "occasionally rattles as if struck from within",
+        "projects faint symbols in midair when activated",
+        "weight feels different to every wielder",
+        "emits a dim chord when tapped on stone"
+      ],
+      "powers": {
+        "Common": [
+          { "name": "Harmless Sparks", "description": "Shower of harmless sparks on command." },
+          { "name": "Tidying", "description": "Light/extinguish a candle or shuffle papers neatly." },
+          { "name": "Mending", "description": "Cantrip: Mending." },
+          { "name": "Message", "description": "Once per short rest, cast Message." },
+          { "name": "Prestidigitation", "description": "Perform a minor magical trick once per day." },
+          { "name": "Light", "description": "Cast Light cantrip once per day." },
+          { "name": "Chill Touch", "description": "Cast Chill Touch cantrip once per day." },
+          { "name": "Spark Snap", "description": "Produce a loud snap audible 60 ft. away." },
+          { "name": "Minor Push", "description": "Exert 5 lb. telekinetic shove once per short rest." },
+          { "name": "Minor Glow", "description": "Glows faintly for 1 hour after being tapped." },
+          { "name": "Feather Drift", "description": "Cause a feather-sized object to float gently." },
+          { "name": "Scribbler’s Aid", "description": "Writes words in ink as wielder dictates." },
+          { "name": "Whistle", "description": "Produces birdlike whistle once per hour." },
+          { "name": "Illusory Sound", "description": "Produce a harmless sound once per short rest." },
+          { "name": "Arcane Sparkle", "description": "Emits harmless motes of multicolored light." }
+        ],
+        "Uncommon": [
+          { "name": "Magic Missiles", "description": "3 charges; cast Magic Missile (1st level)." },
+          { "name": "Magic Detection", "description": "Cast Detect Magic at will." },
+          { "name": "Web", "description": "3 charges; cast Web (2nd level)." },
+          { "name": "Burning Hands", "description": "3 charges; cast Burning Hands (1st level)." },
+          { "name": "Shielding", "description": "Cast Shield once per long rest." },
+          { "name": "Minor Levitation", "description": "Levitate objects up to 10 lbs for 1 min (1/day)." },
+          { "name": "Illusionary Duplicate", "description": "Once per day, create a silent illusory copy for 1 minute." },
+          { "name": "Mage Armor", "description": "1 charge; cast Mage Armor." },
+          { "name": "Charm", "description": "1 charge; cast Charm Person." },
+          { "name": "Shatter", "description": "2 charges; cast Shatter." },
+          { "name": "Magic Hand", "description": "At will, cast Mage Hand." },
+          { "name": "Ray of Frost", "description": "At will, cast Ray of Frost." },
+          { "name": "Gust", "description": "At will, cast Gust cantrip." },
+          { "name": "Minor Barrier", "description": "Once per long rest, gain +2 AC for 1 minute." },
+          { "name": "Resonant Note", "description": "Emit a thunderclap, audible 300 ft. once per day." }
+        ],
+        "Rare": [
+          { "name": "Fireballs", "description": "7 charges; cast Fireball (3rd level)." },
+          { "name": "Lightning Bolts", "description": "7 charges; cast Lightning Bolt (3rd level)." },
+          { "name": "Fear", "description": "7 charges; cast Fear (3rd level)." },
+          { "name": "Counterspell", "description": "3 charges; cast Counterspell." },
+          { "name": "Dispel Magic", "description": "3 charges; cast Dispel Magic." },
+          { "name": "Cone of Cold", "description": "5 charges; cast Cone of Cold." },
+          { "name": "Polymorph", "description": "4 charges; cast Polymorph." },
+          { "name": "Blink", "description": "2 charges; cast Blink." },
+          { "name": "Fearful Aura", "description": "Once per day, exude fear (30 ft., Wis save negates)." },
+          { "name": "Scorching Ray", "description": "2 charges; cast Scorching Ray." },
+          { "name": "Force Blast", "description": "Deal 3d8 force damage (save half), 1/day." },
+          { "name": "Wall of Fire", "description": "5 charges; cast Wall of Fire." },
+          { "name": "Dominate Beast", "description": "3 charges; cast Dominate Beast." },
+          { "name": "Summon Elemental", "description": "5 charges; summon small elemental for 1 minute." },
+          { "name": "Gravity Pull", "description": "Once per long rest, pull all creatures within 20 ft. 10 ft. toward you." }
+        ],
+        "Very Rare": [
+          { "name": "Polymorph", "description": "7 charges; cast Polymorph (4th level)." },
+          { "name": "Paralysis", "description": "7 charges; cast Hold Monster (5th level)." },
+          { "name": "Enemy Detection", "description": "Detect nearest hostile creature within 1 mile." },
+          { "name": "Chain Lightning", "description": "6 charges; cast Chain Lightning." },
+          { "name": "Disintegrate", "description": "6 charges; cast Disintegrate." },
+          { "name": "Wall of Force", "description": "6 charges; cast Wall of Force." },
+          { "name": "Teleport", "description": "7 charges; cast Teleport." },
+          { "name": "Finger of Death", "description": "7 charges; cast Finger of Death." },
+          { "name": "Prismatic Spray", "description": "7 charges; cast Prismatic Spray." },
+          { "name": "Globe of Invulnerability", "description": "7 charges; cast Globe of Invulnerability." },
+          { "name": "Mind Control", "description": "6 charges; cast Dominate Person." },
+          { "name": "Ethereal Jaunt", "description": "5 charges; step into Ethereal Plane for 1 min." },
+          { "name": "Force Cage", "description": "7 charges; cast Forcecage." },
+          { "name": "Sunburst", "description": "7 charges; cast Sunburst." },
+          { "name": "Gravity Crush", "description": "Once per long rest, crush foes in 30 ft. radius, 8d8 force dmg, Str save halves." }
+        ],
+        "Legendary": [
+          { "name": "The War Mage", "description": "20 charges; grants +2 to spell attack rolls and stores powerful evocation spells." },
+          { "name": "Wonder", "description": "Roll on chaotic magic effects table whenever used." },
+          { "name": "Binding", "description": "7 charges; cast Hold Monster or Dominate Person." },
+          { "name": "Meteor Storm", "description": "10 charges; cast Meteor Swarm once per long rest." },
+          { "name": "Wish", "description": "The wand contains one use of the Wish spell." },
+          { "name": "Reality Break", "description": "Once per long rest, fracture reality, forcing all creatures in 60 ft. to make Wis saves or be stunned." },
+          { "name": "Time Warp", "description": "5 charges; cast Time Stop." },
+          { "name": "Void Beam", "description": "Expend 5 charges to fire a 120-ft. line dealing 10d8 necrotic damage." },
+          { "name": "Divine Channel", "description": "Grants ability to cast Cleric spells up to 7th level, chosen at dawn." },
+          { "name": "Archmage’s Memory", "description": "Once per day, recall and cast any spell you’ve seen in last 24 hours." },
+          { "name": "Astral Rift", "description": "Expend 7 charges to open temporary portal to Astral Plane." },
+          { "name": "Worldsong", "description": "The wand hums with cosmic music; allies within 30 ft. have advantage on all saves." },
+          { "name": "Annihilation Ray", "description": "Once per day, obliterate one creature (Disintegrate at 9th level)."},
+          { "name": "Overchannel", "description": "Cast any spell at maximum damage once per long rest." },
+          { "name": "Godspark", "description": "While wielded, all cantrips you cast are treated as 5th-level versions." }
+        ]
+      }
+    },
+    "Staff": {
+      "subtypes": ["Staff", "Quarterstaff", "Greatstaff", "Crosier", "Walking Stick", "Pole", "Rod-staff"],
+      "nameTemplates": ["Staff of {effectWord}", "The {effectWord} Staff"],
+      "materials": [
+        "gnarled oak wood",
+        "ironwood bound in cold iron",
+        "twisted crystal core",
+        "petrified weirwood",
+        "dragon’s spinal column fused into shape",
+        "length of petrified cloud-stuff",
+        "living branch with pulsing veins",
+        "pillar of unmelting ice",
+        "obsidian shard inlaid with silver runes",
+        "ancient bone reinforced with copper",
+        "crystalized lava shaft",
+        "meteor-forged metal rod",
+        "branch carved from Yggdrasil’s offshoot",
+        "serpentine fossil etched with runes",
+        "prism of rainbow glass set as a pole",
+        "woven reeds hardened by enchantment",
+        "pure platinum shaft",
+        "jade spine reinforced with gold bands",
+        "root of a colossal tree",
+        "storm-struck iron bar humming with energy"
+      ],
+      "visuals": [
+        "crystal at its tip pulses with inner light",
+        "runes along its length rearrange themselves slowly",
+        "a faint mist clings to it constantly",
+        "sprouts tiny leaves in spring and sheds them in autumn",
+        "whispers arcane syllables when held tightly",
+        "top carved into a claw that grips an invisible orb",
+        "tiny motes of light orbit lazily around it",
+        "creates no sound when striking the ground",
+        "emanates faint heat or cold depending on the day",
+        "casts a shadow that moves independently",
+        "tip occasionally sparks harmlessly",
+        "when laid down, it points north",
+        "feels heavier or lighter depending on moon phase",
+        "resonates faintly with nearby spellcasting",
+        "creates ripples on water when near a lake or river",
+        "softly hums like a tuning fork when raised",
+        "phantom script flows across its surface",
+        "briefly glows with star-light during night hours",
+        "attracts nearby dust motes into swirling patterns",
+        "faint echoes of chanting can be heard around it"
+      ],
+      "powers": {
+        "Common": [
+          { "name": "Walking Aid", "description": "Functions as a sturdy walking stick that never splinters." },
+          { "name": "Glowtip", "description": "Tip glows like a torch for 1 hour once per day." },
+          { "name": "Minor Gust", "description": "Produce a small puff of wind once per short rest." },
+          { "name": "Snap Spark", "description": "Emits harmless sparks when tapped on the ground." },
+          { "name": "Mage Hand", "description": "Cast Mage Hand once per long rest." },
+          { "name": "Steady Grip", "description": "Never slips from wielder’s hand accidentally." },
+          { "name": "Soft Step", "description": "Suppresses the sound of footsteps for 10 minutes once per day." },
+          { "name": "Glow Runes", "description": "Runes glow softly when within 10 ft. of magic." },
+          { "name": "Balance Staff", "description": "Grants advantage on Acrobatics checks to balance while held." },
+          { "name": "Driftwood", "description": "Floats perfectly on water regardless of size." },
+          { "name": "Sound Tap", "description": "Produces a hollow gong sound audible 60 ft. once per day." },
+          { "name": "Minor Ward", "description": "First saving throw vs. fear each day made with advantage." },
+          { "name": "Focus Aid", "description": "Advantage on the first Arcana check after a long rest." },
+          { "name": "Sparks of Light", "description": "Sprays harmless motes of light when swung." },
+          { "name": "Comfort Rest", "description": "When planted upright, creates a 10 ft. bubble of warmth for sleeping." }
+        ],
+        "Uncommon": [
+          { "name": "Shillelagh", "description": "Cast Shillelagh at will." },
+          { "name": "Magic Detection", "description": "Detect Magic at will." },
+          { "name": "Entangle", "description": "3 charges; cast Entangle." },
+          { "name": "Flame Strike", "description": "1 charge; produce a column of flame (2d6 fire damage)." },
+          { "name": "Water Whip", "description": "2 charges; lash out with water, pulling target 10 ft." },
+          { "name": "Feather Step", "description": "Ignore difficult terrain for 10 minutes (1/day)." },
+          { "name": "Earthbind", "description": "2 charges; cast Earthbind." },
+          { "name": "Nature’s Voice", "description": "Once per day, communicate simple ideas with plants." },
+          { "name": "Illusory Cloak", "description": "Once per day, cloak yourself in harmless illusory disguise." },
+          { "name": "Healing Sap", "description": "1/day, regain 1d8+2 hit points." },
+          { "name": "Summon Familiar", "description": "1/day, cast Find Familiar." },
+          { "name": "Guidance", "description": "Cast Guidance cantrip 3/day." },
+          { "name": "Minor Protection", "description": "Once per day, gain +1 AC for 1 minute." },
+          { "name": "Charm Beast", "description": "1 charge; charm a beast within 30 ft." },
+          { "name": "Illusory Wall", "description": "1/day, create a 5 ft. illusory wall for 10 minutes." }
+        ],
+        "Rare": [
+          { "name": "Healing", "description": "10 charges; cast Cure Wounds, Lesser Restoration, etc." },
+          { "name": "the Woodlands", "description": "10 charges; cast Barkskin, Speak with Animals, Grasping Vine." },
+          { "name": "Charming", "description": "10 charges; cast Charm Person, Command, Suggestion." },
+          { "name": "Fireball", "description": "3 charges; cast Fireball." },
+          { "name": "Lightning Bolt", "description": "3 charges; cast Lightning Bolt." },
+          { "name": "Stone Shape", "description": "2 charges; cast Stone Shape." },
+          { "name": "Summon Animals", "description": "3 charges; cast Conjure Animals (up to CR 1/2 creatures)." },
+          { "name": "Moonbeam", "description": "2 charges; cast Moonbeam." },
+          { "name": "Silence", "description": "2 charges; cast Silence." },
+          { "name": "Slow", "description": "2 charges; cast Slow." },
+          { "name": "Levitate", "description": "2 charges; cast Levitate." },
+          { "name": "Mirror Image", "description": "2 charges; cast Mirror Image." },
+          { "name": "Fear", "description": "3 charges; cast Fear." },
+          { "name": "Summon Fey", "description": "3 charges; summon a fey spirit (CR 2 or less)." },
+          { "name": "Blight", "description": "3 charges; cast Blight." }
+        ],
+        "Very Rare": [
+          { "name": "Power", "description": "20 charges; cast Fireball, Lightning Bolt, Wall of Force; absorb spells." },
+          { "name": "the Magi", "description": "50 charges; wide spell list, +2 to spell attacks." },
+          { "name": "Frost", "description": "10 charges; cast Ice Storm, Cone of Cold, Wall of Ice." },
+          { "name": "Earthquake", "description": "7 charges; cast Earthquake." },
+          { "name": "Invisibility", "description": "3 charges; cast Greater Invisibility." },
+          { "name": "Dispel Magic", "description": "3 charges; cast Dispel Magic at 5th level." },
+          { "name": "Wall of Thorns", "description": "5 charges; cast Wall of Thorns." },
+          { "name": "Teleport", "description": "7 charges; cast Teleport." },
+          { "name": "Sunbeam", "description": "5 charges; cast Sunbeam." },
+          { "name": "Chain Lightning", "description": "6 charges; cast Chain Lightning." },
+          { "name": "Polymorph", "description": "4 charges; cast Polymorph." },
+          { "name": "Wall of Stone", "description": "5 charges; cast Wall of Stone." },
+          { "name": "Dominate Person", "description": "5 charges; cast Dominate Person." },
+          { "name": "Etherealness", "description": "7 charges; cast Etherealness." },
+          { "name": "Prismatic Spray", "description": "7 charges; cast Prismatic Spray." }
+        ],
+        "Legendary": [
+          { "name": "the Forgotten One", "description": "Sentient artifact; immense power over a school of magic." },
+          { "name": "World-Forgetting", "description": "Erase a specific event from all minds in 1-mile radius, 1/day." },
+          { "name": "Striking", "description": "Functions as a +3 staff; expend charges to deal extra force damage." },
+          { "name": "Archmagi’s Will", "description": "Once per day, cast Wish." },
+          { "name": "Nature’s Wrath", "description": "Summon a storm that devastates a region once per month." },
+          { "name": "Cosmic Channel", "description": "Cast spells up to 9th level drawn from starlight." },
+          { "name": "Eternal Balance", "description": "While wielded, advantage on all saving throws." },
+          { "name": "Godslayer’s Edge", "description": "Critical hits against celestials or fiends deal triple damage." },
+          { "name": "Reality Anchor", "description": "Immune to banishment, plane shift, or teleportation against your will." },
+          { "name": "World Root", "description": "Once per week, summon a colossal tree that reshapes terrain." },
+          { "name": "Soulbinder", "description": "Trap the soul of a creature slain; release to cast a 9th-level spell." },
+          { "name": "Starforged Staff", "description": "Emits daylight in 60 ft., deals +2d10 radiant damage to undead/fiends." },
+          { "name": "Astral Gate", "description": "Open a permanent portal to another plane once per year." },
+          { "name": "Timekeeper", "description": "Expend charges to halt or accelerate time briefly (as Time Stop)." },
+          { "name": "Avatar’s Channel", "description": "Wielder temporarily becomes host to a god’s power (DM discretion)." }
+        ]
+      }
+    },
+    "Rod": {
+      "subtypes": ["Rod", "Scepter", "Baton", "Totem", "Spire"],
+      "nameTemplates": ["Rod of {effectWord}", "The {effectWord} Scepter"],
+      "materials": [
+        "unbreakable adamantine shaft",
+        "flawless silver rod",
+        "gleaming obsidian baton",
+        "celestial bronze bar",
+        "polished bar of solidified sound",
+        "pure gold scepter with runes",
+        "petrified serpent spine",
+        "dragonbone core wrapped in silver",
+        "black iron banded with copper",
+        "storm-forged steel bar",
+        "opal inlaid rod of marble",
+        "glass rod filled with starlight",
+        "jade shaft capped with ruby",
+        "prismatic crystal bar",
+        "meteorite rod with etched sigils",
+        "platinum coil hardened into a rod",
+        "sapphire-tipped baton",
+        "ivory rod banded with bronze",
+        "obsidian core threaded with silver veins",
+        "living wood grown into a perfect rod"
+      ],
+      "visuals": [
+        "topped with a shifting symbol of rulership",
+        "perfectly smooth and cold to the touch",
+        "absorbs surrounding light into a dim shadow aura",
+        "pulses rhythmically with faint light",
+        "bends slightly without breaking when pressed",
+        "glows silver when lies are spoken nearby",
+        "covered in geometric patterns that rearrange themselves",
+        "emits a faint, steady hum",
+        "casts no shadow even in bright light",
+        "occasionally flickers with illusory flame",
+        "projects faint sigils when struck on stone",
+        "sparks harmlessly when touched by water",
+        "shimmers faintly under starlight",
+        "projects an afterimage of itself when swung",
+        "feels heavier in the presence of fiends",
+        "emits faint whispers only the wielder hears",
+        "tip glows faintly when within 30 ft. of magic",
+        "vibrates softly when near undead",
+        "leaves faint trails of light in the air",
+        "occasionally emits a phantom bell tone"
+      ],
+      "powers": {
+        "Common": [
+          { "name": "Torchlight", "description": "Glows like a torch for 1 hour once per day." },
+          { "name": "Firm Grip", "description": "Never slips from the wielder’s hand unintentionally." },
+          { "name": "Guiding Point", "description": "Points faintly toward magnetic north when held." },
+          { "name": "Resonant Knock", "description": "Emits a booming knock sound when tapped." },
+          { "name": "Feather Balance", "description": "Always balances perfectly upright when stood on its end." },
+          { "name": "Minor Ward", "description": "Advantage on your first saving throw vs. fear each day." },
+          { "name": "Sparksnap", "description": "Produces harmless sparks on command." },
+          { "name": "Echo Stick", "description": "Amplifies the wielder’s voice slightly." },
+          { "name": "Mender’s Tool", "description": "Can cast Mending once per long rest." },
+          { "name": "Illusory Mark", "description": "Leaves behind faint glowing rune when pressed to a surface, fading in 1 hour." },
+          { "name": "Soft Step", "description": "Suppresses wielder’s footstep noise for 10 minutes (1/day)." },
+          { "name": "Weather Gauge", "description": "Tip glows faintly before rainfall." },
+          { "name": "Echo Pulse", "description": "Emits a low hum audible only within 10 ft." },
+          { "name": "Rune Spark", "description": "Small harmless glyph appears when activated, vanishing in seconds." },
+          { "name": "Calming Aura", "description": "Once per day, grants advantage on a Charisma check to de-escalate tension." }
+        ],
+        "Uncommon": [
+          { "name": "Minor Spellcasting", "description": "Cast one cantrip (chosen at creation) at will." },
+          { "name": "Light Barrier", "description": "1/day, cast Shield as a reaction." },
+          { "name": "Commanding Voice", "description": "Advantage on Intimidation checks once per short rest." },
+          { "name": "Detect Magic", "description": "Cast Detect Magic at will." },
+          { "name": "Elemental Flicker", "description": "Choose an element (fire, cold, lightning); rod produces harmless effects of that type." },
+          { "name": "Arcane Echo", "description": "Repeat a spoken word in booming voice once per short rest." },
+          { "name": "Binding Word", "description": "1 charge; cast Command." },
+          { "name": "Mage Armor", "description": "1/day, cast Mage Armor on yourself." },
+          { "name": "Defensive Stance", "description": "Gain +1 AC while holding the rod." },
+          { "name": "Charm Beast", "description": "1/day, charm a beast within 30 ft." },
+          { "name": "Truth Pulse", "description": "Glows faintly when a creature within 10 ft. lies." },
+          { "name": "Repel Vermin", "description": "Insects avoid the wielder while held." },
+          { "name": "Arcane Spark", "description": "Produce a harmless burst of light once per short rest." },
+          { "name": "Spirit Call", "description": "Once per long rest, summon harmless will-o-wisps of light." },
+          { "name": "Guardian’s Edge", "description": "Allies within 5 ft. gain +1 on saving throws against fear." }
+        ],
+        "Rare": [
+          { "name": "Alertness", "description": "Advantage on initiative and Perception; cannot be surprised." },
+          { "name": "The Pact Keeper", "description": "3 charges; cast Command, Suggestion; improves pact magic." },
+          { "name": "Immovability", "description": "Can be fixed in place, immovable by anything short of a god." },
+          { "name": "Arcane Lock", "description": "2 charges; cast Arcane Lock." },
+          { "name": "Trap Sense", "description": "Detect traps within 30 ft. 1/day." },
+          { "name": "Counterspell", "description": "3 charges; cast Counterspell." },
+          { "name": "Dispel Magic", "description": "3 charges; cast Dispel Magic." },
+          { "name": "Warding Bond", "description": "1/day, cast Warding Bond." },
+          { "name": "Fear Ward", "description": "Once per day, grant advantage on saving throws vs. fear to allies within 10 ft." },
+          { "name": "Life Leech", "description": "On hit (used as weapon), regain 1d4 HP once per short rest." },
+          { "name": "Rune Blast", "description": "Expel 2d8 force damage ray once per short rest." },
+          { "name": "Guardian Pulse", "description": "1/day, release a 10-ft. aura granting +1 AC for 1 minute to allies." },
+          { "name": "Beacon", "description": "Shines with daylight for 10 minutes once per day." },
+          { "name": "Summon Weapon", "description": "As bonus action, conjure a spectral weapon for 1 minute." },
+          { "name": "Charm Resistance", "description": "Advantage on saves against charm effects." }
+        ],
+        "Very Rare": [
+          { "name": "Absorption", "description": "Absorb spells cast against you, up to 50 levels of energy." },
+          { "name": "Rulership", "description": "Command obedience from creatures; Wis save resists." },
+          { "name": "Security", "description": "Cast Arcane Lock, Alarm, and detect traps/doors." },
+          { "name": "Elemental Ward", "description": "Once per day, gain immunity to one damage type for 1 minute." },
+          { "name": "Dominate Person", "description": "3 charges; cast Dominate Person." },
+          { "name": "Mass Suggestion", "description": "3 charges; cast Mass Suggestion." },
+          { "name": "Sunbeam", "description": "5 charges; cast Sunbeam." },
+          { "name": "Chain Lightning", "description": "5 charges; cast Chain Lightning." },
+          { "name": "Prismatic Spray", "description": "6 charges; cast Prismatic Spray." },
+          { "name": "Wall of Force", "description": "5 charges; cast Wall of Force." },
+          { "name": "Resilient Sphere", "description": "3 charges; cast Otiluke’s Resilient Sphere." },
+          { "name": "Fear", "description": "2 charges; cast Fear." },
+          { "name": "Invisibility", "description": "2 charges; cast Greater Invisibility." },
+          { "name": "Teleport", "description": "7 charges; cast Teleport." },
+          { "name": "Ethereal Step", "description": "3 charges; step into Ethereal Plane for 1 min." }
+        ],
+        "Legendary": [
+          { "name": "Resurrection", "description": "5 charges; cast Resurrection; regains 1 charge daily." },
+          { "name": "Lordly Might", "description": "Functions as +3 mace, can paralyze foes, drain life, cast divine spells." },
+          { "name": "Cancellation", "description": "Cancel magical effect (Dispel Magic at 9th level); 3 charges." },
+          { "name": "Meteor Swarm", "description": "10 charges; cast Meteor Swarm once per long rest." },
+          { "name": "Time Stop", "description": "7 charges; cast Time Stop." },
+          { "name": "Wish", "description": "Rod holds 1 casting of Wish." },
+          { "name": "Reality Tear", "description": "Open a planar rift (Gate spell) once per day." },
+          { "name": "Immortality’s Gift", "description": "Wearer ceases aging while rod is attuned." },
+          { "name": "Soul Chain", "description": "On hit, bind enemy’s soul to wielder until freed." },
+          { "name": "Divine Judgment", "description": "Summon radiant column (8d10 radiant dmg, Con save halves) once per day." },
+          { "name": "Cosmic Command", "description": "Command elementals within 100 ft. as if by Dominate Monster." },
+          { "name": "Astral Anchor", "description": "Prevent planar travel within 100 ft. while held." },
+          { "name": "Worldsong", "description": "Allies within 60 ft. gain advantage on all saving throws." },
+          { "name": "Oblivion Pulse", "description": "Once per long rest, unleash 20-ft. sphere of necrotic energy (10d10 dmg)." },
+          { "name": "Fatebinder", "description": "Once per week, reroll any die after seeing the result, keeping new roll." }
+        ]
+      }
+    },
+    "Wondrous Item": {
+      "subtypes": [
+        "Amulet", "Boots", "Cloak", "Gloves", "Figurine", "Orb", "Tome",
+        "Bag", "Brooch", "Lens", "Mask", "Incense", "Ioun Stone",
+        "Lantern", "Compass", "Bell", "Harp", "Horn", "Bridle"
+      ],
+      "nameTemplates": ["{subtype} of {effectWord}", "The {effectWord} {subtype}"],
+      "materials": [
+        "enchanted leather",
+        "spun starlight thread",
+        "carved ivory",
+        "gleaming silver",
+        "dragon’s tooth carved into shape",
+        "perfect crystal sphere",
+        "woven strands of moonlight",
+        "fragment of a fallen star",
+        "solidified tear of a god",
+        "woven song turned to fabric",
+        "crystallized flame",
+        "shadow petrified into stone",
+        "metallic feather of a celestial",
+        "serpent scale hardened like steel",
+        "mirror shard set into jewelry",
+        "meteor-forged bronze",
+        "bone inlaid with sapphire veins",
+        "woven vine that never wilts",
+        "phantom glass that shifts in light",
+        "living metal that bends yet heals"
+      ],
+      "visuals": [
+        "embroidered with shimmering thread",
+        "lighter than it should be",
+        "covered in strange, unreadable script",
+        "shifts subtly when not observed directly",
+        "always a comfortable temperature",
+        "appears blurry to all but its owner",
+        "emits a faint chime in the presence of magic",
+        "patina of age that cannot be removed",
+        "casts double shadows when lit by fire",
+        "whispers faintly when handled",
+        "occasionally hums with distant song",
+        "radiates warmth or chill depending on moon phase",
+        "projects faint illusory motes nearby",
+        "edges blur slightly, as if out of focus",
+        "glows faintly when danger is near",
+        "draws tiny sparks when touched",
+        "creates faint ripples in air around it",
+        "sometimes flickers as though phasing",
+        "appears differently in mirrors",
+        "feels lighter or heavier depending on the bearer’s mood"
+      ],
+      "powers": {
+        "Common": [
+          { "name": "Dramatic Billowing", "description": "A cloak that billows on command." },
+          { "name": "Cleanliness", "description": "Boots that magically repel mud or dirt." },
+          { "name": "Unbreakable", "description": "An arrow that cannot be broken by mundane means." },
+          { "name": "Endless Quill", "description": "A quill that never runs out of ink." },
+          { "name": "Self-Warming Gloves", "description": "Hands are never cold while wearing." },
+          { "name": "Minor Glamour", "description": "Once per day, change clothing appearance." },
+          { "name": "Whistle Stone", "description": "Produces a faint birdcall when blown." },
+          { "name": "Comfort Pouch", "description": "Keeps contents always fresh and dry." },
+          { "name": "Tiny Torch", "description": "A trinket that glows like a candle for 10 minutes." },
+          { "name": "Friendly Whistle", "description": "Dogs react positively to the bearer." },
+          { "name": "Fair Breeze", "description": "Produces a faint cool wind when waved." },
+          { "name": "Pocket Spark", "description": "Ignites tinder on command once per day." },
+          { "name": "Shining Brooch", "description": "Glows softly when the wearer speaks their name." },
+          { "name": "Warmth Stone", "description": "Keeps wearer’s body temperature comfortable." },
+          { "name": "Traveler’s Compass", "description": "Always points to the nearest road or trail." }
+        ],
+        "Uncommon": [
+          { "name": "Holding", "description": "Bag of Holding: extradimensional storage." },
+          { "name": "Elvenkind", "description": "Boots that silence footsteps." },
+          { "name": "Comprehension", "description": "Helm that allows understanding of all languages." },
+          { "name": "Enduring Lantern", "description": "Lantern never runs out of oil." },
+          { "name": "Feather Step", "description": "Boots grant +5 ft. walking speed." },
+          { "name": "Signal Horn", "description": "Heard clearly up to 1 mile when blown." },
+          { "name": "Animal Call", "description": "Whistle that summons harmless woodland animals." },
+          { "name": "Charm Pin", "description": "Once per day, advantage on Persuasion." },
+          { "name": "Minor Flight", "description": "Cloak grants 10 ft. flight for 1 minute (1/day)." },
+          { "name": "Linguist’s Tome", "description": "Grants ability to read all written language." },
+          { "name": "Mask of Whispers", "description": "Speak telepathically to one creature within 30 ft." },
+          { "name": "Stone of Echoes", "description": "Record up to 1 minute of sound and replay." },
+          { "name": "Compass of Safety", "description": "Points to the nearest safe resting place." },
+          { "name": "Lantern of Revealing", "description": "Reveals invisible creatures within 30 ft." },
+          { "name": "Feather Cloak", "description": "Once per day, negate fall damage." }
+        ],
+        "Rare": [
+          { "name": "Scrying", "description": "Crystal Ball: see distant locations." },
+          { "name": "Wondrous Power", "description": "Figurine that transforms into a living beast." },
+          { "name": "Displacement", "description": "Cloak projects illusion, imposing disadvantage on attacks." },
+          { "name": "Horn of Blasting", "description": "Emit destructive sonic blast (5d6 damage)." },
+          { "name": "Stone of Good Luck", "description": "+1 to ability checks and saving throws." },
+          { "name": "Periapt of Wound Closure", "description": "Stabilizes you automatically when dying." },
+          { "name": "Eyes of the Eagle", "description": "Grants advantage on Perception (sight)." },
+          { "name": "Slippers of Spider Climbing", "description": "Grants ability to climb surfaces." },
+          { "name": "Amulet of Health", "description": "Sets Constitution score to 19 while worn." },
+          { "name": "Harp of Harmony", "description": "Calms hostile creatures (Wis save resists)." },
+          { "name": "Gauntlets of Ogre Power", "description": "Sets Strength score to 19." },
+          { "name": "Lantern of Truth", "description": "Reveals lies spoken nearby." },
+          { "name": "Cloak of Resistance", "description": "Grants +1 to all saving throws." },
+          { "name": "Stone of Recall", "description": "Teleports you to a sanctified location 1/day." },
+          { "name": "Mask of Shadows", "description": "Allows wearer to cast Invisibility once per day." }
+        ],
+        "Very Rare": [
+          { "name": "Flying", "description": "Carpet of Flying: carry several riders." },
+          { "name": "Planar Travel", "description": "Amulet of the Planes: dimension-hopping." },
+          { "name": "Scintillating", "description": "Robe of Scintillating Colors: stun foes with dazzling display." },
+          { "name": "Horn of Valhalla", "description": "Summons spectral warriors." },
+          { "name": "Crystal Ball (True Seeing)", "description": "See distant locations with truesight." },
+          { "name": "Cloak of Invisibility", "description": "Wearer turns invisible at will." },
+          { "name": "Ring of Telekinesis (variant item form)", "description": "Allows wielder to move objects by thought." },
+          { "name": "Boots of Speed", "description": "Double speed and grant advantage on Dex saves." },
+          { "name": "Helm of Telepathy", "description": "Read minds and send telepathic messages." },
+          { "name": "Orb of Elemental Command", "description": "Control one elemental type." },
+          { "name": "Bracers of Defense", "description": "+2 AC if no armor/shield is worn." },
+          { "name": "Amulet of Natural Armor", "description": "Grants +2 AC bonus." },
+          { "name": "Lens of Truth", "description": "See through illusions within 30 ft." },
+          { "name": "Mask of Fear", "description": "Cause fear (30 ft. radius, Wis save negates). 1/day." },
+          { "name": "Cloak of the Bat", "description": "Gain flight in darkness, advantage on Stealth." }
+        ],
+        "Legendary": [
+          { "name": "Annihilation", "description": "Sphere of Annihilation obliterates anything it touches." },
+          { "name": "Many Things", "description": "Deck of Many Things with wild effects." },
+          { "name": "Universal Solvent", "description": "Dissolves any adhesive or bond." },
+          { "name": "Book of Exalted Deeds", "description": "Great good power, grants exalted boons." },
+          { "name": "Book of Vile Darkness", "description": "Corrupting tome of dark power." },
+          { "name": "Cloak of Stars", "description": "Cast Prismatic Spray and twinkle like the night sky." },
+          { "name": "Mirror of Life Trapping", "description": "Holds creatures within extradimensional cells." },
+          { "name": "Rod of Seven Parts (variant wondrous form)", "description": "Legendary artifact of immense power." },
+          { "name": "Horn of the End", "description": "Sounding it calls catastrophic doom (DM discretion)." },
+          { "name": "Amulet of Immortality", "description": "Bearer ceases aging entirely." },
+          { "name": "Mask of Eternity", "description": "Wearer is immune to death by old age or disease." },
+          { "name": "Orb of Dragonkind", "description": "Control and summon dragons." },
+          { "name": "Deck of Fates", "description": "Draw cards to alter destiny itself." },
+          { "name": "Crown of the Cosmos", "description": "Channel divine power, granting control of stars." },
+          { "name": "Bell of Apocalypse", "description": "Rings once to trigger world-shaking effects." }
+        ]
+      }
     }
+  }
 }
