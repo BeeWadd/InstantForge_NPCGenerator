@@ -83,11 +83,55 @@
             margin-bottom: 0.75rem;
         }
 
+        .label-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .lock-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.25rem;
+            font-size: 1rem;
+            line-height: 1;
+            color: var(--label-color);
+            transition: color 0.2s;
+        }
+
+        .lock-btn:hover {
+            color: var(--primary-color);
+        }
+
+        .lock-btn svg {
+            width: 1em;
+            height: 1em;
+            vertical-align: -0.125em;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .lock-btn .icon-lock-closed { display: none; }
+        .lock-btn .icon-lock-open { display: block; }
+
+        .lock-btn[data-locked="true"] .icon-lock-closed { display: block; }
+        .lock-btn[data-locked="true"] .icon-lock-open { display: none; }
+        .lock-btn[data-locked="true"] { color: var(--primary-color); }
+
+
         label {
             display: block;
             margin-bottom: 0.25rem;
             color: var(--label-color);
             font-weight: bold;
+        }
+        
+        .label-group label {
+            margin-bottom: 0;
         }
 
         input, select, textarea {
@@ -460,15 +504,24 @@
                 </select>
             </div>
             <div class="form-group">
-                <label for="name">Name (lock)</label>
+                 <div class="label-group">
+                    <label for="name">Name</label>
+                    <button class="lock-btn" id="lock-name" aria-label="Lock Name" data-locked="false"></button>
+                </div>
                 <input type="text" id="name" placeholder="Leave blank to generate">
             </div>
             <div class="form-group">
-                <label for="appearance">Appearance (lock)</label>
+                <div class="label-group">
+                    <label for="appearance">Appearance</label>
+                    <button class="lock-btn" id="lock-appearance" aria-label="Lock Appearance" data-locked="false"></button>
+                </div>
                 <textarea id="appearance" placeholder="Leave blank to generate"></textarea>
             </div>
             <div class="form-group">
-                <label for="details">Details (lock)</label>
+                 <div class="label-group">
+                    <label for="details">Details</label>
+                    <button class="lock-btn" id="lock-details" aria-label="Lock Details" data-locked="false"></button>
+                </div>
                 <textarea id="details" placeholder="Leave blank to generate"></textarea>
             </div>
              <div class="form-group">
@@ -476,7 +529,7 @@
                 <input type="text" id="context" placeholder="e.g., the Whispering Woods">
             </div>
             <div class="button-group">
-                <button id="generate" class="btn-primary">Generate (Fill Blanks)</button>
+                <button id="generate" class="btn-primary">Generate</button>
                 <button id="randomize" class="btn-secondary">Randomize All</button>
                 <button id="clear" class="btn-secondary full-width">Clear All</button>
             </div>
@@ -556,13 +609,24 @@
         let npcData;
         let savedNpcs = [];
 
+        // --- CONSTANTS ---
+        const iconLockOpenSVG = `<svg class="icon-lock-open" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg>`;
+        const iconLockClosedSVG = `<svg class="icon-lock-closed" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>`;
+
+        // --- STATE ---
+        let lockStates = {
+            name: false,
+            appearance: false,
+            details: false,
+        };
+
         // --- UTILITY FUNCTIONS ---
         const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
         const sample = (arr, n) => {
             const shuffled = [...arr].sort(() => 0.5 - Math.random());
             return shuffled.slice(0, n);
         };
-        const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);
+        const capitalize = (str) => str ? str.charAt(0).toUpperCase() + str.slice(1) : '';
         
         // --- UNIQUENESS GUARD ---
         const HISTORY_LIMIT = 10;
@@ -626,6 +690,10 @@
             exportCsvBtn: document.getElementById('export-csv'),
             exportMdBtn: document.getElementById('export-md'),
             exportPdfBtn: document.getElementById('export-pdf'),
+            // Lock buttons
+            lockNameBtn: document.getElementById('lock-name'),
+            lockAppearanceBtn: document.getElementById('lock-appearance'),
+            lockDetailsBtn: document.getElementById('lock-details'),
         };
 
         // --- GENERATION LOGIC ---
@@ -684,9 +752,9 @@
             const gender = (forceRandomize || !ui.gender.value) ? pick(['male', 'female', 'neutral']) : ui.gender.value;
             const job = (forceRandomize || !ui.job.value) ? pick(npcData.jobs) : ui.job.value;
 
-            const name = (forceRandomize || !ui.name.value) ? generateName(race, gender) : ui.name.value;
-            const appearance = (forceRandomize || !ui.appearance.value) ? generateAppearance(race, gender) : ui.appearance.value;
-            const details = (forceRandomize || !ui.details.value) ? generateDetails() : ui.details.value;
+            const name = !lockStates.name ? generateName(race, gender) : ui.name.value;
+            const appearance = !lockStates.appearance ? generateAppearance(race, gender) : ui.appearance.value;
+            const details = !lockStates.details ? generateDetails() : ui.details.value;
             
             ui.race.value = race;
             ui.gender.value = gender;
@@ -781,6 +849,14 @@ Secret: ${ui.secretText.dataset.secret || ui.secretText.textContent}
             inputs.forEach(input => input.value = '');
             const selects = [ui.race, ui.gender, ui.job];
             selects.forEach(select => select.value = '');
+
+            // Reset locks
+            lockStates = { name: false, appearance: false, details: false };
+            Object.keys(lockStates).forEach(field => {
+                const btn = ui[`lock${capitalize(field)}Btn`];
+                btn.dataset.locked = 'false';
+                btn.setAttribute('aria-label', `Lock ${capitalize(field)}`);
+            });
 
             ui.outputName.textContent = 'Your NPC Appears Here';
             ui.outputSubtitle.textContent = '';
@@ -985,6 +1061,21 @@ Secret: ${ui.secretText.dataset.secret || ui.secretText.textContent}
             hideExportModal();
         }
 
+        function setupLockButtons() {
+            const lockableFields = ['name', 'appearance', 'details'];
+            lockableFields.forEach(field => {
+                const btn = ui[`lock${capitalize(field)}Btn`];
+                btn.innerHTML = iconLockOpenSVG + iconLockClosedSVG;
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    lockStates[field] = !lockStates[field];
+                    btn.dataset.locked = lockStates[field];
+                    const action = lockStates[field] ? 'Unlock' : 'Lock';
+                    btn.setAttribute('aria-label', `${action} ${capitalize(field)}`);
+                });
+            });
+        }
+
 
         // --- EVENT LISTENERS & INITIALIZATION ---
         document.addEventListener('DOMContentLoaded', async () => {
@@ -997,6 +1088,7 @@ Secret: ${ui.secretText.dataset.secret || ui.secretText.textContent}
 
                 populateSelects();
                 loadHistory();
+                setupLockButtons();
                 
                 ui.generateBtn.addEventListener('click', () => generateNpc(false));
                 ui.randomizeBtn.addEventListener('click', () => generateNpc(true));
