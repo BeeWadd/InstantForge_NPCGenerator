@@ -1,4 +1,5 @@
 
+
 console.log("InstantForge: Magic Items script loaded.");
 let itemData;
 let savedItems = [];
@@ -21,8 +22,6 @@ const capitalize = (str) => str ? str.charAt(0).toUpperCase() + str.slice(1) : '
 // --- UNIQUENESS GUARD ---
 const HISTORY_LIMIT = 10;
 let generationHistory = {
-    creators: [],
-    histories: [],
     curses: [],
     materials: [],
     visuals: [],
@@ -31,11 +30,13 @@ let generationHistory = {
 
 function pickUnique(arr, historyKey) {
     if (!arr || arr.length === 0) return "";
-    const historyQueue = generationHistory[historyKey];
-    if (!historyQueue) {
-        console.warn(`No history queue found for key: ${historyKey}`);
-        return pick(arr);
+    
+    // Dynamically create history queue if it doesn't exist
+    if (!generationHistory[historyKey]) {
+        generationHistory[historyKey] = [];
     }
+
+    const historyQueue = generationHistory[historyKey];
     const uniqueOptions = arr.filter(option => !historyQueue.includes(option));
     let chosen = (uniqueOptions.length > 0) ? pick(uniqueOptions) : pick(arr);
     historyQueue.unshift(chosen); 
@@ -82,7 +83,7 @@ const ui = {
 
 // --- GENERATION LOGIC ---
 
-function generateName(itemType, power) {
+function generateName(itemType, power, subtype) {
     const itemInfo = itemData.itemData[itemType];
     if (!itemInfo || !itemInfo.nameTemplates) return "Unnamed Item";
     
@@ -90,7 +91,7 @@ function generateName(itemType, power) {
     let name = template;
 
     if (template.includes('{subtype}')) {
-        name = name.replace('{subtype}', pick(itemInfo.subtypes));
+        name = name.replace('{subtype}', subtype);
     }
     if (template.includes('{adjective}')) {
         name = name.replace('{adjective}', pick(itemInfo.adjectives));
@@ -104,17 +105,24 @@ function generateName(itemType, power) {
     return name;
 }
 
-function generateDescription(itemType) {
+function generateDescription(itemType, subtype) {
     const itemInfo = itemData.itemData[itemType];
-    const subtype = pick(itemInfo.subtypes);
     const material = pickUnique(itemInfo.materials, 'materials');
     const visual = pickUnique(itemInfo.visuals, 'visuals');
     return `A ${subtype} made of ${material} that ${visual}.`;
 }
 
-function generateHistory() {
-    const creator = pickUnique(itemData.creators, 'creators');
-    const history = pickUnique(itemData.histories, 'histories');
+function generateHistory(powerLevel) {
+    if (powerLevel === "Common" && Math.random() < 0.5) {
+        return "Its origins are mundane and unremarkable, likely the work of a journeyman enchanter making items for a local market.";
+    }
+
+    const creators = itemData.creatorsByRarity[powerLevel] || itemData.creatorsByRarity["Rare"]; // Fallback to Rare
+    const histories = itemData.historiesByRarity[powerLevel] || itemData.historiesByRarity["Rare"];
+
+    const creator = pickUnique(creators, `creators_${powerLevel}`);
+    const history = pickUnique(histories, `histories_${powerLevel}`);
+    
     return `This item was created by ${creator} and was once ${history}.`;
 }
 
@@ -131,11 +139,12 @@ function generateItem(forceRandomize = false) {
         return;
     }
 
+    const subtype = pick(itemInfo.subtypes);
     const power = pickUnique(powerInfo, 'powers');
     
-    const name = !lockStates.name ? generateName(itemType, power) : ui.name.value;
-    const description = !lockStates.description ? generateDescription(itemType) : ui.description.value;
-    const history = !lockStates.history ? generateHistory() : ui.history.value;
+    const name = !lockStates.name ? generateName(itemType, power, subtype) : ui.name.value;
+    const description = !lockStates.description ? generateDescription(itemType, subtype) : ui.description.value;
+    const history = !lockStates.history ? generateHistory(powerLevel) : ui.history.value;
     
     ui.itemType.value = itemType;
     ui.powerLevel.value = powerLevel;
@@ -152,7 +161,7 @@ function generateItem(forceRandomize = false) {
     }
     
     ui.outputName.textContent = name;
-    ui.outputSubtitle.textContent = `${powerLevel} ${itemType}`;
+    ui.outputSubtitle.textContent = `${powerLevel} ${subtype}`;
     ui.outputDescription.textContent = description;
     ui.outputPowers.textContent = powers;
     ui.outputHistory.textContent = history;
