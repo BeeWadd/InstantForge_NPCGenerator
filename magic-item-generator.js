@@ -18,6 +18,33 @@ let lockStates = {
 const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
 const capitalize = (str) => str ? str.charAt(0).toUpperCase() + str.slice(1) : '';
 
+// --- UNIQUENESS GUARD ---
+const HISTORY_LIMIT = 5;
+let generationHistory = {
+    creators: [],
+    histories: [],
+    curses: [],
+    materials: [],
+    visuals: [],
+    powers: []
+};
+
+function pickUnique(arr, historyKey) {
+    if (!arr || arr.length === 0) return "";
+    const historyQueue = generationHistory[historyKey];
+    if (!historyQueue) {
+        console.warn(`No history queue found for key: ${historyKey}`);
+        return pick(arr);
+    }
+    const uniqueOptions = arr.filter(option => !historyQueue.includes(option));
+    let chosen = (uniqueOptions.length > 0) ? pick(uniqueOptions) : pick(arr);
+    historyQueue.unshift(chosen); 
+    if (historyQueue.length > HISTORY_LIMIT) {
+        historyQueue.pop();
+    }
+    return chosen;
+}
+
 // --- DOM ELEMENTS ---
 const ui = {
     itemType: document.getElementById('item-type'),
@@ -80,14 +107,14 @@ function generateName(itemType, power) {
 function generateDescription(itemType) {
     const itemInfo = itemData.itemData[itemType];
     const subtype = pick(itemInfo.subtypes);
-    const material = pick(itemInfo.materials);
-    const visual = pick(itemInfo.visuals);
+    const material = pickUnique(itemInfo.materials, 'materials');
+    const visual = pickUnique(itemInfo.visuals, 'visuals');
     return `A ${subtype} made of ${material} that ${visual}.`;
 }
 
 function generateHistory() {
-    const creator = pick(itemData.creators);
-    const history = pick(itemData.histories);
+    const creator = pickUnique(itemData.creators, 'creators');
+    const history = pickUnique(itemData.histories, 'histories');
     return `This item was created by ${creator} and was once ${history}.`;
 }
 
@@ -104,7 +131,7 @@ function generateItem(forceRandomize = false) {
         return;
     }
 
-    const power = pick(powerInfo);
+    const power = pickUnique(powerInfo, 'powers');
     
     const name = !lockStates.name ? generateName(itemType, power) : ui.name.value;
     const description = !lockStates.description ? generateDescription(itemType) : ui.description.value;
@@ -121,7 +148,7 @@ function generateItem(forceRandomize = false) {
     const curseChance = { "Common": 0, "Uncommon": 0.1, "Rare": 0.25, "Very Rare": 0.4, "Legendary": 0.5 };
     let curse = "None.";
     if (Math.random() < (curseChance[powerLevel] || 0)) {
-        curse = pick(itemData.curses);
+        curse = pickUnique(itemData.curses, 'curses');
     }
     
     ui.outputName.textContent = name;
