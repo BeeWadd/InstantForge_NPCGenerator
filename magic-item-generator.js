@@ -1,3 +1,4 @@
+
 console.log("InstantForge: Magic Items script loaded.");
 let itemData;
 let savedItems = [];
@@ -54,7 +55,7 @@ const ui = {
 
 // --- GENERATION LOGIC ---
 
-function generateName(itemType) {
+function generateName(itemType, power) {
     const itemInfo = itemData.itemData[itemType];
     if (!itemInfo || !itemInfo.nameTemplates) return "Unnamed Item";
     
@@ -68,7 +69,7 @@ function generateName(itemType) {
         name = name.replace('{adjective}', pick(itemInfo.adjectives));
     }
     if (template.includes('{effectWord}')) {
-        name = name.replace('{effectWord}', pick(itemInfo.effectWords));
+        name = name.replace('{effectWord}', power.name);
     }
     if (template.includes('{creatorName}')) {
         name = name.replace('{creatorName}', pick(itemInfo.creatorNames));
@@ -79,8 +80,8 @@ function generateName(itemType) {
 function generateDescription(itemType) {
     const itemInfo = itemData.itemData[itemType];
     const subtype = pick(itemInfo.subtypes);
-    const material = pick(itemData.materials);
-    const visual = pick(itemData.visuals);
+    const material = pick(itemInfo.materials);
+    const visual = pick(itemInfo.visuals);
     return `A ${subtype} made of ${material} that ${visual}.`;
 }
 
@@ -96,13 +97,16 @@ function generateItem(forceRandomize = false) {
     
     const itemInfo = itemData.itemData[itemType];
     const powerInfo = itemInfo.powers[powerLevel];
-    if (!powerInfo) {
+
+    if (!powerInfo || powerInfo.length === 0) {
         console.warn(`No power data for ${itemType} at ${powerLevel}. Falling back.`);
         generateItem(true); // Force a full randomize to find a valid combo
         return;
     }
 
-    const name = !lockStates.name ? generateName(itemType) : ui.name.value;
+    const power = pick(powerInfo);
+    
+    const name = !lockStates.name ? generateName(itemType, power) : ui.name.value;
     const description = !lockStates.description ? generateDescription(itemType) : ui.description.value;
     const history = !lockStates.history ? generateHistory() : ui.history.value;
     
@@ -112,7 +116,7 @@ function generateItem(forceRandomize = false) {
     ui.description.value = description;
     ui.history.value = history;
 
-    const powers = pick(powerInfo);
+    const powers = power.description;
     
     const curseChance = { "Common": 0, "Uncommon": 0.1, "Rare": 0.25, "Very Rare": 0.4, "Legendary": 0.5 };
     let curse = "None.";

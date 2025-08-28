@@ -1,3 +1,4 @@
+
 {
     "types": ["Weapon", "Armor", "Potion", "Ring", "Wand", "Staff", "Rod", "Wondrous Item"],
     "powerLevels": ["Common", "Uncommon", "Rare", "Very Rare", "Legendary"],
@@ -7,115 +8,230 @@
     "histories": [
         "forged in the heart of a dying star", "stolen from the tomb of a forgotten king", "a gift from a fey monarch for a great service", "used to slay a terrible beast that terrorized a kingdom", "the last creation of a master artisan before they vanished", "lost in a legendary battle that shaped the world", "a ceremonial piece from a lost empire", "discovered in the hoard of a slain dragon", "a tool used to build a wonder of the world", "an heirloom passed down through a line of heroes", "once wielded by a notorious villain"
     ],
-    "materials": [
-        "gleaming obsidian", "polished dragonbone", "unearthly star-metal", "ancient petrified wood", "flawless silver", "condensed shadow-stuff", "unbreakable adamantine", "feather-light mithral", "a single, perfect crystal", "enchanted glass", "never-rusting iron", "ivory from a celestial beast"
-    ],
-    "visuals": [
-        "glows faintly in moonlight", "hums with a low, palpable energy", "is covered with intricate, glowing runes", "feels warm to the touch, even in snow", "is surprisingly lightweight for its size", "is inscribed with the nearly-forgotten mark of its creator", "changes color based on the wielder's mood", "is covered in delicate, golden filigree", "seems to absorb light around it", "is constantly shrouded in a thin mist", "leaves a faint trail of sparks when moved", "has a single, perfect gemstone embedded in it"
-    ],
     "curses": [
         "Slowly corrupts the wielder's personality, making them more greedy/paranoid/aggressive.", "Attracts unwanted attention from a specific type of monster (e.g., undead, fiends).", "Cannot be willingly discarded or unequipped by the user.", "Whispers tempting but terrible secrets to its owner in their dreams.", "Requires a minor, daily sacrifice (a drop of blood, a cherished memory) to function.", "Has a mischievous and inconvenient personality, activating at the worst times.", "Functions erratically, with a chance to fail or produce an unintended effect in moments of need.", "Drains a small amount of the user's life force with each use.", "Makes the user intensely protective of the item, bordering on obsession.", "Causes the user to be distrusted by animals.", "Slowly transforms the user's appearance to resemble the item's creator."
     ],
     "itemData": {
         "Weapon": {
             "subtypes": ["Sword", "Axe", "Dagger", "Bow", "Mace", "Spear", "Hammer"],
-            "nameTemplates": ["The {adjective} {subtype}", "{subtype} of {effectWord}", "{creatorName}'s {subtype}"],
-            "adjectives": ["Gleaming", "Shadowy", "Runic", "Fiery", "Vengeful", "Soul-Stealing", "Storm-Forged"],
-            "effectWords": ["the Phoenix", "Shattering", "the Ages", "the Serpent", "Dragonslaying", "the Silent Forest"],
+            "nameTemplates": ["The {subtype} of {effectWord}", "{effectWord} {subtype}", "{creatorName}'s {subtype}"],
             "creatorNames": ["Gorthaur", "Elara", "Dunewright", "Volund"],
+            "materials": ["gleaming obsidian", "polished dragonbone", "unearthly star-metal", "ancient petrified wood", "flawless silver", "condensed shadow-stuff", "unbreakable adamantine", "feather-light mithral"],
+            "visuals": ["glows faintly in moonlight", "hums with a low, palpable energy", "is covered with intricate, glowing runes", "feels warm to the touch", "is surprisingly lightweight", "seems to absorb light around it", "leaves a faint trail of sparks when moved"],
             "powers": {
-                "Common": ["Sheds a dim light in a 10-foot radius on command.", "Never needs sharpening or cleaning."],
-                "Uncommon": ["Deals an extra 1d4 fire/cold/lightning damage on a hit.", "Grants the wielder advantage on saves against being frightened.", "Can be used to cast a cantrip (e.g., Light, Message) once per day."],
-                "Rare": ["Deals an extra 1d8 elemental damage.", "Has 3 charges, regains 1d3 daily. Can expend a charge to cast a 2nd-level spell (e.g., Misty Step, Scorching Ray).", "Grants resistance to one type of damage."],
-                "Very Rare": ["This weapon scores a critical hit on a roll of 19 or 20.", "Has 5 charges, regains 1d4+1 daily. Can expend charges to cast spells up to 4th level.", "Grants the wielder the ability to fly for 10 minutes per day."],
-                "Legendary": ["This weapon has a +3 bonus to attack and damage rolls.", "Can cast a powerful 6th or 7th level spell once per day.", "Can instantly slay a creature of a certain type (e.g., fiend, dragon) on a critical hit, once per week."]
+                "Common": [
+                    { "name": "Illumination", "description": "Sheds a dim light in a 10-foot radius on command." },
+                    { "name": "Unstaining", "description": "Never needs sharpening, cleaning, or oiling." }
+                ],
+                "Uncommon": [
+                    { "name": "Scorching", "description": "Deals an extra 1d4 fire damage on a hit." },
+                    { "name": "Icing", "description": "Deals an extra 1d4 cold damage on a hit." },
+                    { "name": "Shocking", "description": "Deals an extra 1d4 lightning damage on a hit." },
+                    { "name": "Steadfast Courage", "description": "Grants the wielder advantage on saves against being frightened." },
+                    { "name": "Minor Magic", "description": "Can be used to cast a cantrip (e.g., Light, Message) once per day." }
+                ],
+                "Rare": [
+                    { "name": "Flame Tongue", "description": "Deals an extra 2d6 fire damage on a hit." },
+                    { "name": "Frost Brand", "description": "Deals an extra 1d6 cold damage on a hit." },
+                    { "name": "Spell Stealing", "description": "Has 3 charges, regains 1d3 daily. When you hit a creature with this weapon, you can expend a charge to steal a 1st or 2nd level spell they can cast." },
+                    { "name": "Resistance", "description": "Grants resistance to one type of damage (e.g. fire, psychic, etc.)." }
+                ],
+                "Very Rare": [
+                    { "name": "Vorpal", "description": "This weapon scores a critical hit on a roll of 19 or 20. On a critical hit against a creature with a head, it decapitates them." },
+                    { "name": "Dancing", "description": "You can use a bonus action to toss this weapon into the air and speak the command word. When you do so, the weapon begins to hover, flies up to 30 feet, and attacks one creature of your choice within 5 feet of it." },
+                    { "name": "Spell Storing", "description": "Stores one spell of up to 4th level, which can be cast from the weapon." },
+                    { "name": "Flying", "description": "Grants the wielder the ability to fly for 10 minutes per day." }
+                ],
+                "Legendary": [
+                    { "name": "Holy Avenger", "description": "This weapon has a +3 bonus to attack and damage rolls. While you hold it, you are immune to being charmed or frightened. It deals an extra 2d10 radiant damage to fiends and undead." },
+                    { "name": "Soul Devouring", "description": "When you slay a creature with this weapon, you trap its soul. You can expend the soul to regain hit points or fuel a powerful spell." },
+                    { "name": "Dragonslaying", "description": "This weapon deals an extra 3d6 damage to dragons." }
+                ]
             }
         },
         "Armor": {
             "subtypes": ["Shield", "Helmet", "Breastplate", "Gauntlets", "Full Plate"],
-            "nameTemplates": ["{subtype} of {effectWord}", "The {adjective} Bulwark", "{creatorName}'s Aegis"],
-            "adjectives": ["Impenetrable", "Shining", "Dragonscale", "Stonewall", "Feather-light"],
-            "effectWords": ["Protection", "the Stalwart Defender", "Deflection", "the Unbreakable Will"],
+            "nameTemplates": ["{subtype} of {effectWord}", "The {effectWord} Bulwark", "{creatorName}'s Aegis"],
             "creatorNames": ["Durin", "Kaelen", "Anya", "Bor"],
+            "materials": ["gleaming dragonscale", "polished star-metal", "unbreakable adamantine", "feather-light mithral", "enchanted elven steel", "stone from a sacred mountain"],
+            "visuals": ["is always clean and polished", "is etched with protective wards", "glows faintly when danger is near", "changes color to match its surroundings", "is adorned with the crest of a forgotten order"],
             "powers": {
-                "Common": ["The armor is always clean and polished.", "You can don or doff this armor as an action."],
-                "Uncommon": ["Grants resistance to one type of non-magical damage (bludgeoning, piercing, or slashing).", "Grants advantage on saves against poison."],
-                "Rare": ["Grants resistance to one type of elemental damage (fire, cold, etc.).", "Has 3 charges, can expend one to gain temporary hit points."],
-                "Very Rare": ["Grants immunity to a specific condition (e.g., frightened, charmed).", "Allows the wearer to cast a protective 4th-level spell (e.g., Stoneskin) once per day."],
-                "Legendary": ["Grants a +2 bonus to Armor Class.", "Grants resistance to all non-magical damage.", "The wearer regenerates 1d6 hit points at the start of their turn."]
+                "Common": [
+                    { "name": "Mending", "description": "The armor magically repairs any damage it sustains overnight." },
+                    { "name": "Quick Donning", "description": "You can don or doff this armor as an action." }
+                ],
+                "Uncommon": [
+                    { "name": "Physical Resistance", "description": "Grants resistance to one type of non-magical damage (bludgeoning, piercing, or slashing)." },
+                    { "name": "Poison Warding", "description": "Grants advantage on saves against poison." }
+                ],
+                "Rare": [
+                    { "name": "Elemental Resistance", "description": "Grants resistance to one type of elemental damage (fire, cold, lightning, etc.)." },
+                    { "name": "Fortitude", "description": "Has 3 charges, can expend one to gain 2d6 temporary hit points. Regains 1d3 charges daily." }
+                ],
+                "Very Rare": [
+                    { "name": "Etherealness", "description": "The wearer can become ethereal for 1 minute, once per day." },
+                    { "name": "Condition Immunity", "description": "Grants immunity to a specific condition (e.g., frightened, charmed)." }
+                ],
+                "Legendary": [
+                    { "name": "Invulnerability", "description": "Grants resistance to all non-magical damage and a +2 bonus to Armor Class." },
+                    { "name": "Regeneration", "description": "The wearer regenerates 1d6 hit points at the start of their turn if they have at least 1 hit point." }
+                ]
             }
         },
         "Potion": {
             "subtypes": ["Vial", "Flask", "Elixir", "Draught", "Philter"],
-            "nameTemplates": ["{subtype} of {effectWord}", "{adjective} {subtype}"],
-            "adjectives": ["Bubbling", "Glimmering", "Foul-smelling", "Sweet", "Viscous"],
-            "effectWords": ["Heroism", "Invisibility", "Flying", "Giant Strength", "Healing"],
+            "nameTemplates": ["{subtype} of {effectWord}"],
+            "materials": ["a crystal vial", "a smoked glass flask", "a clay amphora sealed with wax", "a polished horn philter", "a faceted glass bottle"],
+            "visuals": ["swirls with iridescent colors when shaken", "bubbles gently without heat", "glows with a soft internal light", "is unnaturally cold to the touch", "smells of forgotten spices and summer rain", "is thick and viscous like liquid metal"],
             "powers": {
-                "Common": ["Cures minor ailments like a cough or headache.", "Makes the drinker's hair change color for an hour."],
-                "Uncommon": ["Restores 2d4+2 hit points.", "Grants the ability to breathe underwater for 1 hour.", "Grants advantage on Charisma checks for 1 hour."],
-                "Rare": ["Restores 4d4+4 hit points.", "Grants the effect of a Haste spell for 1 minute.", "Turns the drinker invisible for 1 hour."],
-                "Very Rare": ["Restores 10d4+20 hit points.", "Grants the drinker the strength of a giant for 1 hour.", "Grants the ability to fly for 1 hour."],
-                "Legendary": ["Cures all diseases, poisons, and curses affecting the drinker.", "Grants the drinker true sight for 24 hours.", "Restores the drinker to full health and removes all exhaustion."]
+                "Common": [
+                    { "name": "Hair Color", "description": "Makes the drinker's hair change to a random color for one hour." },
+                    { "name": "Soothed Throats", "description": "Cures minor ailments like a cough or sore throat." }
+                ],
+                "Uncommon": [
+                    { "name": "Minor Healing", "description": "Restores 2d4+2 hit points." },
+                    { "name": "Water Breathing", "description": "Grants the ability to breathe underwater for 1 hour." },
+                    { "name": "Animal Friendship", "description": "Grants advantage on Charisma (Animal Handling) checks for 1 hour." }
+                ],
+                "Rare": [
+                    { "name": "Greater Healing", "description": "Restores 4d4+4 hit points." },
+                    { "name": "Invisibility", "description": "Turns the drinker invisible for 1 hour." },
+                    { "name": "Haste", "description": "Grants the effect of a Haste spell for 1 minute." }
+                ],
+                "Very Rare": [
+                    { "name": "Superior Healing", "description": "Restores 8d4+8 hit points." },
+                    { "name": "Giant Strength", "description": "Grants the drinker the strength of a Frost/Stone Giant for 1 hour." },
+                    { "name": "Flying", "description": "Grants the ability to fly for 1 hour." }
+                ],
+                "Legendary": [
+                    { "name": "Supreme Healing", "description": "Restores 10d4+20 hit points." },
+                    { "name": "True Sight", "description": "Grants the drinker true sight for 1 hour." },
+                    { "name": "Panacea", "description": "Cures all diseases, poisons, and curses affecting the drinker." }
+                ]
             }
         },
         "Ring": {
             "subtypes": ["Ring", "Band", "Signet"],
-            "nameTemplates": ["{subtype} of {effectWord}", "The {adjective} Loop"],
-            "adjectives": ["Simple", "Ornate", "Shadowy", "Glowing"],
-            "effectWords": ["Protection", "Spell Storing", "Invisibility", "Mind Shielding", "Feather Falling"],
+            "nameTemplates": ["{subtype} of {effectWord}"],
+            "materials": ["flawless silver", "gleaming gold", "carved jade", "polished obsidian", "interwoven metals", "a single, perfect crystal"],
+            "visuals": ["is inscribed with tiny, glowing runes", "feels warm to the touch", "changes color based on the wearer's mood", "is a simple, unadorned band that seems to absorb light", "features a gemstone that seems to hold a tiny star"],
             "powers": {
-                "Common": ["The ring can be made to glow with a faint light.", "The ring always feels warm."],
-                "Uncommon": ["Grants the ability to cast a cantrip at will.", "Allows the wearer to speak and understand a specific language."],
-                "Rare": ["Stores one spell of up to 3rd level.", "Grants resistance to psychic damage.", "Grants a +1 bonus to saving throws."],
-                "Very Rare": ["Allows the wearer to become invisible at will.", "Grants the ability to regenerate 1 hit point per minute."],
-                "Legendary": ["Holds up to 3 wishes.", "Grants the wearer control over a specific element.", "Grants immunity to all mind-affecting effects."]
+                "Common": [
+                    { "name": "Illumination", "description": "The ring can be made to glow with a faint light on command." },
+                    { "name": "Warmth", "description": "The ring always feels pleasantly warm, protecting the wearer's hand from cold." }
+                ],
+                "Uncommon": [
+                    { "name": "Minor Spellcasting", "description": "Grants the ability to cast a cantrip (e.g., Mage Hand) at will." },
+                    { "name": "Animal Influence", "description": "Allows the wearer to speak with small animals." }
+                ],
+                "Rare": [
+                    { "name": "Spell Storing", "description": "Stores one spell of up to 3rd level, cast into it by the wearer. It can be cast from the ring later." },
+                    { "name": "Mind Shielding", "description": "Grants resistance to psychic damage and immunity to magical scrying." }
+                ],
+                "Very Rare": [
+                    { "name": "Invisibility", "description": "Allows the wearer to become invisible at will by turning the ring on their finger." },
+                    { "name": "Regeneration", "description": "The wearer regenerates 1 hit point every minute." }
+                ],
+                "Legendary": [
+                    { "name": "Three Wishes", "description": "This ring holds up to 3 wishes. Once all wishes are used, it becomes a non-magical item." },
+                    { "name": "Elemental Command", "description": "Grants the wearer control over a specific element (e.g., fire, water), allowing them to cast powerful elemental spells." }
+                ]
             }
         },
         "Wand": {
             "subtypes": ["Wand", "Scepter", "Baton"],
-            "nameTemplates": ["{subtype} of {effectWord}", "The {adjective} {subtype}"],
-            "adjectives": ["Twisted", "Crystal", "Obsidian", "Ivory"],
-            "effectWords": ["Magic Missiles", "Fireballs", "Polymorph", "Secrets"],
+            "nameTemplates": ["{subtype} of {effectWord}"],
+            "materials": ["twisted rowan wood", "a single, large crystal", "polished dragonbone", "carved ivory", "ebonwood tipped with silver"],
+            "visuals": ["crackles with faint sparks", "is warm to the touch", "is carved with swirling patterns that seem to move", "has a gemstone at its tip that pulses with light", "hums with a low, magical energy"],
             "powers": {
-                "Common": ["Can create harmless sparks or puffs of smoke.", "Can be used to light or extinguish a candle from 10 feet away."],
-                "Uncommon": ["Has 3 charges, regains 1d3 daily. Can cast a 1st-level spell (e.g., Magic Missile) for 1 charge.", "Can detect magic at will."],
-                "Rare": ["Has 7 charges, regains 1d6+1 daily. Can cast spells up to 3rd level (e.g., Fireball, Lightning Bolt)."],
-                "Very Rare": ["Has 10 charges, regains 1d6+4 daily. Can cast powerful spells up to 6th level."],
-                "Legendary": ["Has 20 charges, regains 2d8+4 daily. Can cast spells up to 9th level.", "Can alter reality in minor ways."]
+                "Common": [
+                    { "name": "Harmless Sparks", "description": "Can create a shower of harmless, colorful sparks on command." },
+                    { "name": "Tidying", "description": "Can be used to magically light or extinguish a candle, or neatly stack a pile of papers." }
+                ],
+                "Uncommon": [
+                    { "name": "Magic Missiles", "description": "Has 3 charges, regains 1d3 daily. Can cast Magic Missile (1st level) for 1 charge." },
+                    { "name": "Magic Detection", "description": "Can cast Detect Magic at will." }
+                ],
+                "Rare": [
+                    { "name": "Fireballs", "description": "Has 7 charges, regains 1d6+1 daily. Can cast Fireball (3rd level) for 3 charges, or Burning Hands (1st level) for 1 charge." },
+                    { "name": "Lightning Bolts", "description": "Has 7 charges, regains 1d6+1 daily. Can cast Lightning Bolt (3rd level) for 3 charges." }
+                ],
+                "Very Rare": [
+                    { "name": "Polymorph", "description": "Has 7 charges, regains 1d6+1 daily. Can cast Polymorph (4th level) for 4 charges." },
+                    { "name": "Paralysis", "description": "Has 7 charges, regains 1d6+1 daily. Can cast Hold Monster (5th level) for 5 charges." }
+                ],
+                "Legendary": [
+                    { "name": "The War Mage", "description": "Has 20 charges, regains 2d8+4 daily. Contains a variety of powerful evocation spells up to 7th level. Grants +2 to spell attack rolls." },
+                    { "name": "Wonder", "description": "Roll on a random effects table each time this wand is used, with unpredictable and chaotic results." }
+                ]
             }
         },
         "Staff": {
             "subtypes": ["Staff", "Quarterstaff", "Greatstaff"],
-            "nameTemplates": ["Staff of {effectWord}", "The {adjective} Staff"],
-            "adjectives": ["Gnarled", "Runic", "Crystal-tipped", "Ironwood"],
-            "effectWords": ["the Magi", "Healing", "the Woodlands", "Power"],
+            "nameTemplates": ["Staff of {effectWord}"],
+            "materials": ["gnarled oak", "ironwood bound in cold iron", "twisted crystal", "petrified weirwood", "a dragon's spinal column"],
+            "visuals": ["has a crystal at its tip that glows with inner light", "has runes carved along its length that shift and move", "is constantly wreathed in a faint mist", "sprouts small leaves in the spring", "whispers faintly when held"],
             "powers": {
-                "Rare": ["Has 10 charges, regains 1d6+4 daily. Contains a selection of themed spells (e.g., a Staff of Healing might have Cure Wounds, Lesser Restoration, etc.). Can be used as a magical quarterstaff."],
-                "Very Rare": ["Has 15 charges, regains 1d8+4 daily. Contains more powerful themed spells, up to 6th level.", "Grants a bonus to the wielder's spell attack rolls."],
-                "Legendary": ["Has 20 charges, regains 2d8+4 daily. Contains a wide array of powerful spells.", "Can absorb spells targeted at the wielder, recharging its own charges."]
+                "Rare": [
+                    { "name": "Healing", "description": "Has 10 charges, regains 1d6+4 daily. Can cast Cure Wounds, Lesser Restoration, and other healing spells." },
+                    { "name": "the Woodlands", "description": "Has 10 charges, regains 1d6+4 daily. Can cast various nature-themed spells like Barkskin, Speak with Animals, and Grasping Vine." }
+                ],
+                "Very Rare": [
+                    { "name": "Power", "description": "Has 20 charges, regains 2d8+2 daily. A powerful tool for any wizard, it can cast spells like Fireball, Lightning Bolt, and Wall of Force. It can also be used to absorb spells." },
+                    { "name": "the Magi", "description": "Has 50 charges, regains 4d6+2 daily. Contains a wide array of powerful spells and grants a +2 bonus to spell attack rolls. One of the most coveted items for an arcane caster." }
+                ],
+                "Legendary": [
+                    { "name": "the Forgotten One", "description": "This staff is a sentient artifact with its own personality and goals. It grants its wielder immense power over a school of magic (e.g., necromancy, illusion) but may try to influence their actions." },
+                    { "name": "World-Forgetting", "description": "Has 10 charges, regains 1d8+2 daily. Once per day, the wielder can expend 10 charges to cast a spell that erases a specific event from the memory of everyone in a one-mile radius." }
+                ]
             }
         },
         "Rod": {
             "subtypes": ["Rod", "Scepter"],
             "nameTemplates": ["Rod of {effectWord}"],
-            "effectWords": ["Lordly Might", "Resurrection", "Absorption", "Rulership"],
+            "materials": ["unbreakable adamantine", "flawless silver", "gleaming obsidian", "celestial bronze"],
+            "visuals": ["is topped with a symbol of rulership", "is perfectly smooth and cold to the touch", "absorbs all light, creating a small area of shadow around it", "pulses with a faint, rhythmic light"],
             "powers": {
-                "Rare": ["Grants a specific, passive benefit (e.g., advantage on certain checks).", "Has a powerful, single-use-per-day ability."],
-                "Very Rare": ["Has multiple powerful abilities, often with charges.", "Can be used to command or influence certain types of creatures."],
-                "Legendary": ["Possesses world-altering power, such as the ability to cast Wish or raise an army of the dead."]
+                "Rare": [
+                    { "name": "Alertness", "description": "While holding this rod, you have advantage on initiative rolls and Perception checks, and you cannot be surprised." },
+                    { "name": "The Pact Keeper", "description": "This rod has 3 charges, regaining 1d3 daily. You can use it to cast spells like Command or Suggestion. It grants advantage on checks to enforce a contract or oath." }
+                ],
+                "Very Rare": [
+                    { "name": "Absorption", "description": "Can absorb spells that target only you. It can store up to 50 levels of spell energy and use that energy to cast spells you know." },
+                    { "name": "Rulership", "description": "You can use an action to present the rod and command obedience from creatures that can see or hear you. Those who fail a saving throw are charmed by you for 8 hours." }
+                ],
+                "Legendary": [
+                    { "name": "Resurrection", "description": "This rod has 5 charges. You can expend a charge to cast the Resurrection spell. It regains one charge at dawn." },
+                    { "name": "Lordly Might", "description": "This rod has several powerful abilities: it functions as a +3 mace, can paralyze foes, drain life, and cast powerful divine spells." }
+                ]
             }
         },
         "Wondrous Item": {
-            "subtypes": ["Amulet", "Boots", "Cloak", "Gloves", "Figurine", "Orb", "Tome", "Bag of Holding"],
-            "nameTemplates": ["{subtype} of {effectWord}", "The {adjective} {subtype}"],
-            "adjectives": ["Everfull", "Dimensional", "All-seeing", "Silent"],
-            "effectWords": ["Health", "Elvenkind", "the Planes", "Golem Control"],
+            "subtypes": ["Amulet", "Boots", "Cloak", "Gloves", "Figurine", "Orb", "Tome", "Bag"],
+            "nameTemplates": ["{subtype} of {effectWord}"],
+            "materials": ["enchanted leather", "spun starlight", "carved ivory", "gleaming silver", "a dragon's tooth", "a perfect crystal sphere"],
+            "visuals": ["is embroidered with shimmering thread", "is lighter than it should be", "is covered in strange, unreadable script", "seems to shift and change when you're not looking directly at it", "is always a comfortable temperature"],
             "powers": {
-                "Common": ["A cloak that billows dramatically on command.", "Boots that never get muddy.", "An orb that forecasts the weather for the next 24 hours."],
-                "Uncommon": ["A Bag of Holding.", "Boots of Elvenkind.", "A cloak that grants advantage on Stealth checks."],
-                "Rare": ["A Crystal Ball for scrying.", "A Portable Hole.", "A Figurine of Wondrous Power that can transform into a creature."],
-                "Very Rare": ["A Carpet of Flying.", "An Amulet of the Planes.", "A magical Tome that grants a permanent ability score increase when read."],
-                "Legendary": ["A Sphere of Annihilation.", "A Deck of Many Things.", "A powerful artifact with multiple reality-bending properties."]
+                "Common": [
+                    { "name": "Dramatic Billowing", "description": "A cloak that billows dramatically on command." },
+                    { "name": "Cleanliness", "description": "Boots that magically clean themselves of any mud or dirt." }
+                ],
+                "Uncommon": [
+                    { "name": "Holding", "description": "A Bag of Holding, which can contain a massive amount of items in an extradimensional space." },
+                    { "name": "Elvenkind", "description": "Boots of Elvenkind, which make the wearer's steps completely silent." }
+                ],
+                "Rare": [
+                    { "name": "Scrying", "description": "A Crystal Ball that can be used to see and hear events happening in other places." },
+                    { "name": "Wondrous Power", "description": "A Figurine of Wondrous Power (e.g., Silver Raven, Serpentine Owl) that can transform into a living creature for a set amount of time." }
+                ],
+                "Very Rare": [
+                    { "name": "Flying", "description": "A Carpet of Flying that can carry several people through the air." },
+                    { "name": "Planar Travel", "description": "An Amulet of the Planes that allows the wearer to travel to other dimensions." }
+                ],
+                "Legendary": [
+                    { "name": "Annihilation", "description": "A Sphere of Annihilation, a black hole that obliterates anything it touches." },
+                    { "name": "Many Things", "description": "A Deck of Many Things, a set of cards with powerful and unpredictable magical effects, from granting wishes to summoning demons." }
+                ]
             }
         }
     }
