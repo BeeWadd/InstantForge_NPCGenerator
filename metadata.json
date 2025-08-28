@@ -1,5 +1,5 @@
 {
-  "name": "InstantForge: NPCs",
-  "description": "A single-page, static NPC generator for roleplaying games. It runs entirely in the browser with no external dependencies, allowing users to generate detailed, roleplay-ready non-player characters in seconds. Users can lock specific fields and regenerate others, or randomize everything at once.",
+  "name": "InstantForge: Generators for Storytellers",
+  "description": "InstantForge is a suite of single-page, static generators for roleplaying games, designed to help storytellers and game masters create rich worlds in seconds. It runs entirely in the browser with no external dependencies.",
   "requestFramePermissions": []
 }
