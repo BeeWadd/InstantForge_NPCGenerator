@@ -149,6 +149,46 @@
         .placeholder-card h3 {
             color: var(--label-color);
         }
+
+        .support-section {
+            text-align: center;
+            margin-top: 2.5rem;
+            padding: 1.5rem 0;
+        }
+
+        .support-button {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            border: 1px solid rgba(0,0,0,0.3);
+            border-bottom: 3px solid rgba(0,0,0,0.4);
+            border-radius: 5px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.15s ease-out;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.2);
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            max-width: 90%;
+            width: 500px;
+        }
+
+        @media (max-width: 600px) {
+            .support-button {
+                width: 100%;
+                font-size: 1rem;
+            }
+        }
+
+        .support-button:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .support-button:active {
+            transform: translateY(2px);
+            border-bottom-width: 1px;
+        }
     </style>
 </head>
 <body>
@@ -181,6 +221,11 @@
                     <p>New generators for locations, quests, and more are being forged in the arcane fires of development.</p>
                 </div>
             </div>
+        </section>
+        <section class="support-section">
+            <a href="https://buymeacoffee.com/beewadd" class="support-button" target="_blank" rel="noopener noreferrer" aria-label="Support InstantForge">
+                Enjoy these tools? Support InstantForge so I can keep building more.
+            </a>
         </section>
     </main>
 </body>
