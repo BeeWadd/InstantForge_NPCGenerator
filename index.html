@@ -40,10 +40,27 @@
             justify-content: center;
             min-height: 100vh;
         }
+        
+        .logo-link {
+            display: inline-block;
+            margin-bottom: 0.5rem;
+        }
+
+        .logo {
+            max-width: 150px;
+            width: 100%;
+            height: auto;
+            filter: drop-shadow(2px 2px 3px var(--shadow-color));
+            transition: transform 0.2s ease-out;
+        }
+        
+        .logo:hover {
+            transform: scale(1.05);
+        }
 
         header {
             text-align: center;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
         }
 
         header h1 {
@@ -193,6 +210,9 @@
 </head>
 <body>
     <header>
+        <a href="index.html" class="logo-link" aria-label="InstantForge Home">
+            <img src="assets/IMG/logo.png" alt="InstantForge Logo" class="logo">
+        </a>
         <h1>InstantForge</h1>
         <p>Your world, forged in seconds. A suite of tools for storytellers and game masters.</p>
     </header>

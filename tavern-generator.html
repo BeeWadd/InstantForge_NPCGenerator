@@ -35,6 +35,23 @@
             line-height: 1.6;
             padding: 1rem;
         }
+        
+        .logo-link {
+            display: inline-block;
+            margin-bottom: 0.5rem;
+        }
+
+        .logo {
+            max-width: 120px;
+            width: 100%;
+            height: auto;
+            filter: drop-shadow(2px 2px 3px var(--shadow-color));
+            transition: transform 0.2s ease-out;
+        }
+        
+        .logo:hover {
+            transform: scale(1.05);
+        }
 
         header {
             text-align: center;
@@ -536,6 +553,9 @@
 <body>
     <header>
         <a href="index.html" class="back-link" aria-label="Back to main InstantForge page">&larr; Back to InstantForge</a>
+        <a href="index.html" class="logo-link" aria-label="InstantForge Home">
+            <img src="assets/IMG/logo.png" alt="InstantForge Logo" class="logo">
+        </a>
         <h1>InstantForge: Taverns & Inns</h1>
         <p>Create memorable establishments in seconds.</p>
     </header>
