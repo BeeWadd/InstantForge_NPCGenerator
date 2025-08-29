@@ -1,3 +1,4 @@
+
 console.log("InstantForge: Taverns script loaded.");
 let tavernData;
 let savedTaverns = [];
@@ -26,7 +27,8 @@ const HISTORY_LIMIT = 10;
 let generationHistory = {
     patrons: [],
     rumors: [],
-    innkeepers: [],
+    innkeeperPersonalities: [],
+    innkeeperQuirks: [],
 };
 
 function pickUnique(arr, historyKey) {
@@ -95,13 +97,13 @@ function generateName() {
 }
 
 function generateDescription(tavernType, quality) {
-    const descriptions = tavernData.descriptions[tavernType];
-    return descriptions ? descriptions[quality] || descriptions['Modest'] : "A non-descript drinking hole.";
+    const descriptions = tavernData.descriptions[tavernType][quality];
+    return descriptions ? pick(descriptions) : "A non-descript drinking hole.";
 }
 
 function generateInnkeeper() {
-    const personality = pick(tavernData.innkeepers.personalities);
-    const quirk = pickUnique(tavernData.innkeepers.quirks, 'innkeepers');
+    const personality = pickUnique(tavernData.innkeepers.personalities, 'innkeeperPersonalities');
+    const quirk = pickUnique(tavernData.innkeepers.quirks, 'innkeeperQuirks');
     return `The innkeeper is ${personality} and ${quirk}.`;
 }
 
