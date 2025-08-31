@@ -173,7 +173,7 @@ function generateNpc(forceRandomize = false) {
     const mannerism = pickUnique(npcData.mannerisms, 'mannerisms');
     
     ui.outputName.textContent = name;
-    ui.outputSubtitle.textContent = `${capitalize(race)} ${job} (${gender})`;
+    ui.outputSubtitle.textContent = `${capitalize(race.replace('_',' '))} ${job} (${gender})`;
     ui.outputAppearance.textContent = appearance;
     ui.outputDetails.textContent = details;
     ui.outputVoiceMannerism.textContent = `${voice}; ${mannerism}.`;
@@ -239,14 +239,21 @@ function showCopyFeedback(message, isError = false, duration = 2000) {
     }, duration);
 }
 
-function clearForm(respectLocks = true) {
+function clearFormInputs(respectLocks = true) {
     if (!respectLocks || !lockStates.name) ui.name.value = '';
     if (!respectLocks || !lockStates.appearance) ui.appearance.value = '';
     if (!respectLocks || !lockStates.details) ui.details.value = '';
+    
     ui.race.value = '';
     ui.gender.value = '';
     ui.job.value = '';
     ui.context.value = '';
+}
+
+function clearVolatileFormInputs() {
+    if (!lockStates.name) ui.name.value = '';
+    if (!lockStates.details) ui.details.value = '';
+    ui.gender.value = ''; // Gender can be different for each group member.
 }
 
 function clearOutput() {
@@ -280,11 +287,10 @@ function resetLocks() {
 }
 
 function clearAll() {
-    clearForm(false);
+    clearFormInputs(false);
     clearOutput();
     resetLocks();
 }
-
 
 // --- HISTORY & EXPORT FUNCTIONS ---
 
@@ -502,37 +508,31 @@ async function processQueuedNpcs() {
 
         for (const patronInfo of patronsToProcess) {
             for (let i = 0; i < patronInfo.quantity; i++) {
-                // Targeted form reset to preserve context but allow unique generation
-                if (!lockStates.name) ui.name.value = '';
-                if (!lockStates.details) ui.details.value = '';
-                ui.gender.value = ''; // Randomize gender for each group member
-                ui.context.value = '';
+                // Clear inputs that should be unique for each group member, respecting user locks.
+                clearVolatileFormInputs();
 
                 // Populate form with context from the patron
                 ui.race.value = patronInfo.race || '';
                 ui.job.value = patronInfo.job || '';
                 ui.appearance.value = patronInfo.appearance;
                 
-                // Temporarily lock appearance to preserve the full context string
+                // Temporarily lock appearance to preserve the full context string for this one generation.
                 const wasAppearanceLocked = lockStates.appearance;
                 lockStates.appearance = true;
-                ui.lockAppearanceBtn.dataset.locked = 'true';
+                
+                generateNpc(false);
+                saveNpc(false);
 
-                // Generate and save
-                generateNpc(false); // `false` respects pre-filled form values
-                saveNpc(false); // `false` suppresses the "saved" feedback message
-
-                // Restore user's original lock state for appearance
+                // Restore user's original lock state for appearance for the next loop/interaction.
                 lockStates.appearance = wasAppearanceLocked;
-                ui.lockAppearanceBtn.dataset.locked = String(wasAppearanceLocked);
             }
         }
 
         sessionStorage.removeItem('pendingNpcsForGeneration');
         showCopyFeedback(`${totalNpcsToGenerate} Patron NPCs created and saved!`);
         
-        // After processing, clear the form and output for the user, respecting locks.
-        clearForm(true);
+        // After processing, clear the form and output for the user, respecting their final lock states.
+        clearFormInputs(true);
         clearOutput();
 
     } catch (error) {

@@ -3,6 +3,7 @@ console.log("InstantForge: Taverns script loaded.");
 let tavernData;
 let savedTaverns = [];
 let currentPatrons = [];
+let currentInnkeeper = "";
 let npcDataForPatrons;
 
 // --- CONSTANTS ---
@@ -150,8 +151,11 @@ function generateTavern(forceRandomize = false) {
 
     const innkeeper = generateInnkeeper();
     const patrons = sample(tavernData.patrons.filter(p => !generationHistory.patrons.includes(p)), 3);
-    currentPatrons = [...patrons]; // Store the raw patrons
-    patrons.forEach(p => pickUnique([p], 'patrons')); // Add to history
+    
+    currentInnkeeper = innkeeper;
+    currentPatrons = [...patrons]; 
+    patrons.forEach(p => pickUnique([p], 'patrons')); 
+    
     const rumor = pickUnique(tavernData.rumors, 'rumors');
     
     ui.outputName.textContent = name;
@@ -212,13 +216,13 @@ Rumor: ${ui.rumorsText.dataset.rumor || "(hidden)"}
     });
 }
 
-function showCopyFeedback(message, isError = false) {
+function showCopyFeedback(message, isError = false, duration = 2000) {
     ui.copyFeedback.textContent = message;
     ui.copyFeedback.style.color = isError ? '#dc3545' : 'var(--primary-color)';
     ui.copyFeedback.style.opacity = 1;
     setTimeout(() => {
         ui.copyFeedback.style.opacity = 0;
-    }, 2000);
+    }, duration);
 }
 
 function clearAll() {
@@ -252,6 +256,7 @@ function clearAll() {
     }
     
     currentPatrons = [];
+    currentInnkeeper = "";
     ui.generatePatronsBtn.disabled = true;
 
     ui.copyFeedback.style.opacity = 0;
@@ -471,13 +476,11 @@ function generatePatronsAsNpcs() {
         'two': () => 2,
         'three': () => 3,
         'four': () => 4,
-        'five': () => 5,
-        'some': () => Math.floor(Math.random() * 3) + 2,
     };
-    
-    const racePlurals = { 'dwarf': 'dwarves', 'elf': 'elves' };
 
-    const newlyParsedNpcs = currentPatrons.map(patronString => {
+    const racePlurals = { 'dwarf': 'dwarves', 'elf': 'elves', 'halfling': 'halflings', 'gnome': 'gnomes' };
+
+    const patronsToQueue = currentPatrons.map(patronString => {
         const lowerPatronString = patronString.toLowerCase();
         let npcInfo = {
             quantity: 1,
@@ -486,7 +489,6 @@ function generatePatronsAsNpcs() {
             appearance: patronString
         };
 
-        // 1. Detect Quantity
         let quantityFound = false;
         for (const keyword in quantityKeywords) {
             if (lowerPatronString.startsWith(keyword)) {
@@ -496,7 +498,6 @@ function generatePatronsAsNpcs() {
             }
         }
 
-        // 2. Detect Race (sorted by length to catch 'half-orc' before 'orc')
         const sortedRaces = [...npcDataForPatrons.races].sort((a,b) => b.length - a.length);
         for (const race of sortedRaces) {
             const plural = racePlurals[race] || `${race}s`;
@@ -509,7 +510,6 @@ function generatePatronsAsNpcs() {
             }
         }
         
-        // 3. Detect Job (sorted by length to catch 'Bounty Hunter' before 'Hunter')
         const sortedJobs = [...npcDataForPatrons.jobs].sort((a, b) => b.length - a.length);
         for (const job of sortedJobs) {
             const jobRegex = new RegExp(`\\b${job.toLowerCase()}\\b`);
@@ -523,11 +523,13 @@ function generatePatronsAsNpcs() {
     });
 
     const existingQueue = JSON.parse(sessionStorage.getItem('pendingNpcsForGeneration')) || [];
-    const combinedQueue = existingQueue.concat(newlyParsedNpcs);
+    const combinedQueue = existingQueue.concat(patronsToQueue);
+    
     sessionStorage.setItem('pendingNpcsForGeneration', JSON.stringify(combinedQueue));
 
     const totalQueued = combinedQueue.reduce((acc, curr) => acc + curr.quantity, 0);
-    showCopyFeedback(`${totalQueued} patrons now queued for NPC generation!`);
+    const addedCount = patronsToQueue.reduce((acc, curr) => acc + curr.quantity, 0);
+    showCopyFeedback(`${addedCount} patrons added. ${totalQueued} total now in queue!`);
 }
 
 
