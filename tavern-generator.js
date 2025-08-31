@@ -1,4 +1,3 @@
-
 console.log("InstantForge: Taverns script loaded.");
 let tavernData;
 let savedTaverns = [];
@@ -81,6 +80,7 @@ const ui = {
     exportMdBtn: document.getElementById('export-md'),
     exportPdfBtn: document.getElementById('export-pdf'),
     generatePatronsBtn: document.getElementById('generate-patrons'),
+    generateInnkeeperBtn: document.getElementById('generate-innkeeper'),
     // Lock buttons
     lockNameBtn: document.getElementById('lock-name'),
     lockDescriptionBtn: document.getElementById('lock-description'),
@@ -173,6 +173,7 @@ function generateTavern(forceRandomize = false) {
     ui.rumorsText.dataset.rumor = rumor;
 
     ui.generatePatronsBtn.disabled = false;
+    ui.generateInnkeeperBtn.disabled = false;
 }
 
 function populateSelects() {
@@ -258,6 +259,7 @@ function clearAll() {
     currentPatrons = [];
     currentInnkeeper = "";
     ui.generatePatronsBtn.disabled = true;
+    ui.generateInnkeeperBtn.disabled = true;
 
     ui.copyFeedback.style.opacity = 0;
     setTimeout(() => { ui.copyFeedback.textContent = ''; }, 300);
@@ -459,8 +461,34 @@ function setupLockButtons() {
     });
 }
 
+function generateInnkeeperAsNpc() {
+    if (!currentInnkeeper) {
+        showCopyFeedback("Generate a tavern with an innkeeper first!", true);
+        return;
+    }
+    if (!npcDataForPatrons || !npcDataForPatrons.jobs || !npcDataForPatrons.races) {
+        showCopyFeedback("NPC data not ready. Please try again in a moment.", true);
+        return;
+    }
+
+    const newNpcsToQueue = [{
+        quantity: 1,
+        race: '', 
+        job: 'Innkeeper',
+        appearance: currentInnkeeper
+    }];
+
+    const existingQueue = JSON.parse(sessionStorage.getItem('pendingNpcsForGeneration')) || [];
+    const combinedQueue = existingQueue.concat(newNpcsToQueue);
+    
+    sessionStorage.setItem('pendingNpcsForGeneration', JSON.stringify(combinedQueue));
+    
+    const totalQueued = combinedQueue.reduce((acc, curr) => acc + curr.quantity, 0);
+    showCopyFeedback(`Innkeeper added to queue! ${totalQueued} total now in queue.`);
+}
+
 function generatePatronsAsNpcs() {
-    if ((!currentPatrons || currentPatrons.length === 0) && !currentInnkeeper) {
+    if (!currentPatrons || currentPatrons.length === 0) {
         showCopyFeedback("Generate a tavern with patrons first!", true);
         return;
     }
@@ -469,23 +497,10 @@ function generatePatronsAsNpcs() {
         return;
     }
 
-    const newNpcsToQueue = [];
-
-    // 1. Add the Innkeeper to the queue
-    if (currentInnkeeper) {
-        newNpcsToQueue.push({
-            quantity: 1,
-            race: '', 
-            job: 'Innkeeper',
-            appearance: currentInnkeeper
-        });
-    }
-
-    // 2. Add the Patrons to the queue
     const patronsToQueue = currentPatrons.map(patronString => {
         const lowerPatronString = patronString.toLowerCase();
         let npcInfo = {
-            quantity: 1, // Default to 1 since we removed groups
+            quantity: 1,
             race: '',
             job: '',
             appearance: patronString
@@ -510,19 +525,14 @@ function generatePatronsAsNpcs() {
         return npcInfo;
     });
 
-    newNpcsToQueue.push(...patronsToQueue);
-
-    // 3. Update sessionStorage
     const existingQueue = JSON.parse(sessionStorage.getItem('pendingNpcsForGeneration')) || [];
-    const combinedQueue = existingQueue.concat(newNpcsToQueue);
+    const combinedQueue = existingQueue.concat(patronsToQueue);
     
     sessionStorage.setItem('pendingNpcsForGeneration', JSON.stringify(combinedQueue));
     
-    // 4. Update user feedback
     const totalQueued = combinedQueue.reduce((acc, curr) => acc + curr.quantity, 0);
-    const addedCount = newNpcsToQueue.reduce((acc, curr) => acc + curr.quantity, 0);
-    const patronCount = patronsToQueue.length;
-    showCopyFeedback(`${addedCount} characters added (Innkeeper + ${patronCount} patrons). ${totalQueued} total now in queue!`);
+    const addedCount = patronsToQueue.length;
+    showCopyFeedback(`${addedCount} patrons added to queue! ${totalQueued} total now in queue.`);
 }
 
 
@@ -547,6 +557,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             console.error("Could not load npc-data for patrons.", e);
             ui.generatePatronsBtn.title = "Could not load NPC data.";
             ui.generatePatronsBtn.disabled = true;
+            ui.generateInnkeeperBtn.title = "Could not load NPC data.";
+            ui.generateInnkeeperBtn.disabled = true;
         }
 
         populateSelects();
@@ -560,6 +572,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         ui.clearBtn.addEventListener('click', clearAll);
         ui.clearHistoryBtn.addEventListener('click', clearHistory);
         ui.generatePatronsBtn.addEventListener('click', generatePatronsAsNpcs);
+        ui.generateInnkeeperBtn.addEventListener('click', generateInnkeeperAsNpc);
         
         ui.exportHistoryBtn.addEventListener('click', showExportModal);
         ui.closeModalBtn.addEventListener('click', hideExportModal);
