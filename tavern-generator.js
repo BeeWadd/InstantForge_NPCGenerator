@@ -88,12 +88,31 @@ function generateName() {
     const templates = tavernData.nameTemplates;
     const template = pick(templates.patterns);
     
-    return template
-        .replace('{adjective}', pick(templates.adjectives))
-        .replace('{noun}', pick(templates.nouns))
-        .replace('{noun2}', pick(templates.nouns))
-        .replace('{ownerName}', pick(templates.ownerNames))
-        .replace('{establishment}', pick(templates.establishments));
+    let result = template;
+
+    if (template.includes('{noun}')) {
+        const noun1 = pick(templates.nouns);
+        result = result.replace('{noun}', noun1);
+        if (template.includes('{noun2}')) {
+            let noun2 = pick(templates.nouns);
+            while (noun1 === noun2) {
+                noun2 = pick(templates.nouns);
+            }
+            result = result.replace('{noun2}', noun2);
+        }
+    }
+
+    if (template.includes('{adjective}')) {
+        result = result.replace('{adjective}', pick(templates.adjectives));
+    }
+    if (template.includes('{ownerName}')) {
+        result = result.replace('{ownerName}', pick(templates.ownerNames));
+    }
+    if (template.includes('{establishment}')) {
+        result = result.replace('{establishment}', pick(templates.establishments));
+    }
+
+    return result;
 }
 
 function generateDescription(tavernType, quality) {
