@@ -460,7 +460,7 @@ function setupLockButtons() {
 }
 
 function generatePatronsAsNpcs() {
-    if (!currentPatrons || currentPatrons.length === 0) {
+    if ((!currentPatrons || currentPatrons.length === 0) && !currentInnkeeper) {
         showCopyFeedback("Generate a tavern with patrons first!", true);
         return;
     }
@@ -469,43 +469,32 @@ function generatePatronsAsNpcs() {
         return;
     }
 
-    const quantityKeywords = {
-        'a group of': () => Math.floor(Math.random() * 3) + 2, // 2-4
-        'a pair of': () => 2,
-        'a couple of': () => 2,
-        'two': () => 2,
-        'three': () => 3,
-        'four': () => 4,
-    };
+    const newNpcsToQueue = [];
 
-    const racePlurals = { 'dwarf': 'dwarves', 'elf': 'elves', 'halfling': 'halflings', 'gnome': 'gnomes' };
+    // 1. Add the Innkeeper to the queue
+    if (currentInnkeeper) {
+        newNpcsToQueue.push({
+            quantity: 1,
+            race: '', 
+            job: 'Innkeeper',
+            appearance: currentInnkeeper
+        });
+    }
 
+    // 2. Add the Patrons to the queue
     const patronsToQueue = currentPatrons.map(patronString => {
         const lowerPatronString = patronString.toLowerCase();
         let npcInfo = {
-            quantity: 1,
+            quantity: 1, // Default to 1 since we removed groups
             race: '',
             job: '',
             appearance: patronString
         };
 
-        let quantityFound = false;
-        for (const keyword in quantityKeywords) {
-            if (lowerPatronString.startsWith(keyword)) {
-                npcInfo.quantity = quantityKeywords[keyword]();
-                quantityFound = true;
-                break;
-            }
-        }
-
         const sortedRaces = [...npcDataForPatrons.races].sort((a,b) => b.length - a.length);
         for (const race of sortedRaces) {
-            const plural = racePlurals[race] || `${race}s`;
-            if (lowerPatronString.includes(race.replace('_', ' ')) || lowerPatronString.includes(plural)) {
+            if (lowerPatronString.includes(race.replace('_', ' '))) {
                 npcInfo.race = race;
-                if (!quantityFound && lowerPatronString.includes(plural)) {
-                    npcInfo.quantity = Math.floor(Math.random() * 3) + 2;
-                }
                 break;
             }
         }
@@ -518,18 +507,22 @@ function generatePatronsAsNpcs() {
                 break;
             }
         }
-
         return npcInfo;
     });
 
+    newNpcsToQueue.push(...patronsToQueue);
+
+    // 3. Update sessionStorage
     const existingQueue = JSON.parse(sessionStorage.getItem('pendingNpcsForGeneration')) || [];
-    const combinedQueue = existingQueue.concat(patronsToQueue);
+    const combinedQueue = existingQueue.concat(newNpcsToQueue);
     
     sessionStorage.setItem('pendingNpcsForGeneration', JSON.stringify(combinedQueue));
-
+    
+    // 4. Update user feedback
     const totalQueued = combinedQueue.reduce((acc, curr) => acc + curr.quantity, 0);
-    const addedCount = patronsToQueue.reduce((acc, curr) => acc + curr.quantity, 0);
-    showCopyFeedback(`${addedCount} patrons added. ${totalQueued} total now in queue!`);
+    const addedCount = newNpcsToQueue.reduce((acc, curr) => acc + curr.quantity, 0);
+    const patronCount = patronsToQueue.length;
+    showCopyFeedback(`${addedCount} characters added (Innkeeper + ${patronCount} patrons). ${totalQueued} total now in queue!`);
 }
 
 
