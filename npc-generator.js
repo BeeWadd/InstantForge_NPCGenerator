@@ -1,3 +1,4 @@
+
 console.log("InstantForge: NPCs script loaded.");
 let npcData;
 let savedNpcs = [];
@@ -141,9 +142,10 @@ function generateDetails() {
 }
 
 function generateNpc(forceRandomize = false) {
-    const race = (forceRandomize || !ui.race.value) ? pick(npcData.races) : ui.race.value;
-    const gender = (forceRandomize || !ui.gender.value) ? pick(['male', 'female', 'neutral']) : ui.gender.value;
-    const job = (forceRandomize || !ui.job.value) ? pick(npcData.jobs) : ui.job.value;
+    // Prioritize existing form values unless randomizing everything
+    const race = !forceRandomize && ui.race.value ? ui.race.value : pick(npcData.races);
+    const gender = !forceRandomize && ui.gender.value ? ui.gender.value : pick(['male', 'female', 'neutral']);
+    const job = !forceRandomize && ui.job.value ? ui.job.value : pick(npcData.jobs);
 
     const name = !lockStates.name ? generateName(race, gender) : ui.name.value;
     const appearance = !lockStates.appearance ? generateAppearance(race, gender) : ui.appearance.value;
@@ -237,20 +239,17 @@ function showCopyFeedback(message, isError = false, duration = 2000) {
     }, duration);
 }
 
-function clearAll() {
-    const inputs = [ui.name, ui.appearance, ui.details, ui.context];
-    inputs.forEach(input => input.value = '');
-    const selects = [ui.race, ui.gender, ui.job];
-    selects.forEach(select => select.value = '');
+function clearForm(respectLocks = true) {
+    if (!respectLocks || !lockStates.name) ui.name.value = '';
+    if (!respectLocks || !lockStates.appearance) ui.appearance.value = '';
+    if (!respectLocks || !lockStates.details) ui.details.value = '';
+    ui.race.value = '';
+    ui.gender.value = '';
+    ui.job.value = '';
+    ui.context.value = '';
+}
 
-    // Reset locks
-    lockStates = { name: false, appearance: false, details: false };
-    Object.keys(lockStates).forEach(field => {
-        const btn = ui[`lock${capitalize(field)}Btn`];
-        btn.dataset.locked = 'false';
-        btn.setAttribute('aria-label', `Lock ${capitalize(field)}`);
-    });
-
+function clearOutput() {
     ui.outputName.textContent = 'Your NPC Appears Here';
     ui.outputSubtitle.textContent = '';
     ui.outputAppearance.textContent = '';
@@ -270,6 +269,20 @@ function clearAll() {
     ui.copyFeedback.style.opacity = 0;
     setTimeout(() => { ui.copyFeedback.textContent = ''; }, 300);
 }
+
+function clearAll() {
+    clearForm(false);
+    clearOutput();
+    
+    // Reset locks
+    lockStates = { name: false, appearance: false, details: false };
+    Object.keys(lockStates).forEach(field => {
+        const btn = ui[`lock${capitalize(field)}Btn`];
+        btn.dataset.locked = 'false';
+        btn.setAttribute('aria-label', `Lock ${capitalize(field)}`);
+    });
+}
+
 
 // --- HISTORY & EXPORT FUNCTIONS ---
 
@@ -474,57 +487,49 @@ async function processQueuedNpcs() {
     if (!pendingNpcsJson) return;
 
     try {
-        const npcsToGenerate = JSON.parse(pendingNpcsJson);
-        if (!Array.isArray(npcsToGenerate) || npcsToGenerate.length === 0) {
+        const patronsToProcess = JSON.parse(pendingNpcsJson);
+        if (!Array.isArray(patronsToProcess) || patronsToProcess.length === 0) {
             sessionStorage.removeItem('pendingNpcsForGeneration');
             return;
         }
 
-        showCopyFeedback(`Generating ${npcsToGenerate.length} queued patrons...`, false, 5000);
+        const totalNpcsToGenerate = patronsToProcess.reduce((acc, curr) => acc + curr.quantity, 0);
+        showCopyFeedback(`Generating ${totalNpcsToGenerate} queued patrons...`, false, 5000);
         
         await new Promise(resolve => setTimeout(resolve, 500)); 
 
-        for (const pendingNpc of npcsToGenerate) {
-            // 1. Clear form inputs but preserve existing user locks
-            Object.keys(lockStates).forEach(field => {
-                if (!lockStates[field]) {
-                    ui[field].value = '';
-                }
-            });
-            ui.race.value = '';
-            ui.gender.value = '';
-            ui.job.value = '';
-            ui.context.value = '';
+        for (const patronInfo of patronsToProcess) {
+            for (let i = 0; i < patronInfo.quantity; i++) {
+                // Clear form for this generation, but respect user's manual locks
+                clearForm(true);
 
-            // 2. Populate form with data from tavern
-            if (pendingNpc.job) {
-                ui.job.value = pendingNpc.job;
-            }
-            if (pendingNpc.appearance) {
-                ui.appearance.value = pendingNpc.appearance;
-                // Temporarily lock the appearance field
+                // Populate form with context from the patron
+                if (patronInfo.race) ui.race.value = patronInfo.race;
+                if (patronInfo.job) ui.job.value = patronInfo.job;
+                
+                // Set and lock appearance to preserve the full context string
+                ui.appearance.value = patronInfo.appearance;
+                const wasAppearanceLocked = lockStates.appearance;
                 lockStates.appearance = true;
                 ui.lockAppearanceBtn.dataset.locked = 'true';
-                ui.lockAppearanceBtn.setAttribute('aria-label', `Unlock Appearance`);
+
+                // Generate and save
+                generateNpc(false);
+                saveNpc(false);
+
+                // Restore user's lock state for appearance
+                lockStates.appearance = wasAppearanceLocked;
+                ui.lockAppearanceBtn.dataset.locked = String(wasAppearanceLocked);
             }
-
-            // 3. Generate the rest of the NPC
-            generateNpc(false);
-
-            // 4. Save without showing user feedback for each one
-            saveNpc(false);
-            
-            // 5. Unlock the field for the next iteration / user
-            lockStates.appearance = false;
-            ui.lockAppearanceBtn.dataset.locked = 'false';
-            ui.lockAppearanceBtn.setAttribute('aria-label', `Lock Appearance`);
         }
 
         sessionStorage.removeItem('pendingNpcsForGeneration');
-        showCopyFeedback(`${npcsToGenerate.length} Patron NPCs created and saved!`);
+        showCopyFeedback(`${totalNpcsToGenerate} Patron NPCs created and saved!`);
         
-        // Clear the form to a fresh state after processing is complete
-        clearAll();
+        // After processing, clear the form and output for the user, respecting locks.
+        clearForm(true);
+        clearOutput();
+
     } catch (error) {
         console.error("Error processing queued NPCs:", error);
         sessionStorage.removeItem('pendingNpcsForGeneration');

@@ -1,3 +1,4 @@
+
 console.log("InstantForge: Taverns script loaded.");
 let tavernData;
 let savedTaverns = [];
@@ -458,32 +459,74 @@ function generatePatronsAsNpcs() {
         showCopyFeedback("Generate a tavern with patrons first!", true);
         return;
     }
-    if (!npcDataForPatrons || !npcDataForPatrons.jobs) {
+    if (!npcDataForPatrons || !npcDataForPatrons.jobs || !npcDataForPatrons.races) {
         showCopyFeedback("NPC data not ready. Please try again in a moment.", true);
         return;
     }
 
-    const pendingNpcs = currentPatrons.map(patronString => {
-        let foundJob = '';
-        // Sort jobs by length descending to match longer names first (e.g., "Bounty Hunter" before "Hunter")
-        const sortedJobs = [...npcDataForPatrons.jobs].sort((a, b) => b.length - a.length);
+    const quantityKeywords = {
+        'a group of': () => Math.floor(Math.random() * 3) + 2, // 2-4
+        'a pair of': () => 2,
+        'a couple of': () => 2,
+        'two': () => 2,
+        'three': () => 3,
+        'four': () => 4,
+        'five': () => 5,
+        'some': () => Math.floor(Math.random() * 3) + 2,
+    };
+    
+    const racePlurals = { 'dwarf': 'dwarves', 'elf': 'elves' };
 
-        for (const job of sortedJobs) {
-            if (patronString.toLowerCase().includes(job.toLowerCase())) {
-                foundJob = job;
+    const pendingNpcs = currentPatrons.map(patronString => {
+        const lowerPatronString = patronString.toLowerCase();
+        let npcInfo = {
+            quantity: 1,
+            race: '',
+            job: '',
+            appearance: patronString
+        };
+
+        // 1. Detect Quantity
+        let quantityFound = false;
+        for (const keyword in quantityKeywords) {
+            if (lowerPatronString.startsWith(keyword)) {
+                npcInfo.quantity = quantityKeywords[keyword]();
+                quantityFound = true;
+                break;
+            }
+        }
+
+        // 2. Detect Race (sorted by length to catch 'half-orc' before 'orc')
+        const sortedRaces = [...npcDataForPatrons.races].sort((a,b) => b.length - a.length);
+        for (const race of sortedRaces) {
+            const plural = racePlurals[race] || `${race}s`;
+            if (lowerPatronString.includes(race.replace('_', ' ')) || lowerPatronString.includes(plural)) {
+                npcInfo.race = race;
+                if (!quantityFound && lowerPatronString.includes(plural)) {
+                    npcInfo.quantity = Math.floor(Math.random() * 3) + 2;
+                }
                 break;
             }
         }
         
-        return {
-            job: foundJob,
-            appearance: patronString, // The full string provides good context
-        };
+        // 3. Detect Job (sorted by length to catch 'Bounty Hunter' before 'Hunter')
+        const sortedJobs = [...npcDataForPatrons.jobs].sort((a, b) => b.length - a.length);
+        for (const job of sortedJobs) {
+            // Add word boundaries to avoid partial matches like "gravedigger" in "grave"
+            const jobRegex = new RegExp(`\\b${job.toLowerCase()}\\b`);
+            if (jobRegex.test(lowerPatronString)) {
+                npcInfo.job = job;
+                break;
+            }
+        }
+
+        return npcInfo;
     });
 
     sessionStorage.setItem('pendingNpcsForGeneration', JSON.stringify(pendingNpcs));
-    showCopyFeedback(`${pendingNpcs.length} patrons queued for generation!`);
+    showCopyFeedback(`${pendingNpcs.reduce((acc, curr) => acc + curr.quantity, 0)} patrons queued for generation!`);
 }
+
 
 // --- EVENT LISTENERS & INITIALIZATION ---
 document.addEventListener('DOMContentLoaded', async () => {
