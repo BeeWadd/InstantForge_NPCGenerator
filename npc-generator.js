@@ -270,17 +270,19 @@ function clearOutput() {
     setTimeout(() => { ui.copyFeedback.textContent = ''; }, 300);
 }
 
-function clearAll() {
-    clearForm(false);
-    clearOutput();
-    
-    // Reset locks
+function resetLocks() {
     lockStates = { name: false, appearance: false, details: false };
     Object.keys(lockStates).forEach(field => {
         const btn = ui[`lock${capitalize(field)}Btn`];
         btn.dataset.locked = 'false';
         btn.setAttribute('aria-label', `Lock ${capitalize(field)}`);
     });
+}
+
+function clearAll() {
+    clearForm(false);
+    clearOutput();
+    resetLocks();
 }
 
 
@@ -500,24 +502,27 @@ async function processQueuedNpcs() {
 
         for (const patronInfo of patronsToProcess) {
             for (let i = 0; i < patronInfo.quantity; i++) {
-                // Clear form for this generation, but respect user's manual locks
-                clearForm(true);
+                // Targeted form reset to preserve context but allow unique generation
+                if (!lockStates.name) ui.name.value = '';
+                if (!lockStates.details) ui.details.value = '';
+                ui.gender.value = ''; // Randomize gender for each group member
+                ui.context.value = '';
 
                 // Populate form with context from the patron
-                if (patronInfo.race) ui.race.value = patronInfo.race;
-                if (patronInfo.job) ui.job.value = patronInfo.job;
-                
-                // Set and lock appearance to preserve the full context string
+                ui.race.value = patronInfo.race || '';
+                ui.job.value = patronInfo.job || '';
                 ui.appearance.value = patronInfo.appearance;
+                
+                // Temporarily lock appearance to preserve the full context string
                 const wasAppearanceLocked = lockStates.appearance;
                 lockStates.appearance = true;
                 ui.lockAppearanceBtn.dataset.locked = 'true';
 
                 // Generate and save
-                generateNpc(false);
-                saveNpc(false);
+                generateNpc(false); // `false` respects pre-filled form values
+                saveNpc(false); // `false` suppresses the "saved" feedback message
 
-                // Restore user's lock state for appearance
+                // Restore user's original lock state for appearance
                 lockStates.appearance = wasAppearanceLocked;
                 ui.lockAppearanceBtn.dataset.locked = String(wasAppearanceLocked);
             }

@@ -477,7 +477,7 @@ function generatePatronsAsNpcs() {
     
     const racePlurals = { 'dwarf': 'dwarves', 'elf': 'elves' };
 
-    const pendingNpcs = currentPatrons.map(patronString => {
+    const newlyParsedNpcs = currentPatrons.map(patronString => {
         const lowerPatronString = patronString.toLowerCase();
         let npcInfo = {
             quantity: 1,
@@ -512,7 +512,6 @@ function generatePatronsAsNpcs() {
         // 3. Detect Job (sorted by length to catch 'Bounty Hunter' before 'Hunter')
         const sortedJobs = [...npcDataForPatrons.jobs].sort((a, b) => b.length - a.length);
         for (const job of sortedJobs) {
-            // Add word boundaries to avoid partial matches like "gravedigger" in "grave"
             const jobRegex = new RegExp(`\\b${job.toLowerCase()}\\b`);
             if (jobRegex.test(lowerPatronString)) {
                 npcInfo.job = job;
@@ -523,8 +522,12 @@ function generatePatronsAsNpcs() {
         return npcInfo;
     });
 
-    sessionStorage.setItem('pendingNpcsForGeneration', JSON.stringify(pendingNpcs));
-    showCopyFeedback(`${pendingNpcs.reduce((acc, curr) => acc + curr.quantity, 0)} patrons queued for generation!`);
+    const existingQueue = JSON.parse(sessionStorage.getItem('pendingNpcsForGeneration')) || [];
+    const combinedQueue = existingQueue.concat(newlyParsedNpcs);
+    sessionStorage.setItem('pendingNpcsForGeneration', JSON.stringify(combinedQueue));
+
+    const totalQueued = combinedQueue.reduce((acc, curr) => acc + curr.quantity, 0);
+    showCopyFeedback(`${totalQueued} patrons now queued for NPC generation!`);
 }
 
 
