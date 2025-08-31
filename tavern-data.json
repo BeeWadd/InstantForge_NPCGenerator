@@ -574,7 +574,6 @@
     "A masked bard who never removes their gloves.",
     "A hunter drying boots by the fire, two different sizes.",
     "A scribe copying a contract so carefully the ink holds its breath.",
-    "A sleepy mule in the doorway while its owner drinks alone.",
     "A tiefling innkeeper tasting the room’s stew and wincing politely.",
     "A dwarf cartographer sketching the tavern as if it were a mountain.",
     "A goblin scout with satchels layered like scales.",
@@ -591,8 +590,6 @@
     "A hunter hanging snares from chair backs like decorations.",
     "A scout with mud on one boot and blood on the other.",
     "A scribe tallying debts of ancient kings on a napkin.",
-    "A warforged with a dented helm, ordering oil like brandy.",
-    "A catfolk merchant purring over a tray of silver rings.",
     "A halfling innkeeper recruiting tasters for tomorrow’s pies.",
     "A dwarven alchemist offering a suspiciously smoky sample.",
     "A bard practicing a lullaby no one remembers hearing before.",
@@ -606,7 +603,6 @@
     "A noble incognito, betrayed only by soft, unused hands.",
     "A sea-druid picking salt from her hair and cursing tides.",
     "A mason appraising the walls and finding them wanting.",
-    "A courier raven on a perch, staring like a tax collector.",
     "A fortune-blind gambler insisting the next hand will turn.",
     "A deserter studying the door more than the ale.",
     "A wizard's apprentice selling weather in bottles, half full of sky.",
@@ -657,8 +653,7 @@
     "A bard who juggles, never dropping anything except the truth",
     "An innkeeper arguing with the soup like an equal",
     "A mute sailor who speaks fluent eyebrow",
-    "A carpenter admiring the beams and the brawl potential",
-    "A messenger pigeon on a windowsill, judging"
+    "A carpenter admiring the beams and the brawl potential"
   ],
   "rumors": [
     "They say the old well behind the inn leads to a forgotten smuggler's tunnel.",
