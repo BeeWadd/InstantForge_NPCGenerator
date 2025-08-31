@@ -2,6 +2,7 @@ console.log("InstantForge: Taverns script loaded.");
 let tavernData;
 let savedTaverns = [];
 let currentPatrons = [];
+let npcDataForPatrons;
 
 // --- CONSTANTS ---
 const iconLockOpenSVG = `<svg class="icon-lock-open" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg>`;
@@ -453,12 +454,35 @@ function setupLockButtons() {
 }
 
 function generatePatronsAsNpcs() {
-    if (currentPatrons && currentPatrons.length > 0) {
-        sessionStorage.setItem('pendingPatrons', JSON.stringify(currentPatrons));
-        window.location.href = 'npc-generator.html';
-    } else {
+    if (!currentPatrons || currentPatrons.length === 0) {
         showCopyFeedback("Generate a tavern with patrons first!", true);
+        return;
     }
+    if (!npcDataForPatrons || !npcDataForPatrons.jobs) {
+        showCopyFeedback("NPC data not ready. Please try again in a moment.", true);
+        return;
+    }
+
+    const pendingNpcs = currentPatrons.map(patronString => {
+        let foundJob = '';
+        // Sort jobs by length descending to match longer names first (e.g., "Bounty Hunter" before "Hunter")
+        const sortedJobs = [...npcDataForPatrons.jobs].sort((a, b) => b.length - a.length);
+
+        for (const job of sortedJobs) {
+            if (patronString.toLowerCase().includes(job.toLowerCase())) {
+                foundJob = job;
+                break;
+            }
+        }
+        
+        return {
+            job: foundJob,
+            appearance: patronString, // The full string provides good context
+        };
+    });
+
+    sessionStorage.setItem('pendingNpcsForGeneration', JSON.stringify(pendingNpcs));
+    showCopyFeedback(`${pendingNpcs.length} patrons queued for generation!`);
 }
 
 // --- EVENT LISTENERS & INITIALIZATION ---
@@ -469,6 +493,20 @@ document.addEventListener('DOMContentLoaded', async () => {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         tavernData = await response.json();
+
+        // Fetch NPC data for patron generation
+        try {
+            const npcResponse = await fetch('npc-data.json');
+            if (npcResponse.ok) {
+                npcDataForPatrons = await npcResponse.json();
+            } else {
+                throw new Error('Failed to fetch npc-data.json');
+            }
+        } catch (e) {
+            console.error("Could not load npc-data for patrons.", e);
+            ui.generatePatronsBtn.title = "Could not load NPC data.";
+            ui.generatePatronsBtn.disabled = true;
+        }
 
         populateSelects();
         loadHistory();

@@ -469,29 +469,65 @@ function setupLockButtons() {
     });
 }
 
-async function processPendingPatrons() {
-    const pendingPatronsJson = sessionStorage.getItem('pendingPatrons');
-    if (pendingPatronsJson) {
-        try {
-            const patrons = JSON.parse(pendingPatronsJson);
-            if (Array.isArray(patrons) && patrons.length > 0) {
-                showCopyFeedback(`Generating ${patrons.length} NPCs from patrons...`, false, 4000);
+async function processQueuedNpcs() {
+    const pendingNpcsJson = sessionStorage.getItem('pendingNpcsForGeneration');
+    if (!pendingNpcsJson) return;
 
-                for (const patronDescription of patrons) {
-                    generateNpc(true);
-                    ui.name.value = patronDescription;
-                    ui.outputName.textContent = patronDescription;
-                    ui.outputSubtitle.textContent = "Patron";
-                    saveNpc(false);
-                }
-                
-                sessionStorage.removeItem('pendingPatrons');
-                showCopyFeedback(`${patrons.length} Patron NPCs generated and saved!`);
-            }
-        } catch (error) {
-            console.error("Error processing pending patrons:", error);
-            sessionStorage.removeItem('pendingPatrons');
+    try {
+        const npcsToGenerate = JSON.parse(pendingNpcsJson);
+        if (!Array.isArray(npcsToGenerate) || npcsToGenerate.length === 0) {
+            sessionStorage.removeItem('pendingNpcsForGeneration');
+            return;
         }
+
+        showCopyFeedback(`Generating ${npcsToGenerate.length} queued patrons...`, false, 5000);
+        
+        await new Promise(resolve => setTimeout(resolve, 500)); 
+
+        for (const pendingNpc of npcsToGenerate) {
+            // 1. Clear form inputs but preserve existing user locks
+            Object.keys(lockStates).forEach(field => {
+                if (!lockStates[field]) {
+                    ui[field].value = '';
+                }
+            });
+            ui.race.value = '';
+            ui.gender.value = '';
+            ui.job.value = '';
+            ui.context.value = '';
+
+            // 2. Populate form with data from tavern
+            if (pendingNpc.job) {
+                ui.job.value = pendingNpc.job;
+            }
+            if (pendingNpc.appearance) {
+                ui.appearance.value = pendingNpc.appearance;
+                // Temporarily lock the appearance field
+                lockStates.appearance = true;
+                ui.lockAppearanceBtn.dataset.locked = 'true';
+                ui.lockAppearanceBtn.setAttribute('aria-label', `Unlock Appearance`);
+            }
+
+            // 3. Generate the rest of the NPC
+            generateNpc(false);
+
+            // 4. Save without showing user feedback for each one
+            saveNpc(false);
+            
+            // 5. Unlock the field for the next iteration / user
+            lockStates.appearance = false;
+            ui.lockAppearanceBtn.dataset.locked = 'false';
+            ui.lockAppearanceBtn.setAttribute('aria-label', `Lock Appearance`);
+        }
+
+        sessionStorage.removeItem('pendingNpcsForGeneration');
+        showCopyFeedback(`${npcsToGenerate.length} Patron NPCs created and saved!`);
+        
+        // Clear the form to a fresh state after processing is complete
+        clearAll();
+    } catch (error) {
+        console.error("Error processing queued NPCs:", error);
+        sessionStorage.removeItem('pendingNpcsForGeneration');
     }
 }
 
@@ -509,7 +545,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         loadHistory();
         setupLockButtons();
         
-        await processPendingPatrons();
+        await processQueuedNpcs();
 
         ui.generateBtn.addEventListener('click', () => generateNpc(false));
         ui.randomizeBtn.addEventListener('click', () => generateNpc(true));
