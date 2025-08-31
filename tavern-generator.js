@@ -1,7 +1,7 @@
-
 console.log("InstantForge: Taverns script loaded.");
 let tavernData;
 let savedTaverns = [];
+let currentPatrons = [];
 
 // --- CONSTANTS ---
 const iconLockOpenSVG = `<svg class="icon-lock-open" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg>`;
@@ -77,6 +77,7 @@ const ui = {
     exportCsvBtn: document.getElementById('export-csv'),
     exportMdBtn: document.getElementById('export-md'),
     exportPdfBtn: document.getElementById('export-pdf'),
+    generatePatronsBtn: document.getElementById('generate-patrons'),
     // Lock buttons
     lockNameBtn: document.getElementById('lock-name'),
     lockDescriptionBtn: document.getElementById('lock-description'),
@@ -94,9 +95,9 @@ function generateName() {
         const noun1 = pick(templates.nouns);
         result = result.replace('{noun}', noun1);
         if (template.includes('{noun2}')) {
-            let noun2 = pick(templates.nouns);
+            let noun2 = pick(templates.noun2);
             while (noun1 === noun2) {
-                noun2 = pick(templates.nouns);
+                noun2 = pick(templates.noun2);
             }
             result = result.replace('{noun2}', noun2);
         }
@@ -147,6 +148,7 @@ function generateTavern(forceRandomize = false) {
 
     const innkeeper = generateInnkeeper();
     const patrons = sample(tavernData.patrons.filter(p => !generationHistory.patrons.includes(p)), 3);
+    currentPatrons = [...patrons]; // Store the raw patrons
     patrons.forEach(p => pickUnique([p], 'patrons')); // Add to history
     const rumor = pickUnique(tavernData.rumors, 'rumors');
     
@@ -163,6 +165,8 @@ function generateTavern(forceRandomize = false) {
     
     ui.rumorsText.textContent = "(Click to reveal)";
     ui.rumorsText.dataset.rumor = rumor;
+
+    ui.generatePatronsBtn.disabled = false;
 }
 
 function populateSelects() {
@@ -245,6 +249,9 @@ function clearAll() {
         delete ui.rumorsText.dataset.rumor;
     }
     
+    currentPatrons = [];
+    ui.generatePatronsBtn.disabled = true;
+
     ui.copyFeedback.style.opacity = 0;
     setTimeout(() => { ui.copyFeedback.textContent = ''; }, 300);
 }
@@ -445,6 +452,14 @@ function setupLockButtons() {
     });
 }
 
+function generatePatronsAsNpcs() {
+    if (currentPatrons && currentPatrons.length > 0) {
+        sessionStorage.setItem('pendingPatrons', JSON.stringify(currentPatrons));
+        window.location.href = 'npc-generator.html';
+    } else {
+        showCopyFeedback("Generate a tavern with patrons first!", true);
+    }
+}
 
 // --- EVENT LISTENERS & INITIALIZATION ---
 document.addEventListener('DOMContentLoaded', async () => {
@@ -465,6 +480,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         ui.saveBtn.addEventListener('click', saveTavern);
         ui.clearBtn.addEventListener('click', clearAll);
         ui.clearHistoryBtn.addEventListener('click', clearHistory);
+        ui.generatePatronsBtn.addEventListener('click', generatePatronsAsNpcs);
         
         ui.exportHistoryBtn.addEventListener('click', showExportModal);
         ui.closeModalBtn.addEventListener('click', hideExportModal);

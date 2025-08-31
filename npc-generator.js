@@ -228,13 +228,13 @@ Secret: ${ui.secretText.dataset.secret || ui.secretText.textContent}
     });
 }
 
-function showCopyFeedback(message, isError = false) {
+function showCopyFeedback(message, isError = false, duration = 2000) {
     ui.copyFeedback.textContent = message;
     ui.copyFeedback.style.color = isError ? '#dc3545' : 'var(--primary-color)';
     ui.copyFeedback.style.opacity = 1;
     setTimeout(() => {
         ui.copyFeedback.style.opacity = 0;
-    }, 2000);
+    }, duration);
 }
 
 function clearAll() {
@@ -273,9 +273,9 @@ function clearAll() {
 
 // --- HISTORY & EXPORT FUNCTIONS ---
 
-function saveNpc() {
+function saveNpc(showFeedback = true) {
     if (ui.outputName.textContent === "Your NPC Appears Here") {
-        showCopyFeedback("Generate an NPC first!", true);
+        if(showFeedback) showCopyFeedback("Generate an NPC first!", true);
         return;
     }
     const npc = {
@@ -293,7 +293,7 @@ function saveNpc() {
     savedNpcs.unshift(npc);
     localStorage.setItem('savedNpcs', JSON.stringify(savedNpcs));
     renderHistory();
-    showCopyFeedback("NPC Saved!");
+    if(showFeedback) showCopyFeedback("NPC Saved!");
 }
 
 function renderHistory() {
@@ -469,6 +469,32 @@ function setupLockButtons() {
     });
 }
 
+async function processPendingPatrons() {
+    const pendingPatronsJson = sessionStorage.getItem('pendingPatrons');
+    if (pendingPatronsJson) {
+        try {
+            const patrons = JSON.parse(pendingPatronsJson);
+            if (Array.isArray(patrons) && patrons.length > 0) {
+                showCopyFeedback(`Generating ${patrons.length} NPCs from patrons...`, false, 4000);
+
+                for (const patronDescription of patrons) {
+                    generateNpc(true);
+                    ui.name.value = patronDescription;
+                    ui.outputName.textContent = patronDescription;
+                    ui.outputSubtitle.textContent = "Patron";
+                    saveNpc(false);
+                }
+                
+                sessionStorage.removeItem('pendingPatrons');
+                showCopyFeedback(`${patrons.length} Patron NPCs generated and saved!`);
+            }
+        } catch (error) {
+            console.error("Error processing pending patrons:", error);
+            sessionStorage.removeItem('pendingPatrons');
+        }
+    }
+}
+
 
 // --- EVENT LISTENERS & INITIALIZATION ---
 document.addEventListener('DOMContentLoaded', async () => {
@@ -483,10 +509,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         loadHistory();
         setupLockButtons();
         
+        await processPendingPatrons();
+
         ui.generateBtn.addEventListener('click', () => generateNpc(false));
         ui.randomizeBtn.addEventListener('click', () => generateNpc(true));
         ui.copyBtn.addEventListener('click', copyToClipboard);
-        ui.saveBtn.addEventListener('click', saveNpc);
+        ui.saveBtn.addEventListener('click', () => saveNpc(true));
         ui.clearBtn.addEventListener('click', clearAll);
         ui.clearHistoryBtn.addEventListener('click', clearHistory);
         
