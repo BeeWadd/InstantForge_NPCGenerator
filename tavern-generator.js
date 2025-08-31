@@ -1,3 +1,4 @@
+
 console.log("InstantForge: Taverns script loaded.");
 let tavernData;
 let savedTaverns = [];
@@ -506,22 +507,33 @@ function generatePatronsAsNpcs() {
             appearance: patronString
         };
 
-        const sortedRaces = [...npcDataForPatrons.races].sort((a,b) => b.length - a.length);
-        for (const race of sortedRaces) {
-            if (lowerPatronString.includes(race.replace('_', ' '))) {
-                npcInfo.race = race;
-                break;
+        // Find the race that appears earliest in the string
+        let bestRaceMatch = { race: '', index: Infinity };
+        for (const race of npcDataForPatrons.races) {
+            const raceString = race.replace('_', ' ');
+            const raceRegex = new RegExp(`\\b${raceString}\\b`);
+            const match = lowerPatronString.match(raceRegex);
+            if (match && match.index < bestRaceMatch.index) {
+                bestRaceMatch = { race: race, index: match.index };
             }
+        }
+        if (bestRaceMatch.race) {
+            npcInfo.race = bestRaceMatch.race;
+        }
+
+        // Find the job that appears earliest in the string
+        let bestJobMatch = { job: '', index: Infinity };
+        for (const job of npcDataForPatrons.jobs) {
+            const jobRegex = new RegExp(`\\b${job.toLowerCase()}\\b`);
+            const match = lowerPatronString.match(jobRegex);
+            if (match && match.index < bestJobMatch.index) {
+                bestJobMatch = { job: job, index: match.index };
+            }
+        }
+        if (bestJobMatch.job) {
+            npcInfo.job = bestJobMatch.job;
         }
         
-        const sortedJobs = [...npcDataForPatrons.jobs].sort((a, b) => b.length - a.length);
-        for (const job of sortedJobs) {
-            const jobRegex = new RegExp(`\\b${job.toLowerCase()}\\b`);
-            if (jobRegex.test(lowerPatronString)) {
-                npcInfo.job = job;
-                break;
-            }
-        }
         return npcInfo;
     });
 

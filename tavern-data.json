@@ -310,12 +310,12 @@
   },
   "innkeepers": {
     "personalities": [
-      "Gruff but fair", "Overly cheerful and nosy", "Suspicious and watchful of everyone", "Tired, world-weary, and cynical",
-      "A bustling, motherly figure", "A former adventurer with a bad leg", "A slick, profit-obsessed charmer", "Quiet and observant, misses nothing",
-      "A bubbly gossip who knows everything", "Stern and humorless, runs a tight ship", "Deadpan joker who never smiles at their own punchlines",
-      "Nervous host who hates loud noises", "Relentless optimist who believes in second chances", "Scholar of local history who corrects everyone’s dates",
-      "Soft-spoken diplomat who diffuses fights with compliments", "Rule-stickler who loves forms and tokens", "Grand storyteller whose tales grow with each telling",
-      "Pious caretaker who insists on grace before drinks", "Warm pragmatist who can price anything at a glance"
+      "gruff but fair", "overly cheerful and nosy", "suspicious and watchful of everyone", "tired, world-weary, and cynical",
+      "a bustling, motherly figure", "a former adventurer with a bad leg", "a slick, profit-obsessed charmer", "quiet and observant, misses nothing",
+      "a bubbly gossip who knows everything", "stern and humorless, runs a tight ship", "deadpan joker who never smiles at their own punchlines",
+      "nervous host who hates loud noises", "relentless optimist who believes in second chances", "scholar of local history who corrects everyone’s dates",
+      "soft-spoken diplomat who diffuses fights with compliments", "rule-stickler who loves forms and tokens", "grand storyteller whose tales grow with each telling",
+      "pious caretaker who insists on grace before drinks", "warm pragmatist who can price anything at a glance"
     ],
     "quirks": [
       "polishes the same mug constantly", "has a pet mouse that lives in their pocket", "never gives a straight answer to a direct question",
