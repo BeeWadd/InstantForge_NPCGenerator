@@ -1,0 +1,64 @@
+
+{
+  "types": {
+    "Sword": ["Longsword", "Scimitar", "Falchion", "Shortsword", "Greatsword", "Rapier"],
+    "Axe": ["Battleaxe", "Handaxe", "Greataxe", "War Axe"],
+    "Hammer": ["Warhammer", "Maul", "Light Hammer"],
+    "Polearm": ["Glaive", "Halberd", "Pike", "Spear", "Trident"],
+    "Dagger": ["Dagger", "Dirk", "Stiletto", "Kukri"],
+    "Ranged": ["Longbow", "Shortbow", "Heavy Crossbow", "Light Crossbow"]
+  },
+  "qualities": ["Crude", "Common", "Masterwork", "Magical"],
+  "components": {
+    "bladeMaterials": {
+      "metal": ["pitted iron", "dull steel", "chipped bronze", "burnished steel", "dark iron"],
+      "exotic": ["razor-sharp obsidian", "polished bone", "meteorite iron", "unblemished adamantine", "gleaming mithral", "green-tinged copper"]
+    },
+    "haftMaterials": {
+      "wood": ["splintered pine", "sturdy oak", "dark ash", "pale birch", "polished ironwood", "petrified weirwood"],
+      "exotic": ["carved bone", "ridged horn", "a dragon's femur", "cold iron", "silver-inlaid ebony"]
+    },
+    "grips": ["a worn leather wrap", "a simple wire wrap", "a bare, smooth grip", "a grip of braided sinew", "a sharkskin wrap", "a velvet-lined grip"],
+    "guards": ["a simple crossguard", "a curved guard", "an ornate basket hilt", "no guard at all", "a disc-shaped guard", "a horned guard"],
+    "pommels": ["a heavy round pommel", "a faceted scent-stopper pommel", "a skull-shaped pommel", "a simple cap", "a gemstone-inlaid pommel", "a weighted spike pommel"]
+  },
+  "descriptors": {
+    "Crude": ["is rusty and notched", "is poorly-balanced and heavy", "is chipped along the edge", "is caked in old grime", "has a wobbly hilt"],
+    "Common": ["is worn but serviceable", "is stained from long use", "is of a simple, practical design", "is sturdy and reliable", "has been sharpened many times"],
+    "Masterwork": ["is perfectly balanced", "has a razor-sharp edge", "is expertly crafted and flawless", "is surprisingly lightweight", "is polished to a mirror shine"],
+    "Magical": ["hums with a quiet energy", "glows with faint, shifting runes", "feels unnaturally warm to the touch", "seems to absorb the light around it", "is unnaturally light and silent"]
+  },
+  "histories": {
+    "Crude": [
+      "hastily made in a goblin war-camp", "a practice piece from a clumsy apprentice", "scavenged from a battlefield", "cobbled together from scrap metal and wood", "the standard, poorly-made weapon of a bandit gang"
+    ],
+    "Common": [
+      "standard issue for the city watch", "a family heirloom, passed down by farmers and militia", "a reliable tool from a village blacksmith", "bought from a traveling merchant's cart", "the former property of a low-ranking soldier"
+    ],
+    "Masterwork": [
+      "crafted by a renowned dwarven weaponsmith", "the personal weapon of a knight captain", "a gift to a minor noble for services rendered", "the masterwork piece of a human smith seeking guild recognition", "forged for an elven blade-dancer"
+    ],
+    "Magical": [
+      "forged in dragon's fire and quenched in ice", "a gift from a fey lord for a forgotten favor", "used to slay a great beast generations ago", "imbued with the spirit of a storm elemental", "found in the tomb of an ancient sorcerer-king"
+    ]
+  },
+  "notableFeatures": [
+    "A series of notches are carved into the blade, one for each kill.", "The grip is worn smooth in one particular spot from long use.", "It is perfectly balanced for throwing, even if not designed for it.", "It makes a faint, almost inaudible whistling sound when swung.", "The maker's mark is an unusual, unidentifiable symbol.", "It never seems to get dirty or require cleaning.", "It feels heavier than it looks, and strikes with surprising force."
+  ],
+  "magicalProperties": [
+    { "name": "Scorching", "description": "Deals an extra 1d4 fire damage on a hit." },
+    { "name": "Icing", "description": "Deals an extra 1d4 cold damage on a hit." },
+    { "name": "Shocking", "description": "Deals an extra 1d4 lightning damage on a hit." },
+    { "name": "Venomous", "description": "Deals an extra 1d4 poison damage on a hit." },
+    { "name": "Steadfast", "description": "Grants the wielder advantage on saves against being frightened." },
+    { "name": "Returning", "description": "If thrown, the weapon returns to the wielder's hand at the end of the turn." },
+    { "name": "Keen", "description": "This weapon scores a critical hit on a roll of 19 or 20." }
+  ],
+  "nameTemplates": {
+    "patterns": ["The {adjective} {subtype}", "{noun}'s {adjective2}", "{creator}'s {subtype}"],
+    "adjectives": ["Bloodletter", "Soul-Drinker", "Glimmering", "Whispering", "Oathkeeper's", "Final", "Silent", "Storm's"],
+    "adjective2": ["Bite", "Kiss", "Whisper", "Edge", "Point", "Fury", "Lament", "Vengeance"],
+    "nouns": ["Sorrow", "Hope", "The King", "The Dragon", "Winter", "The Mountain", "The Serpent", "The Shadow"],
+    "creators": ["Gorthaur", "Elara", "Dunewright", "Volund", "Seraphine", "Master Korr", "Hadrik", "Alira", "Thorn", "Vesha"]
+  }
+}
