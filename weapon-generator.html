@@ -563,10 +563,7 @@
     <header>
         <a href="index.html" class="back-link" aria-label="Back to main InstantForge page">&larr; Back to InstantForge</a>
         <a href="index.html" class="logo-link" aria-label="InstantForge Home">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="logo" style="fill: var(--surface-color);">
-                <title>Weapon Generator Logo</title>
-                <path d="M12 2 L10 11 H3 v2 h7 v6 H9 v2 h6 v-2 H14 v-6 h7 v-2 H14 L12 2 Z" />
-            </svg>
+            <img src="assets/img/InstantForge_logo.png" alt="InstantForge Logo" class="logo">
         </a>
         <h1>InstantForge: Weapons</h1>
         <p>Forge unique weapons in seconds.</p>
@@ -578,6 +575,12 @@
                 <label for="weapon-type">Weapon Type</label>
                 <select id="weapon-type">
                     <option value="">Random</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="weapon-subtype">Subtype</label>
+                <select id="weapon-subtype" disabled>
+                    <option value="">Select a type first</option>
                 </select>
             </div>
             <div class="form-group">

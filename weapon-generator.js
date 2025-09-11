@@ -20,6 +20,7 @@ const capitalize = (str) => str ? str.charAt(0).toUpperCase() + str.slice(1) : '
 // --- DOM ELEMENTS ---
 const ui = {
     weaponType: document.getElementById('weapon-type'),
+    weaponSubtype: document.getElementById('weapon-subtype'),
     quality: document.getElementById('quality'),
     name: document.getElementById('name'),
     description: document.getElementById('description'),
@@ -86,7 +87,7 @@ function generateName(subtype, quality, property) {
 
 function generateDescription(subtype, quality) {
     const c = weaponData.components;
-    const isRanged = ["Ranged"].includes(ui.weaponType.value);
+    const isRanged = ["Longbow", "Shortbow", "Heavy Crossbow", "Light Crossbow"].includes(subtype);
     
     let parts = [];
     if (isRanged) {
@@ -117,7 +118,9 @@ function generateWeapon(forceRandomize = false) {
     const weaponType = (forceRandomize || !ui.weaponType.value) ? pick(Object.keys(weaponData.types)) : ui.weaponType.value;
     const quality = (forceRandomize || !ui.quality.value) ? pick(weaponData.qualities) : ui.quality.value;
     
-    const subtype = pick(weaponData.types[weaponType]);
+    const subtype = (forceRandomize || !ui.weaponSubtype.value || ui.weaponType.value !== weaponType) 
+        ? pick(weaponData.types[weaponType]) 
+        : ui.weaponSubtype.value;
     
     let property = { name: "Mundane", description: "This weapon has no special properties beyond its make." };
     if (quality === 'Magical') {
@@ -128,7 +131,10 @@ function generateWeapon(forceRandomize = false) {
     const description = !lockStates.description ? generateDescription(subtype, quality) : ui.description.value;
     const history = !lockStates.history ? generateHistory(quality) : ui.history.value;
     
+    // Update form controls before updating output
     ui.weaponType.value = weaponType;
+    populateSubtypes(weaponType);
+    ui.weaponSubtype.value = subtype;
     ui.quality.value = quality;
     ui.name.value = name;
     ui.description.value = description;
@@ -150,6 +156,31 @@ function generateWeapon(forceRandomize = false) {
     ui.featureText.dataset.feature = feature;
 }
 
+function populateSubtypes(weaponType) {
+    ui.weaponSubtype.innerHTML = '';
+    if (weaponType && weaponData.types[weaponType]) {
+        ui.weaponSubtype.disabled = false;
+        const randomOption = document.createElement('option');
+        randomOption.value = '';
+        randomOption.textContent = 'Random';
+        ui.weaponSubtype.appendChild(randomOption);
+
+        weaponData.types[weaponType].forEach(subtype => {
+            const option = document.createElement('option');
+            option.value = subtype;
+            option.textContent = subtype;
+            ui.weaponSubtype.appendChild(option);
+        });
+    } else {
+        ui.weaponSubtype.disabled = true;
+        const defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.textContent = 'Select a type first';
+        ui.weaponSubtype.appendChild(defaultOption);
+    }
+}
+
+
 function populateSelects() {
     Object.keys(weaponData.types).forEach(type => {
         const option = document.createElement('option');
@@ -163,6 +194,7 @@ function populateSelects() {
         option.textContent = level;
         ui.quality.appendChild(option);
     });
+    populateSubtypes(''); // Initialize subtype dropdown as disabled
 }
 
 function copyToClipboard() {
@@ -200,14 +232,22 @@ function showCopyFeedback(message, isError = false) {
 }
 
 function clearAll() {
-    // Clear inputs respecting locks
-    if (!lockStates.name) ui.name.value = '';
-    if (!lockStates.description) ui.description.value = '';
-    if (!lockStates.history) ui.history.value = '';
+    // Clear inputs (full clear ignores locks)
+    ui.name.value = '';
+    ui.description.value = '';
+    ui.history.value = '';
     
-    // Always clear dropdowns
     ui.weaponType.value = '';
     ui.quality.value = '';
+    populateSubtypes(''); // Reset and disable subtype dropdown
+
+    // Reset locks
+    lockStates = { name: false, description: false, history: false };
+    Object.keys(lockStates).forEach(field => {
+        const btn = ui[`lock${capitalize(field)}Btn`];
+        btn.dataset.locked = 'false';
+        btn.setAttribute('aria-label', `Lock ${capitalize(field)}`);
+    });
 
     // Clear output
     ui.outputName.textContent = 'Your Weapon Awaits';
@@ -416,6 +456,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         loadHistory();
         setupLockButtons();
         
+        ui.weaponType.addEventListener('change', () => populateSubtypes(ui.weaponType.value));
+
         ui.generateBtn.addEventListener('click', () => generateWeapon(false));
         ui.randomizeBtn.addEventListener('click', () => generateWeapon(true));
         ui.copyBtn.addEventListener('click', copyToClipboard);
