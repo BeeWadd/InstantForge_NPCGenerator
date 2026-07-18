@@ -10,7 +10,7 @@
     "lint": "node scripts/check-source.mjs",
     "typecheck": "tsc --noEmit",
     "verify:build": "node scripts/verify-build.mjs",
-    "test:unit": "node --test tests/utils.test.mjs tests/data-validation.test.mjs",
+    "test:unit": "node --test tests/utils.test.mjs tests/data-validation.test.mjs tests/forge-data.test.mjs",
     "test:browser": "npm run build && playwright test",
     "test": "npm run lint && npm run typecheck && npm run test:unit && npm run test:browser"
   },

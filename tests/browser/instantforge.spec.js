@@ -20,6 +20,88 @@ test('landing page exposes all generators and portable Forge controls', async ({
   await expect(page.getByRole('link', { name: 'Go to Weapon Generator' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Export Your Forge' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Import Your Forge' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'View Your Forge' })).toBeVisible();
+});
+
+test('Your Forge presents, filters, searches, and removes saved creations safely', async ({ page }) => {
+  await page.goto('/');
+  await page.evaluate(() => {
+    localStorage.setItem('savedNpcs', JSON.stringify([{
+      id: 'npc-1', name: '<img src=x onerror=alert(1)>', subtitle: 'Human Cartographer',
+      appearance: 'Ink-stained hands.', details: 'Quiet and observant.',
+      voiceMannerism: 'Counts under her breath.', hook: 'Needs an escort.',
+      goalOffer: 'Offers a hidden map.', secret: 'The map is incomplete.',
+    }]));
+    localStorage.setItem('savedMagicItems', JSON.stringify([{
+      id: 'magic-1', name: 'Lantern of Returning', subtitle: 'Rare Wondrous Item',
+      description: 'A blue lantern.', powers: 'Reveals familiar roads.',
+      history: 'Carried by a lost courier.', curse: 'It remembers every wrong turn.',
+    }]));
+    localStorage.setItem('savedTaverns', JSON.stringify([{
+      id: 'tavern-1', name: 'The Copper Griffin', subtitle: 'Comfortable Coaching Inn',
+      description: 'A warm roadside inn.', innkeeper: 'Mira Bell', signatureDrink: 'Ember Cider',
+      patrons: 'A courier and two miners.', rumor: 'The old bridge sings at midnight.',
+    }]));
+    localStorage.setItem('savedWeapons', JSON.stringify([{
+      id: 'weapon-1', name: 'Ashwake', subtitle: 'Masterwork Warhammer',
+      description: 'A dark iron hammer.', properties: 'Warm near undead.',
+      history: 'Forged beneath a monastery.', feature: 'Its head bears a sunburst.',
+    }]));
+  });
+
+  await page.goto('/forge.html');
+  await expect(page.locator('#forge-count-all')).toHaveText('4');
+  await expect(page.locator('.forge-entry')).toHaveCount(4);
+  await expect(page.locator('.forge-entry img')).toHaveCount(0);
+  await expect(page.locator('.forge-entry h3').first()).toHaveText('<img src=x onerror=alert(1)>');
+
+  await page.locator('[data-forge-filter="weapon"]').click();
+  await expect(page.locator('.forge-entry')).toHaveCount(1);
+  await expect(page.locator('.forge-entry h3')).toHaveText('Ashwake');
+
+  await page.locator('[data-forge-filter="all"]').click();
+  await page.getByLabel('Search your Forge').fill('midnight');
+  await expect(page.locator('.forge-entry')).toHaveCount(1);
+  await expect(page.locator('.forge-entry h3')).toHaveText('The Copper Griffin');
+
+  await page.getByLabel('Search your Forge').fill('');
+  page.once('dialog', (dialog) => dialog.accept());
+  await page.locator('.forge-entry').filter({ hasText: 'Ashwake' }).getByRole('button', { name: 'Remove Ashwake' }).click();
+  await expect(page.locator('#forge-count-all')).toHaveText('3');
+  await expect(page.locator('.forge-entry').filter({ hasText: 'Ashwake' })).toHaveCount(0);
+});
+
+test('Your Forge imports a complete backup and exports the restored collection', async ({ page }) => {
+  const payload = {
+    format: 'instantforge-forge',
+    version: 1,
+    exportedAt: '2026-07-18T00:00:00.000Z',
+    collections: {
+      savedNpcs: [],
+      savedMagicItems: [],
+      savedTaverns: [],
+      savedWeapons: [{
+        id: 'weapon-imported', name: 'The Wayfinder', subtitle: 'Magical Spear',
+        description: 'A silver-shod ash spear.', properties: 'Points toward a named destination.',
+        history: 'Carried by the first royal courier.', feature: 'Its grip shows a changing road map.',
+      }],
+    },
+  };
+
+  await page.goto('/forge.html');
+  page.once('dialog', (dialog) => dialog.accept());
+  await page.locator('#import-forge-file').setInputFiles({
+    name: 'instantforge-forge.json',
+    mimeType: 'application/json',
+    buffer: Buffer.from(JSON.stringify(payload)),
+  });
+  await expect(page.locator('#forge-count-all')).toHaveText('1');
+  await expect(page.locator('.forge-entry h3')).toHaveText('The Wayfinder');
+
+  const downloadPromise = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Export Your Forge' }).click();
+  const download = await downloadPromise;
+  expect(download.suggestedFilename()).toMatch(/^instantforge-forge-\d{4}-\d{2}-\d{2}\.json$/);
 });
 
 test('Wondrous Items generate as the selected category', async ({ page }) => {
@@ -118,4 +200,11 @@ test('generator layout has no horizontal overflow at a phone viewport', async ({
     document: document.documentElement.scrollWidth,
   }));
   expect(dimensions.document).toBeLessThanOrEqual(dimensions.viewport);
+
+  await page.goto('/forge.html');
+  const forgeDimensions = await page.evaluate(() => ({
+    viewport: window.innerWidth,
+    document: document.documentElement.scrollWidth,
+  }));
+  expect(forgeDimensions.document).toBeLessThanOrEqual(forgeDimensions.viewport);
 });

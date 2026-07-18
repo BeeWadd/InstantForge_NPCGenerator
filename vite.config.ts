@@ -6,6 +6,7 @@ const root = __dirname;
 
 const pages = {
   index: resolve(root, 'index.html'),
+  forge: resolve(root, 'forge.html'),
   npc: resolve(root, 'npc-generator.html'),
   magicItem: resolve(root, 'magic-item-generator.html'),
   tavern: resolve(root, 'tavern-generator.html'),

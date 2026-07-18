@@ -72,9 +72,10 @@
             <h2 id="forge-tools-heading">Your Forge</h2>
             <p>Saved creations remain in this browser. Export a backup to move them to another browser or device, then import it when needed.</p>
             <div class="forge-actions">
+                <a href="forge.html" class="btn-secondary">View Your Forge</a>
                 <button id="export-forge" class="btn-primary" type="button">Export Your Forge</button>
                 <button id="import-forge" class="btn-secondary" type="button">Import Your Forge</button>
-                <input id="import-forge-file" class="sr-only" type="file" accept="application/json">
+                <input id="import-forge-file" type="file" accept="application/json" hidden>
             </div>
             <p id="forge-feedback" role="status" aria-live="polite" aria-atomic="true"></p>
         </section>

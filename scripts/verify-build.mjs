@@ -6,6 +6,7 @@ const output = resolve(root, 'dist');
 
 const pages = [
   'index.html',
+  'forge.html',
   'npc-generator.html',
   'magic-item-generator.html',
   'tavern-generator.html',
@@ -81,7 +82,7 @@ const bundledSource = (
   )
 ).join('\n');
 
-for (const marker of ['__instantforge_storage_probe__', 'export-forge']) {
+for (const marker of ['__instantforge_storage_probe__', 'export-forge', 'Your Forge is waiting.']) {
   if (!bundledSource.includes(marker)) {
     errors.push(`built JavaScript is missing the shared-module marker: ${marker}`);
   }
