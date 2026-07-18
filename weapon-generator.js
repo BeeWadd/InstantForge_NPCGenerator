@@ -1,6 +1,22 @@
+import {
+    createHistoryItem,
+    createId,
+    downloadFile,
+    escapeCsvCell,
+    escapeHtml,
+    loadCollection,
+    printableDocument,
+    saveCollection,
+    showFatalError,
+    setupDialog,
+    setupRevealControl,
+} from './assets/js/instantforge-utils.js';
+
 console.log("InstantForge: Weapons script loaded.");
 let weaponData;
 let savedWeapons = [];
+let exportDialogControl;
+let featureRevealControl;
 
 // --- CONSTANTS ---
 const iconLockOpenSVG = `<svg class="icon-lock-open" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg>`;
@@ -85,24 +101,46 @@ function generateName(subtype, quality, property) {
     return result;
 }
 
-function generateDescription(subtype, quality) {
+function getConstructionFamily(weaponType, subtype) {
+    const family = weaponData.constructionFamilies[weaponType];
+    if (typeof family === 'string') return family;
+    return family?.[subtype] || 'polearm';
+}
+
+function pickCoreMaterial(materials) {
+    return Math.random() > 0.8 ? pick(materials.exotic) : pick(materials.metal);
+}
+
+function generateDescription(weaponType, subtype, quality) {
     const c = weaponData.components;
-    const isRanged = ["Longbow", "Shortbow", "Heavy Crossbow", "Light Crossbow"].includes(subtype);
-    
-    let parts = [];
-    if (isRanged) {
-        parts.push(`a stock of ${pick(c.haftMaterials.wood)}`);
-    } else {
-        const bladeMat = Math.random() > 0.8 ? pick(c.bladeMaterials.exotic) : pick(c.bladeMaterials.metal);
-        parts.push(`a blade of ${bladeMat}`);
-        parts.push(`a haft of ${pick(c.haftMaterials.wood)}`);
-    }
-    
-    parts.push(pick(c.grips));
-    
-    if (!isRanged) {
-        if (Math.random() > 0.3) parts.push(`a ${pick(c.guards)}`);
-        if (Math.random() > 0.3) parts.push(`a ${pick(c.pommels)}`);
+    const family = getConstructionFamily(weaponType, subtype);
+    const coreMaterial = pickCoreMaterial(c.bladeMaterials);
+    const parts = [];
+
+    switch (family) {
+        case 'blade':
+            parts.push(`a blade of ${coreMaterial}`, pick(c.grips));
+            if (Math.random() > 0.3) parts.push(pick(c.guards));
+            if (Math.random() > 0.3) parts.push(pick(c.pommels));
+            break;
+        case 'axe':
+            parts.push(`an axe head of ${coreMaterial}`, `a haft of ${pick(c.haftMaterials.wood)}`, pick(c.grips));
+            break;
+        case 'hammer':
+            parts.push(`a striking head of ${coreMaterial}`, `a haft of ${pick(c.haftMaterials.wood)}`, pick(c.grips));
+            break;
+        case 'polearm':
+            parts.push(`a head of ${coreMaterial}`, `a long shaft of ${pick(c.haftMaterials.wood)}`, pick(c.grips));
+            break;
+        case 'bow':
+            parts.push(`limbs of ${pick(c.bowMaterials)}`, `a string of ${pick(c.strings)}`, pick(c.grips));
+            break;
+        case 'crossbow':
+            parts.push(`a stock of ${pick(c.haftMaterials.wood)}`, `a bow of ${pick(c.bowMaterials)}`, `a string of ${pick(c.strings)}`, pick(c.grips));
+            break;
+        case 'sling':
+            parts.push(`a pouch of ${pick(c.slingPouches)}`, `cords of ${pick(c.slingCords)}`);
+            break;
     }
 
     const descriptor = pick(weaponData.descriptors[quality]);
@@ -128,7 +166,7 @@ function generateWeapon(forceRandomize = false) {
     }
 
     const name = !lockStates.name ? generateName(subtype, quality, property) : ui.name.value;
-    const description = !lockStates.description ? generateDescription(subtype, quality) : ui.description.value;
+    const description = !lockStates.description ? generateDescription(weaponType, subtype, quality) : ui.description.value;
     const history = !lockStates.history ? generateHistory(quality) : ui.history.value;
     
     // Update form controls before updating output
@@ -140,7 +178,12 @@ function generateWeapon(forceRandomize = false) {
     ui.description.value = description;
     ui.history.value = history;
     
-    const feature = quality !== 'Magical' ? pick(weaponData.notableFeatures) : "Its magic is its most notable feature.";
+    const constructionFamily = getConstructionFamily(weaponType, subtype);
+    const featurePool = [
+        ...weaponData.notableFeaturesByFamily.all,
+        ...(weaponData.notableFeaturesByFamily[constructionFamily] || [])
+    ];
+    const feature = quality !== 'Magical' ? pick(featurePool) : "Its magic is its most notable feature.";
     
     ui.outputName.textContent = name;
     ui.outputSubtitle.textContent = `${quality} ${subtype}`;
@@ -154,10 +197,11 @@ function generateWeapon(forceRandomize = false) {
     
     ui.featureText.textContent = "(Click to reveal)";
     ui.featureText.dataset.feature = feature;
+    featureRevealControl?.reset();
 }
 
 function populateSubtypes(weaponType) {
-    ui.weaponSubtype.innerHTML = '';
+    ui.weaponSubtype.replaceChildren();
     if (weaponType && weaponData.types[weaponType]) {
         ui.weaponSubtype.disabled = false;
         const randomOption = document.createElement('option');
@@ -263,6 +307,7 @@ function clearAll() {
     if (ui.featureText.dataset.feature) {
         delete ui.featureText.dataset.feature;
     }
+    featureRevealControl?.reset();
     
     ui.copyFeedback.style.opacity = 0;
     setTimeout(() => { ui.copyFeedback.textContent = ''; }, 300);
@@ -280,19 +325,26 @@ function saveWeapon() {
         properties: ui.outputProperties.textContent,
         history: ui.outputHistory.textContent,
         feature: ui.featureText.dataset.feature,
-        id: Date.now()
+        id: createId('weapon')
     };
-    
-    savedWeapons.unshift(weapon);
-    localStorage.setItem('savedWeapons', JSON.stringify(savedWeapons));
+
+    const nextWeapons = [weapon, ...savedWeapons];
+    const result = saveCollection('savedWeapons', nextWeapons);
+    if (!result.ok) {
+        showCopyFeedback("Could not save weapon. Browser storage may be unavailable or full.", true, 4000);
+        return;
+    }
+    savedWeapons = nextWeapons;
     renderHistory();
     showCopyFeedback("Weapon Saved!");
 }
 
 function renderHistory() {
-    ui.historyList.innerHTML = '';
+    ui.historyList.replaceChildren();
     if (savedWeapons.length === 0) {
-        ui.historyList.innerHTML = '<p>No weapons saved yet. Generate and save a weapon to see it here!</p>';
+        const emptyMessage = document.createElement('p');
+        emptyMessage.textContent = 'No weapons saved yet. Generate and save a weapon to see it here!';
+        ui.historyList.appendChild(emptyMessage);
         ui.exportHistoryBtn.disabled = true;
         ui.clearHistoryBtn.disabled = true;
         return;
@@ -302,67 +354,55 @@ function renderHistory() {
     ui.clearHistoryBtn.disabled = false;
 
     savedWeapons.forEach(weapon => {
-        const element = document.createElement('details');
-        element.className = 'history-item';
-        element.innerHTML = `
-            <summary>
-                <span class="expand-icon" aria-hidden="true">+</span>
-                <div class="history-item-header">
-                    <h3>${weapon.name}</h3>
-                    <p>${weapon.subtitle}</p>
-                </div>
-                <button class="btn-delete-item" data-id="${weapon.id}" title="Remove ${weapon.name}">Remove</button>
-            </summary>
-            <div class="history-item-body">
-                <div class="output-group"><strong>Description</strong><p>${weapon.description}</p></div>
-                <div class="output-group"><strong>Properties</strong><p>${weapon.properties}</p></div>
-                <hr>
-                <div class="output-group"><strong>History</strong><p>${weapon.history}</p></div>
-                <div class="output-group"><strong>Notable Feature</strong><p>${weapon.feature}</p></div>
-            </div>
-        `;
+        const element = createHistoryItem({
+            id: weapon.id,
+            title: weapon.name,
+            subtitle: weapon.subtitle,
+            fields: [
+                { label: 'Description', value: weapon.description },
+                { label: 'Properties', value: weapon.properties },
+                { label: 'History', value: weapon.history, dividerBefore: true },
+                { label: 'Notable Feature', value: weapon.feature },
+            ],
+        });
         ui.historyList.appendChild(element);
     });
 }
 
 function loadHistory() {
-    const historyData = localStorage.getItem('savedWeapons');
-    if (historyData) {
-        savedWeapons = JSON.parse(historyData);
-    }
+    savedWeapons = loadCollection('savedWeapons', {
+        requiredFields: ['name', 'subtitle', 'description', 'properties', 'history', 'feature'],
+    }).map(weapon => ({ ...weapon, id: String(weapon.id ?? createId('weapon')) }));
     renderHistory();
 }
 
 function deleteWeapon(idToDelete) {
-    savedWeapons = savedWeapons.filter(weapon => weapon.id !== idToDelete);
-    localStorage.setItem('savedWeapons', JSON.stringify(savedWeapons));
+    const nextWeapons = savedWeapons.filter(weapon => String(weapon.id) !== String(idToDelete));
+    const result = saveCollection('savedWeapons', nextWeapons);
+    if (!result.ok) {
+        showCopyFeedback("Could not remove weapon from browser storage.", true, 4000);
+        return;
+    }
+    savedWeapons = nextWeapons;
     renderHistory();
 }
 
 function clearHistory() {
     if (savedWeapons.length === 0) return;
     if (confirm("Are you sure you want to delete all saved weapons? This cannot be undone.")) {
+        const result = saveCollection('savedWeapons', []);
+        if (!result.ok) {
+            showCopyFeedback("Could not clear weapons from browser storage.", true, 4000);
+            return;
+        }
         savedWeapons = [];
-        localStorage.setItem('savedWeapons', JSON.stringify(savedWeapons));
         renderHistory();
         showCopyFeedback("History Cleared.");
     }
 }
 
-function showExportModal() { ui.exportModal.classList.add('visible'); }
-function hideExportModal() { ui.exportModal.classList.remove('visible'); }
-
-function downloadFile(content, filename, mimeType) {
-    const blob = new Blob([content], { type: mimeType });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
-}
+function showExportModal(event) { exportDialogControl.open(event?.currentTarget || ui.exportHistoryBtn); }
+function hideExportModal() { exportDialogControl.close(); }
 
 function exportAsJson() {
     if (savedWeapons.length === 0) { showCopyFeedback("No history to export.", true); return; }
@@ -374,10 +414,9 @@ function exportAsJson() {
 function exportAsCsv() {
     if (savedWeapons.length === 0) { showCopyFeedback("No history to export.", true); return; }
     const headers = ['name', 'subtitle', 'description', 'properties', 'history', 'feature'];
-    const escapeCsv = (str) => `"${(str || '').replace(/"/g, '""').replace(/\r?\n|\r/g, ' ')}"`;
     let csvContent = headers.join(',') + '\n';
     savedWeapons.forEach(weapon => {
-        const row = headers.map(header => escapeCsv(weapon[header]));
+        const row = headers.map(header => escapeCsvCell(weapon[header]));
         csvContent += row.join(',') + '\n';
     });
     downloadFile(csvContent, "instantforge_weapon_history.csv", "text/csv;charset=utf-8;");
@@ -397,13 +436,13 @@ function exportAsPdf() {
     if (savedWeapons.length === 0) { showCopyFeedback("No history to export.", true); return; }
     const weaponHtml = savedWeapons.map(weapon => `
         <div class="weapon-page">
-            <h2>${weapon.name}</h2>
-            <p class="subtitle"><em>${weapon.subtitle}</em></p>
-            <div class="output-group"><strong>Description</strong><p>${weapon.description}</p></div>
-            <div class="output-group"><strong>Properties</strong><p>${weapon.properties}</p></div>
+            <h2>${escapeHtml(weapon.name)}</h2>
+            <p class="subtitle"><em>${escapeHtml(weapon.subtitle)}</em></p>
+            <div class="output-group"><strong>Description</strong><p>${escapeHtml(weapon.description)}</p></div>
+            <div class="output-group"><strong>Properties</strong><p>${escapeHtml(weapon.properties)}</p></div>
             <hr>
-            <div class="output-group"><strong>History</strong><p>${weapon.history}</p></div>
-            <div class="output-group"><strong>Notable Feature</strong><p>${weapon.feature}</p></div>
+            <div class="output-group"><strong>History</strong><p>${escapeHtml(weapon.history)}</p></div>
+            <div class="output-group"><strong>Notable Feature</strong><p>${escapeHtml(weapon.feature)}</p></div>
         </div>
     `).join('');
 
@@ -421,9 +460,18 @@ function exportAsPdf() {
         @media print { .weapon-page { border-bottom: none; } }
     </style>`;
 
-    const htmlContent = `<!DOCTYPE html><html><head><title>InstantForge Weapon History</title>${printStyles}</head><body><h1>Saved Weapons</h1>${weaponHtml}</body></html>`;
+    const htmlContent = printableDocument({
+        title: 'InstantForge Weapon History',
+        heading: 'Saved Weapons',
+        itemsHtml: weaponHtml,
+        styles: printStyles,
+    });
 
     const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+        showCopyFeedback("Could not open the print window. Check your popup settings.", true, 4000);
+        return;
+    }
     printWindow.document.write(htmlContent);
     printWindow.document.close();
     printWindow.focus();
@@ -455,6 +503,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         populateSelects();
         loadHistory();
         setupLockButtons();
+        exportDialogControl = setupDialog(ui.exportModal, ui.closeModalBtn);
+        featureRevealControl = setupRevealControl(ui.featureContainer, ui.featureText, 'feature');
         
         ui.weaponType.addEventListener('change', () => populateSubtypes(ui.weaponType.value));
 
@@ -466,32 +516,21 @@ document.addEventListener('DOMContentLoaded', async () => {
         ui.clearHistoryBtn.addEventListener('click', clearHistory);
         
         ui.historyList.addEventListener('click', (e) => {
-            if (e.target.classList.contains('btn-delete-item')) {
+            const deleteButton = e.target.closest('.btn-delete-item');
+            if (deleteButton) {
                 e.preventDefault();
-                const weaponId = parseInt(e.target.dataset.id, 10);
-                if (!isNaN(weaponId)) deleteWeapon(weaponId);
+                deleteWeapon(deleteButton.dataset.id);
             }
         });
 
         ui.exportHistoryBtn.addEventListener('click', showExportModal);
-        ui.closeModalBtn.addEventListener('click', hideExportModal);
-        ui.exportModal.addEventListener('click', (e) => { if (e.target === ui.exportModal) hideExportModal(); });
         ui.exportJsonBtn.addEventListener('click', exportAsJson);
         ui.exportCsvBtn.addEventListener('click', exportAsCsv);
         ui.exportMdBtn.addEventListener('click', exportAsMarkdown);
         ui.exportPdfBtn.addEventListener('click', exportAsPdf);
 
-        ui.featureContainer.addEventListener('click', () => {
-            if (ui.featureText.classList.contains('hidden') && ui.featureText.dataset.feature) {
-                ui.featureText.textContent = ui.featureText.dataset.feature;
-                ui.featureText.classList.remove('hidden');
-                ui.featureText.classList.add('visible');
-                ui.featureContainer.classList.add('revealed');
-            }
-        });
-
     } catch (error) {
         console.error("Could not load or parse weapon-data.json", error);
-        document.querySelector('main').innerHTML = `<p style="color: white; text-align: center; font-size: 1.2rem;">Error: Could not load required game data. Please refresh the page.</p>`;
+        showFatalError();
     }
 });

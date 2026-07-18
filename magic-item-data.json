@@ -902,6 +902,154 @@
           { "name": "Fatebinder", "description": "Once per week, reroll any die after seeing the result, keeping new roll." }
         ]
       }
+    },
+    "Wondrous Item": {
+      "subtypes": [
+        "Amulet",
+        "Brooch",
+        "Cloak",
+        "Gloves",
+        "Lantern",
+        "Mask",
+        "Mirror",
+        "Musical Instrument",
+        "Orb",
+        "Pouch",
+        "Rope",
+        "Talisman"
+      ],
+      "nameTemplates": [
+        "The {adjective} {subtype}",
+        "{creatorName}'s {subtype}",
+        "{subtype} of {effectWord}",
+        "The {effectWord} {subtype}",
+        "{adjective} Wonder",
+        "{creatorName}'s {effectWord}"
+      ],
+      "adjectives": [
+        "Wayward",
+        "Whispering",
+        "Moonlit",
+        "Ember-Warm",
+        "Star-Flecked",
+        "Unfading",
+        "Hollow",
+        "Kindly",
+        "Veiled",
+        "Wandering",
+        "Tide-Bound",
+        "Dreaming"
+      ],
+      "creatorNames": [
+        "Aveline Moss",
+        "Brother Rook",
+        "Caro Nine-Fingers",
+        "Damael the Patient",
+        "Edda Glasswright",
+        "Fen of the Long Road",
+        "Ilyra Vane",
+        "Morrow Bell",
+        "Nim Ashfall",
+        "Oris Starling",
+        "Sable Quill",
+        "Tovan Reed"
+      ],
+      "materials": [
+        "amber threaded with silver",
+        "blue glass that never chips",
+        "carved moonstone",
+        "cloud-soft wool",
+        "copper warmed by the sun",
+        "dark wood with a pearly grain",
+        "fired clay flecked with mica",
+        "folded silk",
+        "fossilized coral",
+        "hammered brass",
+        "ivory-colored porcelain",
+        "lacquered bark",
+        "opaline crystal",
+        "polished river stone",
+        "smoky quartz",
+        "woven reeds and gold thread"
+      ],
+      "visuals": [
+        "casts a shadow shaped like a distant tower",
+        "collects harmless sparks along its edges",
+        "feels faintly warm when someone speaks honestly nearby",
+        "gives off the scent of rain on dry earth",
+        "glimmers with colors that match the sky",
+        "hums a different note for each person who holds it",
+        "leaves brief motes of light in its wake",
+        "reflects a clear night sky regardless of the hour",
+        "shows tiny moving constellations beneath its surface",
+        "softly repeats the last birdsong heard nearby",
+        "stays perfectly clean despite rough handling",
+        "turns translucent in moonlight",
+        "whispers the holder's name when first touched",
+        "winds an ornamental thread around itself each dawn"
+      ],
+      "powers": {
+        "Common": [
+          { "name": "Campfire Comfort", "description": "Keeps its bearer comfortably warm in ordinary cold and cool in ordinary heat." },
+          { "name": "Dry-Keeper", "description": "Keeps a small bundle of stored belongings clean and dry." },
+          { "name": "Echo Catcher", "description": "Can capture a short sound and play it back clearly." },
+          { "name": "Honest Compass", "description": "Indicates the direction of the last place its bearer slept safely." },
+          { "name": "Mender's Touch", "description": "Slowly repairs small tears, cracks, and loose seams in mundane objects." },
+          { "name": "Moodlight", "description": "Produces a gentle light whose color follows the bearer's mood." },
+          { "name": "Pocket Pantry", "description": "Preserves a meal placed beside it until the next dawn." },
+          { "name": "Quiet Courtesy", "description": "Muffles incidental rattles and clinks from the bearer's equipment." },
+          { "name": "Rain Friend", "description": "Turns falling rain away from the bearer without affecting nearby weather." },
+          { "name": "Unerring Measure", "description": "Reveals the mundane weight, length, or volume of an object it touches." }
+        ],
+        "Uncommon": [
+          { "name": "Borrowed Voice", "description": "Can reproduce any voice it has heard, though it cannot invent words in that voice." },
+          { "name": "Hidden Pocket", "description": "Contains a concealed space large enough for a traveler's essential supplies." },
+          { "name": "Lantern of Traces", "description": "Its light reveals recent footprints and handprints as faint glimmers." },
+          { "name": "Message Thread", "description": "Carries a whispered message along a tied thread to its other end." },
+          { "name": "Pathfinder", "description": "Gently tugs toward the nearest safe path when its bearer is lost." },
+          { "name": "Restful Watch", "description": "Wakes its sleeping bearer when a chosen sound or creature approaches." },
+          { "name": "Safe Landing", "description": "Softens an unexpected fall enough to prevent ordinary injury." },
+          { "name": "Speaker to Small Things", "description": "Conveys simple feelings and requests between its bearer and ordinary animals." },
+          { "name": "Weather Glass", "description": "Shows the likely local weather for the coming day as a miniature scene." },
+          { "name": "Wayfarer's Veil", "description": "Can briefly make the bearer look like an unremarkable local traveler." }
+        ],
+        "Rare": [
+          { "name": "Door Rememberer", "description": "Can open a temporary passage back through a doorway crossed earlier that day." },
+          { "name": "Dream Courier", "description": "Sends a brief symbolic dream to a known sleeping person in the same realm." },
+          { "name": "Glass of Distant Rooms", "description": "Shows and hears a familiar room from afar while its bearer concentrates." },
+          { "name": "Heartward", "description": "Steadies the bearer against supernatural terror and coercion." },
+          { "name": "Mist Walker", "description": "Allows the bearer and nearby companions to move unseen through natural mist." },
+          { "name": "Name of the Road", "description": "Reveals a useful route toward a named destination, though not its dangers." },
+          { "name": "Second Breath", "description": "Restores a badly exhausted bearer to alertness once before needing a night's rest." },
+          { "name": "Shadow Cabinet", "description": "Stores a person-sized object in a harmless shadow until called back." },
+          { "name": "Tongue of Welcome", "description": "Lets the bearer understand and be understood in any commonly spoken language." },
+          { "name": "Unbroken Promise", "description": "Warns its bearer when someone knowingly breaks a promise made while touching it." }
+        ],
+        "Very Rare": [
+          { "name": "Hourglass Refuge", "description": "Suspends a small enclosed space outside ordinary time for a few peaceful minutes." },
+          { "name": "Mantle of Many Roads", "description": "Carries its bearer and a few companions to a distant place they all remember clearly." },
+          { "name": "Mirror of Possible Selves", "description": "Shows the likely outcome of one immediate choice as a brief, uncertain vision." },
+          { "name": "Night's Sanctuary", "description": "Raises a hidden shelter that resists hostile weather and unwanted intrusion until dawn." },
+          { "name": "Restorer", "description": "Returns a recently ruined mundane object to its complete and functional state." },
+          { "name": "River Between", "description": "Opens a short-lived crossing over any ordinary barrier the bearer can see." },
+          { "name": "Soul Beacon", "description": "Reveals the direction and condition of a willing person bound to it." },
+          { "name": "Storm-Tamer", "description": "Calms dangerous natural weather across the surrounding area for a short while." },
+          { "name": "Truth's Reflection", "description": "Shows deliberate disguises and crafted falsehoods as ripples across its surface." },
+          { "name": "Unfettered Step", "description": "Lets its bearer pass briefly through a solid obstruction as though it were mist." }
+        ],
+        "Legendary": [
+          { "name": "Archive of All Roads", "description": "Can reveal a traversable route to any place in the world that still exists." },
+          { "name": "Crownless Accord", "description": "Allows willing speakers of any kind to understand one another and negotiate in perfect clarity." },
+          { "name": "Dawn Recalled", "description": "Restores a blighted settlement and its immediate lands to the health they held a year before." },
+          { "name": "Door Beyond the World", "description": "Opens a stable passage to a named realm or plane until deliberately closed." },
+          { "name": "Keeper of the Lost", "description": "Locates a missing person or singular object anywhere in the world if given a true connection to it." },
+          { "name": "Moment Unmade", "description": "Allows its bearer to undo one immediate choice and live the moment again with full memory." },
+          { "name": "Moon's Mercy", "description": "Returns a willing soul lost before its time to life, health, and freedom." },
+          { "name": "Seed of Sanctuary", "description": "Creates a lasting refuge whose borders repel war, hunger, and hostile magic." },
+          { "name": "World's Memory", "description": "Replays the true history of any place it touches as vivid scenes." },
+          { "name": "Woven Destiny", "description": "Binds a freely spoken vow so that chance itself favors its honest fulfillment." }
+        ]
+      }
     }
   }
 }

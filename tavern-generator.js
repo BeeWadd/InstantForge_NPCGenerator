@@ -1,10 +1,29 @@
 
+import {
+    createHistoryItem,
+    createId,
+    downloadFile,
+    escapeCsvCell,
+    escapeHtml,
+    loadCollection,
+    printableDocument,
+    removeStoredValue,
+    saveCollection,
+    showFatalError,
+    setupDialog,
+    setupRevealControl,
+} from './assets/js/instantforge-utils.js';
+
 console.log("InstantForge: Taverns script loaded.");
 let tavernData;
 let savedTaverns = [];
 let currentPatrons = [];
 let currentInnkeeper = "";
 let npcDataForPatrons;
+let exportDialog;
+
+const SAVED_TAVERNS_KEY = 'savedTaverns';
+const NPC_QUEUE_KEY = 'pendingNpcsForGeneration';
 
 // --- CONSTANTS ---
 const iconLockOpenSVG = `<svg class="icon-lock-open" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg>`;
@@ -82,6 +101,10 @@ const ui = {
     exportPdfBtn: document.getElementById('export-pdf'),
     generatePatronsBtn: document.getElementById('generate-patrons'),
     generateInnkeeperBtn: document.getElementById('generate-innkeeper'),
+    queuePanel: document.getElementById('npc-queue-panel'),
+    queueCount: document.getElementById('npc-queue-count'),
+    openNpcQueue: document.getElementById('open-npc-queue'),
+    clearNpcQueue: document.getElementById('clear-npc-queue'),
     // Lock buttons
     lockNameBtn: document.getElementById('lock-name'),
     lockDescriptionBtn: document.getElementById('lock-description'),
@@ -169,6 +192,7 @@ function generateTavern(forceRandomize = false) {
     ui.rumorsText.classList.remove('visible');
     ui.rumorsText.classList.add('hidden');
     ui.rumorsContainer.classList.remove('revealed');
+    ui.rumorsContainer.setAttribute('aria-expanded', 'false');
     
     ui.rumorsText.textContent = "(Click to reveal)";
     ui.rumorsText.dataset.rumor = rumor;
@@ -281,19 +305,26 @@ function saveTavern() {
         signatureDrink: ui.outputSignatureDrink.textContent,
         patrons: ui.outputPatrons.textContent,
         rumor: ui.rumorsText.dataset.rumor,
-        id: Date.now()
+        id: createId('tavern')
     };
     
     savedTaverns.unshift(tavern);
-    localStorage.setItem('savedTaverns', JSON.stringify(savedTaverns));
+    const result = saveCollection(SAVED_TAVERNS_KEY, savedTaverns);
+    if (!result.ok) {
+        savedTaverns.shift();
+        showCopyFeedback("Tavern could not be saved. Browser storage may be unavailable or full.", true, 5000);
+        return;
+    }
     renderHistory();
     showCopyFeedback("Tavern Saved!");
 }
 
 function renderHistory() {
-    ui.historyList.innerHTML = '';
+    ui.historyList.replaceChildren();
     if (savedTaverns.length === 0) {
-        ui.historyList.innerHTML = '<p>No taverns saved yet. Generate and save a tavern to see it here!</p>';
+        const empty = document.createElement('p');
+        empty.textContent = 'No taverns saved yet. Generate and save a tavern to see it here!';
+        ui.historyList.appendChild(empty);
         ui.exportHistoryBtn.disabled = true;
         ui.clearHistoryBtn.disabled = true;
         return;
@@ -303,34 +334,23 @@ function renderHistory() {
     ui.clearHistoryBtn.disabled = false;
 
     savedTaverns.forEach(tavern => {
-        const item = document.createElement('details');
-        item.className = 'history-item';
-        item.innerHTML = `
-            <summary>
-                <span class="expand-icon" aria-hidden="true">+</span>
-                <div class="history-item-header">
-                    <h3>${tavern.name}</h3>
-                    <p>${tavern.subtitle}</p>
-                </div>
-                <button class="btn-delete-item" data-id="${tavern.id}" title="Remove ${tavern.name}">Remove</button>
-            </summary>
-            <div class="history-item-body">
-                <div class="output-group"><strong>Description</strong><p>${tavern.description}</p></div>
-                <div class="output-group"><strong>Innkeeper</strong><p>${tavern.innkeeper}</p></div>
-                <div class="output-group"><strong>Signature Drink</strong><p>${tavern.signatureDrink}</p></div>
-                <hr>
-                <div class="output-group"><strong>Patrons</strong><p>${tavern.patrons}</p></div>
-                <div class="output-group"><strong>Rumor</strong><p>${tavern.rumor}</p></div>
-            </div>
-        `;
+        const item = createHistoryItem({
+            id: tavern.id,
+            title: tavern.name,
+            subtitle: tavern.subtitle,
+            fields: [
+                { label: 'Description', value: tavern.description },
+                { label: 'Innkeeper', value: tavern.innkeeper },
+                { label: 'Signature Drink', value: tavern.signatureDrink },
+                { label: 'Patrons', value: tavern.patrons, dividerBefore: true },
+                { label: 'Rumor', value: tavern.rumor },
+            ],
+        });
 
         const deleteBtn = item.querySelector('.btn-delete-item');
         deleteBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            const tavernId = parseInt(e.currentTarget.dataset.id, 10);
-            if (!isNaN(tavernId)) {
-                deleteTavern(tavernId);
-            }
+            deleteTavern(e.currentTarget.dataset.id);
         });
 
         ui.historyList.appendChild(item);
@@ -339,16 +359,19 @@ function renderHistory() {
 
 
 function loadHistory() {
-    const historyData = localStorage.getItem('savedTaverns');
-    if (historyData) {
-        savedTaverns = JSON.parse(historyData);
-    }
+    savedTaverns = loadCollection(SAVED_TAVERNS_KEY, {
+        requiredFields: ['name', 'subtitle', 'description', 'innkeeper', 'signatureDrink', 'patrons', 'rumor'],
+    });
     renderHistory();
 }
 
 function deleteTavern(idToDelete) {
-    savedTaverns = savedTaverns.filter(tavern => tavern.id !== idToDelete);
-    localStorage.setItem('savedTaverns', JSON.stringify(savedTaverns));
+    const previous = savedTaverns;
+    savedTaverns = savedTaverns.filter(tavern => String(tavern.id) !== String(idToDelete));
+    if (!saveCollection(SAVED_TAVERNS_KEY, savedTaverns).ok) {
+        savedTaverns = previous;
+        showCopyFeedback("Tavern could not be removed because browser storage is unavailable.", true, 5000);
+    }
     renderHistory();
 }
 
@@ -356,26 +379,14 @@ function clearHistory() {
     if (savedTaverns.length === 0) return;
     if (confirm("Are you sure you want to delete all saved taverns? This cannot be undone.")) {
         savedTaverns = [];
-        localStorage.setItem('savedTaverns', JSON.stringify(savedTaverns));
+        saveCollection(SAVED_TAVERNS_KEY, savedTaverns);
         renderHistory();
         showCopyFeedback("History Cleared.");
     }
 }
 
-function showExportModal() { ui.exportModal.classList.add('visible'); }
-function hideExportModal() { ui.exportModal.classList.remove('visible'); }
-
-function downloadFile(content, filename, mimeType) {
-    const blob = new Blob([content], { type: mimeType });
-    const url = URL.createObjectURL(blob);
-    const downloadNode = document.createElement('a');
-    downloadNode.href = url;
-    downloadNode.download = filename;
-    document.body.appendChild(downloadNode);
-    downloadNode.click();
-    downloadNode.remove();
-    URL.revokeObjectURL(url);
-}
+function showExportModal() { exportDialog.open(ui.exportHistoryBtn); }
+function hideExportModal() { exportDialog.close(); }
 
 function exportAsJson() {
     if (savedTaverns.length === 0) { showCopyFeedback("No history to export.", true); return; }
@@ -387,10 +398,9 @@ function exportAsJson() {
 function exportAsCsv() {
     if (savedTaverns.length === 0) { showCopyFeedback("No history to export.", true); return; }
     const headers = ['name', 'subtitle', 'description', 'innkeeper', 'signatureDrink', 'patrons', 'rumor'];
-    const escapeCsv = (str) => `"${(str || '').replace(/"/g, '""').replace(/\r?\n|\r/g, ' ')}"`;
     let csvContent = headers.join(',') + '\n';
     savedTaverns.forEach(tavern => {
-        const row = headers.map(header => escapeCsv(tavern[header]));
+        const row = headers.map(header => escapeCsvCell(tavern[header]));
         csvContent += row.join(',') + '\n';
     });
     downloadFile(csvContent, "instantforge_tavern_history.csv", "text/csv;charset=utf-8;");
@@ -410,14 +420,14 @@ function exportAsPdf() {
     if (savedTaverns.length === 0) { showCopyFeedback("No history to export.", true); return; }
     const tavernHtml = savedTaverns.map(tavern => `
         <div class="tavern-page">
-            <h2>${tavern.name}</h2>
-            <p class="subtitle"><em>${tavern.subtitle}</em></p>
-            <div class="output-group"><strong>Description</strong><p>${tavern.description}</p></div>
-            <div class="output-group"><strong>Innkeeper</strong><p>${tavern.innkeeper}</p></div>
-            <div class="output-group"><strong>Signature Drink</strong><p>${tavern.signatureDrink}</p></div>
+            <h2>${escapeHtml(tavern.name)}</h2>
+            <p class="subtitle"><em>${escapeHtml(tavern.subtitle)}</em></p>
+            <div class="output-group"><strong>Description</strong><p>${escapeHtml(tavern.description)}</p></div>
+            <div class="output-group"><strong>Innkeeper</strong><p>${escapeHtml(tavern.innkeeper)}</p></div>
+            <div class="output-group"><strong>Signature Drink</strong><p>${escapeHtml(tavern.signatureDrink)}</p></div>
             <hr>
-            <div class="output-group"><strong>Patrons</strong><p>${tavern.patrons}</p></div>
-            <div class="output-group"><strong>Rumor</strong><p>${tavern.rumor}</p></div>
+            <div class="output-group"><strong>Patrons</strong><p>${escapeHtml(tavern.patrons)}</p></div>
+            <div class="output-group"><strong>Rumor</strong><p>${escapeHtml(tavern.rumor)}</p></div>
         </div>
     `).join('');
 
@@ -436,8 +446,12 @@ function exportAsPdf() {
             @media print { .tavern-page { border-bottom: none; } }
         </style>
     `;
-    const htmlContent = `<!DOCTYPE html><html><head><title>InstantForge Tavern History</title>${printStyles}</head><body><h1>Saved Taverns</h1>${tavernHtml}</body></html>`;
+    const htmlContent = printableDocument({ title: 'InstantForge Tavern History', heading: 'Saved Taverns', itemsHtml: tavernHtml, styles: printStyles });
     const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+        showCopyFeedback('Printing was blocked. Allow pop-ups for InstantForge and try again.', true, 5000);
+        return;
+    }
     printWindow.document.write(htmlContent);
     printWindow.document.close();
     printWindow.focus();
@@ -479,13 +493,17 @@ function generateInnkeeperAsNpc() {
         appearance: currentInnkeeper
     }];
 
-    const existingQueue = JSON.parse(sessionStorage.getItem('pendingNpcsForGeneration')) || [];
+    const existingQueue = loadNpcQueue();
     const combinedQueue = existingQueue.concat(newNpcsToQueue);
     
-    sessionStorage.setItem('pendingNpcsForGeneration', JSON.stringify(combinedQueue));
+    if (!saveCollection(NPC_QUEUE_KEY, combinedQueue, { kind: 'session' }).ok) {
+        showCopyFeedback("NPC queue is unavailable in this browser.", true, 5000);
+        return;
+    }
     
     const totalQueued = combinedQueue.reduce((acc, curr) => acc + curr.quantity, 0);
     showCopyFeedback(`Innkeeper added to queue! ${totalQueued} total now in queue.`);
+    updateQueueStatus();
 }
 
 function generatePatronsAsNpcs() {
@@ -537,14 +555,44 @@ function generatePatronsAsNpcs() {
         return npcInfo;
     });
 
-    const existingQueue = JSON.parse(sessionStorage.getItem('pendingNpcsForGeneration')) || [];
+    const existingQueue = loadNpcQueue();
     const combinedQueue = existingQueue.concat(patronsToQueue);
     
-    sessionStorage.setItem('pendingNpcsForGeneration', JSON.stringify(combinedQueue));
+    if (!saveCollection(NPC_QUEUE_KEY, combinedQueue, { kind: 'session' }).ok) {
+        showCopyFeedback("NPC queue is unavailable in this browser.", true, 5000);
+        return;
+    }
     
     const totalQueued = combinedQueue.reduce((acc, curr) => acc + curr.quantity, 0);
     const addedCount = patronsToQueue.length;
     showCopyFeedback(`${addedCount} patrons added to queue! ${totalQueued} total now in queue.`);
+    updateQueueStatus();
+}
+
+function loadNpcQueue() {
+    return loadCollection(NPC_QUEUE_KEY, { kind: 'session' }).filter((entry) => (
+        entry
+        && Number.isInteger(entry.quantity)
+        && entry.quantity > 0
+        && typeof entry.race === 'string'
+        && typeof entry.job === 'string'
+        && typeof entry.appearance === 'string'
+    ));
+}
+
+function updateQueueStatus() {
+    if (!ui.queueCount) return;
+    const queue = loadNpcQueue();
+    const count = queue.reduce((total, entry) => total + entry.quantity, 0);
+    ui.queueCount.textContent = count === 0 ? 'No NPCs queued' : `${count} NPC${count === 1 ? '' : 's'} queued for review`;
+    if (ui.openNpcQueue) ui.openNpcQueue.hidden = count === 0;
+    if (ui.clearNpcQueue) ui.clearNpcQueue.hidden = count === 0;
+}
+
+function clearNpcQueue() {
+    removeStoredValue(NPC_QUEUE_KEY, { kind: 'session' });
+    updateQueueStatus();
+    showCopyFeedback('NPC queue cleared.');
 }
 
 
@@ -576,6 +624,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         populateSelects();
         loadHistory();
         setupLockButtons();
+        exportDialog = setupDialog(ui.exportModal, ui.closeModalBtn);
+        setupRevealControl(ui.rumorsContainer, ui.rumorsText, 'rumor');
+        updateQueueStatus();
         
         ui.generateBtn.addEventListener('click', () => generateTavern(false));
         ui.randomizeBtn.addEventListener('click', () => generateTavern(true));
@@ -585,26 +636,16 @@ document.addEventListener('DOMContentLoaded', async () => {
         ui.clearHistoryBtn.addEventListener('click', clearHistory);
         ui.generatePatronsBtn.addEventListener('click', generatePatronsAsNpcs);
         ui.generateInnkeeperBtn.addEventListener('click', generateInnkeeperAsNpc);
+        ui.clearNpcQueue?.addEventListener('click', clearNpcQueue);
         
         ui.exportHistoryBtn.addEventListener('click', showExportModal);
-        ui.closeModalBtn.addEventListener('click', hideExportModal);
-        ui.exportModal.addEventListener('click', (e) => { if (e.target === ui.exportModal) hideExportModal(); });
         ui.exportJsonBtn.addEventListener('click', exportAsJson);
         ui.exportCsvBtn.addEventListener('click', exportAsCsv);
         ui.exportMdBtn.addEventListener('click', exportAsMarkdown);
         ui.exportPdfBtn.addEventListener('click', exportAsPdf);
 
-        ui.rumorsContainer.addEventListener('click', () => {
-            if (ui.rumorsText.classList.contains('hidden') && ui.rumorsText.dataset.rumor) {
-                ui.rumorsText.textContent = ui.rumorsText.dataset.rumor;
-                ui.rumorsText.classList.remove('hidden');
-                ui.rumorsText.classList.add('visible');
-                ui.rumorsContainer.classList.add('revealed');
-            }
-        });
-
     } catch (error) {
         console.error("Could not load or parse tavern-data.json", error);
-        document.querySelector('main').innerHTML = `<p style="color: white; text-align: center; font-size: 1.2rem;">Error: Could not load required game data. Please refresh the page.</p>`;
+        showFatalError();
     }
 });

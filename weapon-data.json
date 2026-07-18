@@ -101,6 +101,28 @@
 
   "qualities": ["Crude", "Common", "Masterwork", "Magical"],
 
+  "constructionFamilies": {
+    "Sword": "blade",
+    "Axe": "axe",
+    "Hammer": "hammer",
+    "Polearm": "polearm",
+    "Dagger": "blade",
+    "Ranged": {
+      "Longbow": "bow",
+      "Shortbow": "bow",
+      "Heavy Crossbow": "crossbow",
+      "Light Crossbow": "crossbow",
+      "Recurve Bow": "bow",
+      "Composite Bow": "bow",
+      "Reflex Bow": "bow",
+      "Self Bow": "bow",
+      "Hand Crossbow": "crossbow",
+      "Arbalest": "crossbow",
+      "Sling": "sling",
+      "Greatbow": "bow"
+    }
+  },
+
   "components": {
     "bladeMaterials": {
       "metal": [
@@ -187,6 +209,41 @@
         "runic ivory shaft"
       ]
     },
+    "bowMaterials": [
+      "seasoned yew",
+      "laminated horn and sinew",
+      "springy ash",
+      "polished elm",
+      "dark ironwood",
+      "layered bamboo",
+      "carved bone",
+      "starwood"
+    ],
+    "strings": [
+      "waxed linen",
+      "twisted sinew",
+      "braided silk",
+      "hemp cord",
+      "horsehair",
+      "silver wire",
+      "spider silk"
+    ],
+    "slingPouches": [
+      "supple leather",
+      "woven wool",
+      "braided rawhide",
+      "reinforced canvas",
+      "scaled hide",
+      "softened barkcloth"
+    ],
+    "slingCords": [
+      "waxed flax",
+      "braided hemp",
+      "twisted sinew",
+      "woven horsehair",
+      "silk cord",
+      "fine rawhide"
+    ],
     "grips": [
       "a worn leather wrap",
       "a simple wire wrap",
@@ -254,45 +311,45 @@
     "Crude": [
       "is rusty and notched",
       "is poorly-balanced and heavy",
-      "is chipped along the edge",
+      "shows chips and cracks around its working surface",
       "is caked in old grime",
-      "has a wobbly hilt",
+      "has loose, rattling fittings",
       "rings dull when struck",
       "shows uneven hammer marks",
-      "has a hairline crack near the tang",
+      "has a hairline stress crack near its working end",
       "bears mismatched parts scavenged together",
       "is pitted from neglect",
       "has a loose wrap that bites the palm",
       "is warped slightly off true",
       "smells of old oil and smoke",
-      "has a nicked point that won’t take polish"
+      "has a battered working surface that won’t take polish"
     ],
     "Common": [
       "is worn but serviceable",
       "is stained from long use",
       "is of a simple, practical design",
       "is sturdy and reliable",
-      "has been sharpened many times",
+      "shows the marks of many years of use",
       "carries honest tool marks",
       "sits well in the hand",
       "shows careful, regular maintenance",
       "balances predictably",
-      "takes a keen edge but loses it quickly",
+      "responds well to upkeep but needs it often",
       "has small repairs along the grip",
       "bears a clear maker’s stamp"
     ],
     "Masterwork": [
       "is perfectly balanced",
-      "has a razor-sharp edge",
+      "has precisely formed working surfaces",
       "is expertly crafted and flawless",
       "is surprisingly lightweight",
       "is polished to a mirror shine",
-      "sings when drawn",
+      "sings when readied",
       "shows exquisite filework",
-      "flows through cuts with ease",
+      "moves smoothly through every strike",
       "locks to the target with precision",
       "features seamless joins",
-      "holds an edge through abuse",
+      "endures hard use without losing its form",
       "carries layered steel ripple lines"
     ],
     "Magical": [
@@ -306,7 +363,7 @@
       "rejects rust and bloodstain",
       "sparks when drawn in anger",
       "thrums louder near ancient places",
-      "draws a thin mist around the edge",
+      "draws a thin mist around its silhouette",
       "casts a shadow that doesn’t match the light"
     ]
   },
@@ -395,37 +452,90 @@
     "A faint ring appears around it during dawn light."
   ],
 
+  "notableFeaturesByFamily": {
+    "all": [
+      "The grip is worn smooth in one particular spot from long use.",
+      "The maker's mark is an unusual, unidentifiable symbol.",
+      "It never seems to get dirty or require cleaning.",
+      "It feels heavier than it looks and strikes with surprising force.",
+      "A hairline crack forms the shape of a lightning bolt.",
+      "Every time you glance away, it lies at a slightly different angle.",
+      "The weapon grows cool in sunlight and warm at night.",
+      "When knocked, it answers with a hollow, echoing tone.",
+      "A bead of red enamel marks the balance point.",
+      "Its reflection lags a heartbeat behind its movement.",
+      "Runes appear only when someone breathes upon it.",
+      "A small dent perfectly fits the wielder's thumb."
+    ],
+    "blade": [
+      "Notches line the blade, each marked with a different date.",
+      "The metal shows a wave pattern like ripples on a pond.",
+      "The pommel unscrews to reveal a tiny compartment.",
+      "Fine script rings the guard, too small to read without a lens."
+    ],
+    "axe": [
+      "The axe head bears a crescent-shaped repair of brighter metal.",
+      "Tally marks climb the haft in groups of seven.",
+      "One face of the head is polished while the other remains dark."
+    ],
+    "hammer": [
+      "The striking face leaves a faint geometric imprint on soft material.",
+      "The head rings like a distant bell when tapped.",
+      "A maker's oath is stamped beneath the hammer head."
+    ],
+    "polearm": [
+      "Bands of engraved metal reinforce the long shaft.",
+      "A faded ribbon is tied just below the weapon's head.",
+      "The butt cap contains a small sealed compartment."
+    ],
+    "bow": [
+      "Tiny carvings follow the curve of both limbs.",
+      "The string sounds a clear musical note when plucked.",
+      "The bow flexes without the faintest creak."
+    ],
+    "crossbow": [
+      "The release mechanism is engraved with interlocking leaves.",
+      "A hidden notch in the stock holds a spare string.",
+      "The bow locks into place with an unusually soft click."
+    ],
+    "sling": [
+      "The pouch bears a map stitched in colored thread.",
+      "One cord ends in a bead carved like a watchful eye.",
+      "The cords whistle in harmony when spun."
+    ]
+  },
+
   "magicalProperties": [
-    { "name": "Scorching", "description": "Deals an extra 1d4 fire damage on a hit." },
-    { "name": "Icing", "description": "Deals an extra 1d4 cold damage on a hit." },
-    { "name": "Shocking", "description": "Deals an extra 1d4 lightning damage on a hit." },
-    { "name": "Venomous", "description": "Deals an extra 1d4 poison damage on a hit." },
-    { "name": "Steadfast", "description": "Grants the wielder advantage on saves against being frightened." },
-    { "name": "Returning", "description": "If thrown, the weapon returns to the wielder's hand at the end of the turn." },
-    { "name": "Keen", "description": "This weapon scores a critical hit on a roll of 19 or 20." },
-    { "name": "Radiant", "description": "Deals an extra 1d4 radiant damage; glows softly in darkness." },
-    { "name": "Necrotic", "description": "Deals an extra 1d4 necrotic damage; kills small vermin on contact." },
-    { "name": "Thunderclap", "description": "On a critical hit, emits a thunderous boom audible 300 ft." },
-    { "name": "Frostbrand", "description": "Extinguishes nonmagical flames within 10 ft when drawn." },
-    { "name": "Flame Tongue", "description": "As a bonus action, ignite the blade for 1 minute, shedding bright light." },
-    { "name": "Binding", "description": "On a hit, target’s movement is reduced by 10 ft until end of its next turn." },
-    { "name": "Wounding", "description": "Critical hits cause lingering bleeds that resist mundane healing." },
-    { "name": "Bane of Beasts", "description": "Deals +1d4 damage versus beasts; advantage on tracking checks." },
-    { "name": "Bane of Undead", "description": "On hit, undead must succeed a save or be turned for 1 round." },
-    { "name": "Spellguard", "description": "Wielder gains +1 to saves versus spells while holding the weapon." },
-    { "name": "Featherlight", "description": "Counts as 5 lb lighter for encumbrance and ignores disadvantage in water." },
-    { "name": "Phase-Step", "description": "Once per short rest, the wielder can step through an adjacent wall 5 ft." },
-    { "name": "Sentinel", "description": "Opportunity attacks with this weapon have advantage." },
-    { "name": "Vorpal Edge", "description": "On a natural 20, sever a vital part on a helpless or stunned foe." },
-    { "name": "Whispersteel", "description": "Attacks make no sound; advantage on Stealth checks to hide after attacking." },
-    { "name": "Sapping", "description": "On hit, target takes a −1 penalty to its next attack roll (once per round)." },
-    { "name": "Guiding", "description": "On hit, the next attack against that target before your next turn has advantage." },
-    { "name": "Sunbound", "description": "Deals radiant damage to fiends and undead; sheds sunlight in a 10-ft radius at will." },
-    { "name": "Moonsong", "description": "Sings softly under moonlight; grants +1 to Insight checks at night." },
-    { "name": "Stormcall", "description": "While outdoors, once per day call a bolt of lightning (3d6) on a struck target." },
-    { "name": "Gravitic", "description": "Can anchor itself; cannot be disarmed while anchored (bonus action to toggle)." },
-    { "name": "Echoing", "description": "Once per short rest, repeat your last attack roll against the same target." },
-    { "name": "True North", "description": "Always points toward a chosen place when held flat." }
+    { "name": "Scorching", "description": "Kindles with controlled flame when readied and leaves searing marks on what it strikes." },
+    { "name": "Rimebound", "description": "Gathers white frost in danger and spreads numbing cold through a solid strike." },
+    { "name": "Shocking", "description": "Crackles with blue sparks that leap across metal and wet surfaces." },
+    { "name": "Venomous", "description": "Produces a supernatural venom that weakens living creatures without endangering its bearer." },
+    { "name": "Steadfast", "description": "Steadies its bearer against supernatural fear and panic." },
+    { "name": "Returning", "description": "Flies back to its bearer's grasp when called by name." },
+    { "name": "Unerring", "description": "Subtly guides each strike toward a weakness the bearer can perceive." },
+    { "name": "Radiant", "description": "Shines like dawn and burns creatures animated by unholy power." },
+    { "name": "Grave-Touched", "description": "Drinks warmth from whatever it strikes and grows cold near restless dead." },
+    { "name": "Thunderclap", "description": "Can release the sound and force of a thunderclap through a mighty strike." },
+    { "name": "Frostbrand", "description": "Extinguishes ordinary flame when readied and shields its bearer from bitter cold." },
+    { "name": "Emberwake", "description": "Ignites in bright, smokeless flame at its bearer's command." },
+    { "name": "Binding", "description": "Spectral cords briefly hinder a creature struck by the weapon." },
+    { "name": "Wounding", "description": "Leaves injuries that resist ordinary treatment until the weapon is put away." },
+    { "name": "Bane of Beasts", "description": "Warns of nearby predatory beasts and strikes them with unnatural force." },
+    { "name": "Bane of the Restless", "description": "Glows near the restless dead and can drive such spirits from the living." },
+    { "name": "Spellguard", "description": "Raises a brief shimmer of protection when hostile magic reaches its bearer." },
+    { "name": "Featherlight", "description": "Feels nearly weightless to its chosen bearer without losing force or stability." },
+    { "name": "Phase-Step", "description": "Lets its bearer take a single step through a nearby solid barrier before its magic must recover." },
+    { "name": "Sentinel", "description": "Tugs toward approaching danger and moves quickly to intercept it." },
+    { "name": "Severing", "description": "Can cut or break materials that would turn an ordinary weapon." },
+    { "name": "Quiet Strike", "description": "Makes no sound when readied, moved, or used in battle." },
+    { "name": "Sapping", "description": "Drains vigor from a struck foe and briefly transfers it to the bearer." },
+    { "name": "Guiding", "description": "Marks a struck foe with a faint light that guides the bearer's allies." },
+    { "name": "Sunbound", "description": "Sheds true sunlight on command and blazes against creatures of darkness." },
+    { "name": "Moonsong", "description": "Sings beneath moonlight and sharpens its bearer's perception after dusk." },
+    { "name": "Stormcall", "description": "Calls wind and lightning to answer a strike made beneath the open sky." },
+    { "name": "Gravitic", "description": "Can become immovably anchored until its bearer releases it." },
+    { "name": "Echoing", "description": "A particularly forceful strike can repeat as a spectral echo a heartbeat later." },
+    { "name": "True North", "description": "Points toward a place chosen by its bearer when held still." }
   ],
 
   "nameTemplates": {
