@@ -1,8 +1,24 @@
 
 
+import {
+    createHistoryItem,
+    createId,
+    downloadFile,
+    escapeCsvCell,
+    escapeHtml,
+    loadCollection,
+    printableDocument,
+    saveCollection,
+    showFatalError,
+    setupDialog,
+    setupRevealControl,
+} from './assets/js/instantforge-utils.js';
+
 console.log("InstantForge: Magic Items script loaded.");
 let itemData;
 let savedItems = [];
+let exportDialogControl;
+let curseRevealControl;
 
 // --- CONSTANTS ---
 const iconLockOpenSVG = `<svg class="icon-lock-open" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg>`;
@@ -131,11 +147,14 @@ function generateItem(forceRandomize = false) {
     const powerLevel = (forceRandomize || !ui.powerLevel.value) ? pick(itemData.powerLevels) : ui.powerLevel.value;
     
     const itemInfo = itemData.itemData[itemType];
+    if (!itemInfo) {
+        console.error(`No item data found for ${itemType}.`);
+        return;
+    }
     const powerInfo = itemInfo.powers[powerLevel];
 
     if (!powerInfo || powerInfo.length === 0) {
-        console.warn(`No power data for ${itemType} at ${powerLevel}. Falling back.`);
-        generateItem(true); // Force a full randomize to find a valid combo
+        console.error(`No power data for ${itemType} at ${powerLevel}.`);
         return;
     }
 
@@ -172,6 +191,7 @@ function generateItem(forceRandomize = false) {
     
     ui.curseText.textContent = "(Click to reveal)";
     ui.curseText.dataset.curse = curse;
+    curseRevealControl?.reset();
 }
 
 function populateSelects() {
@@ -249,6 +269,7 @@ function clearAll() {
     if (ui.curseText.dataset.curse) {
         delete ui.curseText.dataset.curse;
     }
+    curseRevealControl?.reset();
     
     ui.copyFeedback.style.opacity = 0;
     setTimeout(() => { ui.copyFeedback.textContent = ''; }, 300);
@@ -268,19 +289,26 @@ function saveItem() {
         powers: ui.outputPowers.textContent,
         history: ui.outputHistory.textContent,
         curse: ui.curseText.dataset.curse,
-        id: Date.now()
+        id: createId('magic-item')
     };
-    
-    savedItems.unshift(item);
-    localStorage.setItem('savedMagicItems', JSON.stringify(savedItems));
+
+    const nextItems = [item, ...savedItems];
+    const result = saveCollection('savedMagicItems', nextItems);
+    if (!result.ok) {
+        showCopyFeedback("Could not save item. Browser storage may be unavailable or full.", true, 4000);
+        return;
+    }
+    savedItems = nextItems;
     renderHistory();
     showCopyFeedback("Item Saved!");
 }
 
 function renderHistory() {
-    ui.historyList.innerHTML = '';
+    ui.historyList.replaceChildren();
     if (savedItems.length === 0) {
-        ui.historyList.innerHTML = '<p>No items saved yet. Generate and save an item to see it here!</p>';
+        const emptyMessage = document.createElement('p');
+        emptyMessage.textContent = 'No items saved yet. Generate and save an item to see it here!';
+        ui.historyList.appendChild(emptyMessage);
         ui.exportHistoryBtn.disabled = true;
         ui.clearHistoryBtn.disabled = true;
         return;
@@ -290,67 +318,55 @@ function renderHistory() {
     ui.clearHistoryBtn.disabled = false;
 
     savedItems.forEach(item => {
-        const element = document.createElement('details');
-        element.className = 'history-item';
-        element.innerHTML = `
-            <summary>
-                <span class="expand-icon" aria-hidden="true">+</span>
-                <div class="history-item-header">
-                    <h3>${item.name}</h3>
-                    <p>${item.subtitle}</p>
-                </div>
-                <button class="btn-delete-item" data-id="${item.id}" title="Remove ${item.name}">Remove</button>
-            </summary>
-            <div class="history-item-body">
-                <div class="output-group"><strong>Description</strong><p>${item.description}</p></div>
-                <div class="output-group"><strong>Powers</strong><p>${item.powers}</p></div>
-                <hr>
-                <div class="output-group"><strong>History</strong><p>${item.history}</p></div>
-                <div class="output-group"><strong>Curse</strong><p>${item.curse}</p></div>
-            </div>
-        `;
+        const element = createHistoryItem({
+            id: item.id,
+            title: item.name,
+            subtitle: item.subtitle,
+            fields: [
+                { label: 'Description', value: item.description },
+                { label: 'Powers', value: item.powers },
+                { label: 'History', value: item.history, dividerBefore: true },
+                { label: 'Curse', value: item.curse },
+            ],
+        });
         ui.historyList.appendChild(element);
     });
 }
 
 function loadHistory() {
-    const historyData = localStorage.getItem('savedMagicItems');
-    if (historyData) {
-        savedItems = JSON.parse(historyData);
-    }
+    savedItems = loadCollection('savedMagicItems', {
+        requiredFields: ['name', 'subtitle', 'description', 'powers', 'history', 'curse'],
+    }).map(item => ({ ...item, id: String(item.id ?? createId('magic-item')) }));
     renderHistory();
 }
 
 function deleteItem(idToDelete) {
-    savedItems = savedItems.filter(item => item.id !== idToDelete);
-    localStorage.setItem('savedMagicItems', JSON.stringify(savedItems));
+    const nextItems = savedItems.filter(item => String(item.id) !== String(idToDelete));
+    const result = saveCollection('savedMagicItems', nextItems);
+    if (!result.ok) {
+        showCopyFeedback("Could not remove item from browser storage.", true, 4000);
+        return;
+    }
+    savedItems = nextItems;
     renderHistory();
 }
 
 function clearHistory() {
     if (savedItems.length === 0) return;
     if (confirm("Are you sure you want to delete all saved items? This cannot be undone.")) {
+        const result = saveCollection('savedMagicItems', []);
+        if (!result.ok) {
+            showCopyFeedback("Could not clear items from browser storage.", true, 4000);
+            return;
+        }
         savedItems = [];
-        localStorage.setItem('savedMagicItems', JSON.stringify(savedItems));
         renderHistory();
         showCopyFeedback("History Cleared.");
     }
 }
 
-function showExportModal() { ui.exportModal.classList.add('visible'); }
-function hideExportModal() { ui.exportModal.classList.remove('visible'); }
-
-function downloadFile(content, filename, mimeType) {
-    const blob = new Blob([content], { type: mimeType });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
-}
+function showExportModal(event) { exportDialogControl.open(event?.currentTarget || ui.exportHistoryBtn); }
+function hideExportModal() { exportDialogControl.close(); }
 
 function exportAsJson() {
     if (savedItems.length === 0) { showCopyFeedback("No history to export.", true); return; }
@@ -362,10 +378,9 @@ function exportAsJson() {
 function exportAsCsv() {
     if (savedItems.length === 0) { showCopyFeedback("No history to export.", true); return; }
     const headers = ['name', 'subtitle', 'description', 'powers', 'history', 'curse'];
-    const escapeCsv = (str) => `"${(str || '').replace(/"/g, '""').replace(/\r?\n|\r/g, ' ')}"`;
     let csvContent = headers.join(',') + '\n';
     savedItems.forEach(item => {
-        const row = headers.map(header => escapeCsv(item[header]));
+        const row = headers.map(header => escapeCsvCell(item[header]));
         csvContent += row.join(',') + '\n';
     });
     downloadFile(csvContent, "instantforge_item_history.csv", "text/csv;charset=utf-8;");
@@ -385,13 +400,13 @@ function exportAsPdf() {
     if (savedItems.length === 0) { showCopyFeedback("No history to export.", true); return; }
     const itemHtml = savedItems.map(item => `
         <div class="item-page">
-            <h2>${item.name}</h2>
-            <p class="subtitle"><em>${item.subtitle}</em></p>
-            <div class="output-group"><strong>Description</strong><p>${item.description}</p></div>
-            <div class="output-group"><strong>Powers</strong><p>${item.powers}</p></div>
+            <h2>${escapeHtml(item.name)}</h2>
+            <p class="subtitle"><em>${escapeHtml(item.subtitle)}</em></p>
+            <div class="output-group"><strong>Description</strong><p>${escapeHtml(item.description)}</p></div>
+            <div class="output-group"><strong>Powers</strong><p>${escapeHtml(item.powers)}</p></div>
             <hr>
-            <div class="output-group"><strong>History</strong><p>${item.history}</p></div>
-            <div class="output-group"><strong>Curse</strong><p>${item.curse}</p></div>
+            <div class="output-group"><strong>History</strong><p>${escapeHtml(item.history)}</p></div>
+            <div class="output-group"><strong>Curse</strong><p>${escapeHtml(item.curse)}</p></div>
         </div>
     `).join('');
 
@@ -409,9 +424,18 @@ function exportAsPdf() {
         @media print { .item-page { border-bottom: none; } }
     </style>`;
 
-    const htmlContent = `<!DOCTYPE html><html><head><title>InstantForge Item History</title>${printStyles}</head><body><h1>Saved Magic Items</h1>${itemHtml}</body></html>`;
+    const htmlContent = printableDocument({
+        title: 'InstantForge Item History',
+        heading: 'Saved Magic Items',
+        itemsHtml: itemHtml,
+        styles: printStyles,
+    });
 
     const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+        showCopyFeedback("Could not open the print window. Check your popup settings.", true, 4000);
+        return;
+    }
     printWindow.document.write(htmlContent);
     printWindow.document.close();
     printWindow.focus();
@@ -444,6 +468,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         populateSelects();
         loadHistory();
         setupLockButtons();
+        exportDialogControl = setupDialog(ui.exportModal, ui.closeModalBtn);
+        curseRevealControl = setupRevealControl(ui.curseContainer, ui.curseText, 'curse');
         
         ui.generateBtn.addEventListener('click', () => generateItem(false));
         ui.randomizeBtn.addEventListener('click', () => generateItem(true));
@@ -453,32 +479,21 @@ document.addEventListener('DOMContentLoaded', async () => {
         ui.clearHistoryBtn.addEventListener('click', clearHistory);
         
         ui.historyList.addEventListener('click', (e) => {
-            if (e.target.classList.contains('btn-delete-item')) {
+            const deleteButton = e.target.closest('.btn-delete-item');
+            if (deleteButton) {
                 e.preventDefault();
-                const itemId = parseInt(e.target.dataset.id, 10);
-                if (!isNaN(itemId)) deleteItem(itemId);
+                deleteItem(deleteButton.dataset.id);
             }
         });
 
         ui.exportHistoryBtn.addEventListener('click', showExportModal);
-        ui.closeModalBtn.addEventListener('click', hideExportModal);
-        ui.exportModal.addEventListener('click', (e) => { if (e.target === ui.exportModal) hideExportModal(); });
         ui.exportJsonBtn.addEventListener('click', exportAsJson);
         ui.exportCsvBtn.addEventListener('click', exportAsCsv);
         ui.exportMdBtn.addEventListener('click', exportAsMarkdown);
         ui.exportPdfBtn.addEventListener('click', exportAsPdf);
 
-        ui.curseContainer.addEventListener('click', () => {
-            if (ui.curseText.classList.contains('hidden') && ui.curseText.dataset.curse) {
-                ui.curseText.textContent = ui.curseText.dataset.curse;
-                ui.curseText.classList.remove('hidden');
-                ui.curseText.classList.add('visible');
-                ui.curseContainer.classList.add('revealed');
-            }
-        });
-
     } catch (error) {
         console.error("Could not load or parse magic-item-data.json", error);
-        document.querySelector('main').innerHTML = `<p style="color: white; text-align: center; font-size: 1.2rem;">Error: Could not load required game data. Please refresh the page.</p>`;
+        showFatalError();
     }
 });

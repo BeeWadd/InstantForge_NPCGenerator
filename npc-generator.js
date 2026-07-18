@@ -1,7 +1,25 @@
+import {
+    createHistoryItem,
+    createId,
+    downloadFile,
+    escapeCsvCell,
+    escapeHtml,
+    loadCollection,
+    printableDocument,
+    removeStoredValue,
+    saveCollection,
+    showFatalError,
+    setupDialog,
+    setupRevealControl,
+} from './assets/js/instantforge-utils.js';
 
 console.log("InstantForge: NPCs script loaded.");
 let npcData;
 let savedNpcs = [];
+let exportDialog;
+
+const SAVED_NPCS_KEY = 'savedNpcs';
+const NPC_QUEUE_KEY = 'pendingNpcsForGeneration';
 
 // --- CONSTANTS ---
 const iconLockOpenSVG = `<svg class="icon-lock-open" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg>`;
@@ -21,6 +39,11 @@ const sample = (arr, n) => {
     return shuffled.slice(0, n);
 };
 const capitalize = (str) => str ? str.charAt(0).toUpperCase() + str.slice(1) : '';
+const withTerminalPunctuation = (text) => {
+    const trimmed = String(text || '').trim();
+    if (!trimmed) return '';
+    return /[.!?\u2026]["'\)\]]?$/.test(trimmed) ? trimmed : `${trimmed}.`;
+};
 
 // --- UNIQUENESS GUARD ---
 const HISTORY_LIMIT = 10;
@@ -84,6 +107,11 @@ const ui = {
     exportCsvBtn: document.getElementById('export-csv'),
     exportMdBtn: document.getElementById('export-md'),
     exportPdfBtn: document.getElementById('export-pdf'),
+    queuedNpcsPanel: document.getElementById('queued-npcs-panel'),
+    queuedNpcsSummary: document.getElementById('queued-npcs-summary'),
+    queuedNpcsList: document.getElementById('queued-npcs-list'),
+    processNpcQueueBtn: document.getElementById('process-npc-queue'),
+    clearNpcQueueBtn: document.getElementById('clear-npc-queue'),
     // Lock buttons
     lockNameBtn: document.getElementById('lock-name'),
     lockAppearanceBtn: document.getElementById('lock-appearance'),
@@ -138,7 +166,7 @@ function generateAppearance(race, gender) {
 function generateDetails() {
     const personality = pickUnique(npcData.personalities, 'personalities');
     const quirk = pickUnique(npcData.quirks, 'quirks');
-    return `${personality}; ${quirk}.`;
+    return `${personality}; ${withTerminalPunctuation(quirk)}`;
 }
 
 function generateNpc(forceRandomize = false) {
@@ -176,13 +204,14 @@ function generateNpc(forceRandomize = false) {
     ui.outputSubtitle.textContent = `${capitalize(race.replace('_',' '))} ${job} (${gender})`;
     ui.outputAppearance.textContent = appearance;
     ui.outputDetails.textContent = details;
-    ui.outputVoiceMannerism.textContent = `${voice}; ${mannerism}.`;
+    ui.outputVoiceMannerism.textContent = `${voice}; ${withTerminalPunctuation(mannerism)}`;
     ui.outputHook.textContent = hook;
-    ui.outputGoalOffer.textContent = `${goal} They can offer: ${offer}.`;
+    ui.outputGoalOffer.textContent = `${withTerminalPunctuation(goal)} They can offer: ${withTerminalPunctuation(offer)}`;
     
     ui.secretText.classList.remove('visible');
     ui.secretText.classList.add('hidden');
     ui.secretContainer.classList.remove('revealed');
+    ui.secretContainer.setAttribute('aria-expanded', 'false');
     
     ui.secretText.textContent = "(Click to reveal)";
     ui.secretText.dataset.secret = secret;
@@ -226,7 +255,7 @@ Secret: ${ui.secretText.dataset.secret || ui.secretText.textContent}
     navigator.clipboard.writeText(textToCopy).then(() => {
         showCopyFeedback("Copied to clipboard!");
     }, () => {
-        showCopyFeedback("Failed to copy.", true);
+        showCopyFeedback("Clipboard access failed. Select and copy the text manually.", true, 5000);
     });
 }
 
@@ -268,6 +297,7 @@ function clearOutput() {
     ui.secretText.classList.remove('visible');
     ui.secretText.classList.add('hidden');
     ui.secretContainer.classList.remove('revealed');
+    ui.secretContainer.setAttribute('aria-expanded', 'false');
     ui.secretText.textContent = '(Click to reveal)';
     if (ui.secretText.dataset.secret) {
         delete ui.secretText.dataset.secret;
@@ -308,19 +338,27 @@ function saveNpc(showFeedback = true) {
         hook: ui.outputHook.textContent,
         goalOffer: ui.outputGoalOffer.textContent,
         secret: ui.secretText.dataset.secret,
-        id: Date.now()
+        id: createId('npc')
     };
     
     savedNpcs.unshift(npc);
-    localStorage.setItem('savedNpcs', JSON.stringify(savedNpcs));
+    const result = saveCollection(SAVED_NPCS_KEY, savedNpcs);
+    if (!result.ok) {
+        savedNpcs.shift();
+        if(showFeedback) showCopyFeedback("NPC could not be saved. Browser storage may be unavailable or full.", true, 5000);
+        return false;
+    }
     renderHistory();
     if(showFeedback) showCopyFeedback("NPC Saved!");
+    return true;
 }
 
 function renderHistory() {
-    ui.historyList.innerHTML = '';
+    ui.historyList.replaceChildren();
     if (savedNpcs.length === 0) {
-        ui.historyList.innerHTML = '<p>No NPCs saved yet. Generate and save an NPC to see it here!</p>';
+        const empty = document.createElement('p');
+        empty.textContent = 'No NPCs saved yet. Generate and save an NPC to see it here!';
+        ui.historyList.appendChild(empty);
         ui.exportHistoryBtn.disabled = true;
         ui.clearHistoryBtn.disabled = true;
         return;
@@ -330,35 +368,24 @@ function renderHistory() {
     ui.clearHistoryBtn.disabled = false;
 
     savedNpcs.forEach(npc => {
-        const item = document.createElement('details');
-        item.className = 'history-item';
-        item.innerHTML = `
-            <summary>
-                <span class="expand-icon" aria-hidden="true">+</span>
-                <div class="history-item-header">
-                    <h3>${npc.name}</h3>
-                    <p>${npc.subtitle}</p>
-                </div>
-                <button class="btn-delete-item" data-id="${npc.id}" title="Remove ${npc.name}">Remove</button>
-            </summary>
-            <div class="history-item-body">
-                <div class="output-group"><strong>Appearance</strong><p>${npc.appearance}</p></div>
-                <div class="output-group"><strong>Details</strong><p>${npc.details}</p></div>
-                <hr>
-                <div class="output-group"><strong>Voice & Mannerism</strong><p>${npc.voiceMannerism}</p></div>
-                <div class="output-group"><strong>Hook</strong><p>${npc.hook}</p></div>
-                <div class="output-group"><strong>Goal & Offer</strong><p>${npc.goalOffer}</p></div>
-                <div class="output-group"><strong>Secret</strong><p>${npc.secret}</p></div>
-            </div>
-        `;
+        const item = createHistoryItem({
+            id: npc.id,
+            title: npc.name,
+            subtitle: npc.subtitle,
+            fields: [
+                { label: 'Appearance', value: npc.appearance },
+                { label: 'Details', value: npc.details },
+                { label: 'Voice & Mannerism', value: npc.voiceMannerism, dividerBefore: true },
+                { label: 'Hook', value: npc.hook },
+                { label: 'Goal & Offer', value: npc.goalOffer },
+                { label: 'Secret', value: npc.secret },
+            ],
+        });
 
         const deleteBtn = item.querySelector('.btn-delete-item');
         deleteBtn.addEventListener('click', (e) => {
             e.preventDefault(); // Prevent details from toggling
-            const npcId = parseInt(e.currentTarget.dataset.id, 10);
-            if (!isNaN(npcId)) {
-                deleteNpc(npcId);
-            }
+            deleteNpc(e.currentTarget.dataset.id);
         });
 
         ui.historyList.appendChild(item);
@@ -366,16 +393,19 @@ function renderHistory() {
 }
 
 function loadHistory() {
-    const historyData = localStorage.getItem('savedNpcs');
-    if (historyData) {
-        savedNpcs = JSON.parse(historyData);
-    }
+    savedNpcs = loadCollection(SAVED_NPCS_KEY, {
+        requiredFields: ['name', 'subtitle', 'appearance', 'details', 'voiceMannerism', 'hook', 'goalOffer', 'secret'],
+    });
     renderHistory();
 }
 
 function deleteNpc(idToDelete) {
-    savedNpcs = savedNpcs.filter(npc => npc.id !== idToDelete);
-    localStorage.setItem('savedNpcs', JSON.stringify(savedNpcs));
+    const previous = savedNpcs;
+    savedNpcs = savedNpcs.filter(npc => String(npc.id) !== String(idToDelete));
+    if (!saveCollection(SAVED_NPCS_KEY, savedNpcs).ok) {
+        savedNpcs = previous;
+        showCopyFeedback("NPC could not be removed because browser storage is unavailable.", true, 5000);
+    }
     renderHistory();
 }
 
@@ -383,26 +413,14 @@ function clearHistory() {
     if (savedNpcs.length === 0) return;
     if (confirm("Are you sure you want to delete all saved NPCs? This cannot be undone.")) {
         savedNpcs = [];
-        localStorage.setItem('savedNpcs', JSON.stringify(savedNpcs));
+        saveCollection(SAVED_NPCS_KEY, savedNpcs);
         renderHistory();
         showCopyFeedback("History Cleared.");
     }
 }
 
-function showExportModal() { ui.exportModal.classList.add('visible'); }
-function hideExportModal() { ui.exportModal.classList.remove('visible'); }
-
-function downloadFile(content, filename, mimeType) {
-    const blob = new Blob([content], { type: mimeType });
-    const url = URL.createObjectURL(blob);
-    const downloadNode = document.createElement('a');
-    downloadNode.href = url;
-    downloadNode.download = filename;
-    document.body.appendChild(downloadNode);
-    downloadNode.click();
-    downloadNode.remove();
-    URL.revokeObjectURL(url);
-}
+function showExportModal() { exportDialog.open(ui.exportHistoryBtn); }
+function hideExportModal() { exportDialog.close(); }
 
 function exportAsJson() {
     if (savedNpcs.length === 0) { showCopyFeedback("No history to export.", true); return; }
@@ -414,10 +432,9 @@ function exportAsJson() {
 function exportAsCsv() {
     if (savedNpcs.length === 0) { showCopyFeedback("No history to export.", true); return; }
     const headers = ['name', 'subtitle', 'appearance', 'details', 'voiceMannerism', 'hook', 'goalOffer', 'secret'];
-    const escapeCsv = (str) => `"${(str || '').replace(/"/g, '""').replace(/\r?\n|\r/g, ' ')}"`;
     let csvContent = headers.join(',') + '\n';
     savedNpcs.forEach(npc => {
-        const row = headers.map(header => escapeCsv(npc[header]));
+        const row = headers.map(header => escapeCsvCell(npc[header]));
         csvContent += row.join(',') + '\n';
     });
     downloadFile(csvContent, "instantforge_npc_history.csv", "text/csv;charset=utf-8;");
@@ -437,15 +454,15 @@ function exportAsPdf() {
     if (savedNpcs.length === 0) { showCopyFeedback("No history to export.", true); return; }
     const npcHtml = savedNpcs.map(npc => `
         <div class="npc-page">
-            <h2>${npc.name}</h2>
-            <p class="subtitle"><em>${npc.subtitle}</em></p>
-            <div class="output-group"><strong>Appearance</strong><p>${npc.appearance}</p></div>
-            <div class="output-group"><strong>Details</strong><p>${npc.details}</p></div>
+            <h2>${escapeHtml(npc.name)}</h2>
+            <p class="subtitle"><em>${escapeHtml(npc.subtitle)}</em></p>
+            <div class="output-group"><strong>Appearance</strong><p>${escapeHtml(npc.appearance)}</p></div>
+            <div class="output-group"><strong>Details</strong><p>${escapeHtml(npc.details)}</p></div>
             <hr>
-            <div class="output-group"><strong>Voice & Mannerism</strong><p>${npc.voiceMannerism}</p></div>
-            <div class="output-group"><strong>Hook</strong><p>${npc.hook}</p></div>
-            <div class="output-group"><strong>Goal & Offer</strong><p>${npc.goalOffer}</p></div>
-            <div class="output-group"><strong>Secret</strong><p>${npc.secret}</p></div>
+            <div class="output-group"><strong>Voice & Mannerism</strong><p>${escapeHtml(npc.voiceMannerism)}</p></div>
+            <div class="output-group"><strong>Hook</strong><p>${escapeHtml(npc.hook)}</p></div>
+            <div class="output-group"><strong>Goal & Offer</strong><p>${escapeHtml(npc.goalOffer)}</p></div>
+            <div class="output-group"><strong>Secret</strong><p>${escapeHtml(npc.secret)}</p></div>
         </div>
     `).join('');
 
@@ -465,9 +482,13 @@ function exportAsPdf() {
         </style>
     `;
 
-    const htmlContent = `<!DOCTYPE html><html><head><title>InstantForge NPC History</title>${printStyles}</head><body><h1>Saved NPCs</h1>${npcHtml}</body></html>`;
+    const htmlContent = printableDocument({ title: 'InstantForge NPC History', heading: 'Saved NPCs', itemsHtml: npcHtml, styles: printStyles });
 
     const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+        showCopyFeedback('Printing was blocked. Allow pop-ups for InstantForge and try again.', true, 5000);
+        return;
+    }
     printWindow.document.write(htmlContent);
     printWindow.document.close();
     printWindow.focus();
@@ -490,54 +511,73 @@ function setupLockButtons() {
     });
 }
 
+function loadNpcQueue() {
+    return loadCollection(NPC_QUEUE_KEY, { kind: 'session' }).filter((entry) => (
+        entry
+        && Number.isInteger(entry.quantity)
+        && entry.quantity > 0
+        && typeof entry.race === 'string'
+        && typeof entry.job === 'string'
+        && typeof entry.appearance === 'string'
+    ));
+}
+
+function renderQueuedNpcs() {
+    if (!ui.queuedNpcsPanel || !ui.queuedNpcsList) return;
+    const queue = loadNpcQueue();
+    ui.queuedNpcsList.replaceChildren();
+    ui.queuedNpcsPanel.hidden = queue.length === 0;
+    if (queue.length === 0) return;
+
+    const total = queue.reduce((sum, entry) => sum + entry.quantity, 0);
+    ui.queuedNpcsSummary.textContent = `${total} character${total === 1 ? '' : 's'} ready to generate and save.`;
+    queue.forEach((entry) => {
+        const item = document.createElement('li');
+        const details = [entry.race?.replaceAll('_', ' '), entry.job].filter(Boolean).join(' · ');
+        item.textContent = `${entry.quantity}× ${entry.appearance}${details ? ` (${details})` : ''}`;
+        ui.queuedNpcsList.appendChild(item);
+    });
+}
+
+function clearNpcQueue() {
+    removeStoredValue(NPC_QUEUE_KEY, { kind: 'session' });
+    renderQueuedNpcs();
+    showCopyFeedback('Queued NPCs cleared.');
+}
+
 async function processQueuedNpcs() {
-    const pendingNpcsJson = sessionStorage.getItem('pendingNpcsForGeneration');
-    if (!pendingNpcsJson) return;
+    const patronsToProcess = loadNpcQueue();
+    if (patronsToProcess.length === 0) {
+        renderQueuedNpcs();
+        return;
+    }
 
     try {
-        const patronsToProcess = JSON.parse(pendingNpcsJson);
-        if (!Array.isArray(patronsToProcess) || patronsToProcess.length === 0) {
-            sessionStorage.removeItem('pendingNpcsForGeneration');
-            return;
-        }
-
         const totalNpcsToGenerate = patronsToProcess.reduce((acc, curr) => acc + curr.quantity, 0);
-        showCopyFeedback(`Generating ${totalNpcsToGenerate} queued patrons...`, false, 5000);
-        
-        await new Promise(resolve => setTimeout(resolve, 500)); 
+        showCopyFeedback(`Generating ${totalNpcsToGenerate} queued characters...`, false, 5000);
 
         for (const patronInfo of patronsToProcess) {
             for (let i = 0; i < patronInfo.quantity; i++) {
-                // Clear inputs that should be unique for each group member, respecting user locks.
                 clearVolatileFormInputs();
-
-                // Populate form with context from the patron
                 ui.race.value = patronInfo.race || '';
                 ui.job.value = patronInfo.job || '';
                 ui.appearance.value = patronInfo.appearance;
-                
-                // Temporarily lock appearance to preserve the full context string for this one generation.
+
                 const wasAppearanceLocked = lockStates.appearance;
                 lockStates.appearance = true;
-                
                 generateNpc(false);
-                saveNpc(false);
-
-                // Restore user's original lock state for appearance for the next loop/interaction.
+                const saved = saveNpc(false);
                 lockStates.appearance = wasAppearanceLocked;
+                if (!saved) throw new Error('Browser storage rejected a queued NPC.');
             }
         }
 
-        sessionStorage.removeItem('pendingNpcsForGeneration');
-        showCopyFeedback(`${totalNpcsToGenerate} Patron NPCs created and saved!`);
-        
-        // After processing, clear the form and output for the user, respecting their final lock states.
-        clearFormInputs(true);
-        clearOutput();
-
+        removeStoredValue(NPC_QUEUE_KEY, { kind: 'session' });
+        renderQueuedNpcs();
+        showCopyFeedback(`${totalNpcsToGenerate} queued NPC${totalNpcsToGenerate === 1 ? '' : 's'} created and saved!`);
     } catch (error) {
         console.error("Error processing queued NPCs:", error);
-        sessionStorage.removeItem('pendingNpcsForGeneration');
+        showCopyFeedback('Queued NPC generation stopped. The queue was kept for retry.', true, 5000);
     }
 }
 
@@ -554,8 +594,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         populateSelects();
         loadHistory();
         setupLockButtons();
-        
-        await processQueuedNpcs();
+        exportDialog = setupDialog(ui.exportModal, ui.closeModalBtn);
+        setupRevealControl(ui.secretContainer, ui.secretText, 'secret');
+        renderQueuedNpcs();
 
         ui.generateBtn.addEventListener('click', () => generateNpc(false));
         ui.randomizeBtn.addEventListener('click', () => generateNpc(true));
@@ -563,27 +604,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         ui.saveBtn.addEventListener('click', () => saveNpc(true));
         ui.clearBtn.addEventListener('click', clearAll);
         ui.clearHistoryBtn.addEventListener('click', clearHistory);
+        ui.processNpcQueueBtn?.addEventListener('click', processQueuedNpcs);
+        ui.clearNpcQueueBtn?.addEventListener('click', clearNpcQueue);
         
         // Export modal listeners
         ui.exportHistoryBtn.addEventListener('click', showExportModal);
-        ui.closeModalBtn.addEventListener('click', hideExportModal);
-        ui.exportModal.addEventListener('click', (e) => { if (e.target === ui.exportModal) hideExportModal(); });
         ui.exportJsonBtn.addEventListener('click', exportAsJson);
         ui.exportCsvBtn.addEventListener('click', exportAsCsv);
         ui.exportMdBtn.addEventListener('click', exportAsMarkdown);
         ui.exportPdfBtn.addEventListener('click', exportAsPdf);
 
-        ui.secretContainer.addEventListener('click', () => {
-            if (ui.secretText.classList.contains('hidden') && ui.secretText.dataset.secret) {
-                ui.secretText.textContent = ui.secretText.dataset.secret;
-                ui.secretText.classList.remove('hidden');
-                ui.secretText.classList.add('visible');
-                ui.secretContainer.classList.add('revealed');
-            }
-        });
-
     } catch (error) {
         console.error("Could not load or parse npc-data.json", error);
-        document.querySelector('main').innerHTML = `<p style="color: white; text-align: center; font-size: 1.2rem;">Error: Could not load required game data. Please refresh the page.</p>`;
+        showFatalError();
     }
 });

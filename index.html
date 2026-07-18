@@ -4,209 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>InstantForge: Your World, Forged in Seconds</title>
+    <meta name="description" content="Free fantasy generators for roleplay-ready NPCs, magic items, taverns, inns, and weapons.">
+    <meta name="theme-color" content="#3a2e2c">
+    <link rel="canonical" href="https://beewadd.github.io/InstantForge_NPCGenerator/">
+    <link rel="icon" type="image/png" href="assets/img/InstantForge_logo.png">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="InstantForge">
+    <meta property="og:title" content="InstantForge: Your World, Forged in Seconds">
+    <meta property="og:description" content="Free fantasy generators for roleplay-ready NPCs, magic items, taverns, inns, and weapons.">
+    <meta property="og:url" content="https://beewadd.github.io/InstantForge_NPCGenerator/">
+    <meta property="og:image" content="https://beewadd.github.io/InstantForge_NPCGenerator/assets/img/InstantForge_logo.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=MedievalSharp&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-color: #3a2e2c;
-            --surface-color: #fdf5e6;
-            --primary-color: #8B0000;
-            --primary-hover: #6a0000;
-            --text-color: #4a2c2a;
-            --label-color: #6c5b5a;
-            --border-color: #c9b7a2;
-            --shadow-color: rgba(0, 0, 0, 0.3);
-            --font-heading: 'MedievalSharp', cursive;
-            --font-body: 'Lora', serif;
-        }
-
-        *, *::before, *::after {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: var(--font-body);
-            background-color: var(--bg-color);
-            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iIzNhMmUyYyI+PC9yZWN0PjxwYXRoIGQ9Ik0wIDUwIEwxMDAgNTAgTTUwIDAgTDUwIDEwMCIgc3Ryb2tlPSIjMjgwZTA5IiBzdHJva2Utd2lkdGg9IjEiPjwvcGF0aD48L3N2Zz4=');
-            color: var(--text-color);
-            line-height: 1.6;
-            padding: 1rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-        }
-        
-        .logo-link {
-            display: inline-block;
-            margin-bottom: 0.5rem;
-        }
-
-        .logo {
-            max-width: 150px;
-            width: 100%;
-            height: auto;
-            filter: drop-shadow(2px 2px 3px var(--shadow-color));
-            transition: transform 0.2s ease-out;
-        }
-        
-        .logo:hover {
-            transform: scale(1.05);
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 1.5rem;
-        }
-
-        header h1 {
-            font-family: var(--font-heading);
-            color: var(--surface-color);
-            font-size: clamp(2.5rem, 6vw, 4rem);
-            text-shadow: 3px 3px 5px var(--shadow-color);
-            letter-spacing: 3px;
-        }
-
-        header p {
-            color: #d3c5bc;
-            font-size: clamp(1rem, 2vw, 1.2rem);
-            font-style: italic;
-            max-width: 600px;
-            margin: 0.5rem auto 0;
-        }
-
-        main {
-            width: 100%;
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        .generators-section {
-            text-align: center;
-        }
-
-        .generators-section h2 {
-            font-family: var(--font-heading);
-            color: var(--surface-color);
-            font-size: clamp(1.8rem, 4vw, 2.5rem);
-            margin-bottom: 1.5rem;
-            text-shadow: 2px 2px 3px var(--shadow-color);
-        }
-
-        .generator-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .generator-card {
-            background-color: var(--surface-color);
-            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1IiBoZWlnaHQ9IjUiPgo8cmVjdCB3aWR0aD0iNSIgaGVpZHRoPSI1IiBmaWxsPSIjZmRmNWU2Ij48L3JlY3Q+CjxwYXRoIGQ9Ik0wIDVMNSAwWk02IDRMNCA2Wk0tMSAxTDEgLTFaIiBzdHJva2U9IiNlYWU5ZDAiIHN0cm9rZS1preWR0aD0iMSI+PC9wYXRoPgo8L3N2Zz4=');
-            border: 2px solid #5a3d3b;
-            border-radius: 5px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 15px var(--shadow-color), inset 0 0 10px rgba(0,0,0,0.1);
-            text-decoration: none;
-            color: var(--text-color);
-            transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-        }
-
-        .generator-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px var(--shadow-color), inset 0 0 10px rgba(0,0,0,0.1);
-            border-color: var(--primary-color);
-        }
-
-        .generator-card svg {
-            width: 60px;
-            height: 60px;
-            margin-bottom: 1rem;
-            fill: var(--primary-color);
-            opacity: 0.8;
-        }
-        
-        .generator-card h3 {
-            font-family: var(--font-heading);
-            font-size: 1.8rem;
-            margin-bottom: 0.5rem;
-            color: var(--primary-color);
-        }
-
-        .generator-card p {
-            font-size: 1rem;
-            color: var(--label-color);
-        }
-
-        .placeholder-card {
-            border-style: dashed;
-            border-color: var(--border-color);
-            cursor: not-allowed;
-            opacity: 0.6;
-            color: var(--label-color);
-        }
-
-        .placeholder-card:hover {
-            transform: none;
-            box-shadow: 0 4px 15px var(--shadow-color), inset 0 0 10px rgba(0,0,0,0.1);
-            border-color: var(--border-color);
-        }
-        
-        .placeholder-card svg {
-            fill: var(--label-color);
-        }
-        
-        .placeholder-card h3 {
-            color: var(--label-color);
-        }
-
-        .support-section {
-            text-align: center;
-            margin-top: 2.5rem;
-            padding: 1.5rem 0;
-        }
-
-        .support-button {
-            display: inline-block;
-            padding: 0.75rem 1.5rem;
-            border: 1px solid rgba(0,0,0,0.3);
-            border-bottom: 3px solid rgba(0,0,0,0.4);
-            border-radius: 5px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.15s ease-out;
-            text-shadow: 1px 1px 1px rgba(0,0,0,0.2);
-            background-color: var(--primary-color);
-            color: white;
-            text-decoration: none;
-            max-width: 90%;
-            width: 500px;
-        }
-
-        @media (max-width: 600px) {
-            .support-button {
-                width: 100%;
-                font-size: 1rem;
-            }
-        }
-
-        .support-button:hover {
-            background-color: var(--primary-hover);
-        }
-
-        .support-button:active {
-            transform: translateY(2px);
-            border-bottom-width: 1px;
-        }
-    </style>
+    <link rel="stylesheet" href="assets/css/instantforge.css">
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-JC9YB7JQRN"></script>
     <script>
@@ -217,17 +28,18 @@
       gtag('config', 'G-JC9YB7JQRN');
     </script>
 </head>
-<body>
+<body class="landing-page">
+    <a class="skip-link" href="#main-content">Skip to generators</a>
     <header>
         <a href="index.html" class="logo-link" aria-label="InstantForge Home">
-            <img src="assets/img/InstantForge_logo.png" alt="InstantForge Logo" class="logo">
+            <img src="assets/img/InstantForge_logo.png" alt="" class="logo">
         </a>
         <h1>InstantForge</h1>
         <p>Your world, forged in seconds. A suite of tools for storytellers and game masters.</p>
     </header>
-    <main>
-        <section class="generators-section">
-            <h2>Available Generators</h2>
+    <main id="main-content">
+        <section class="generators-section" aria-labelledby="generators-heading">
+            <h2 id="generators-heading">Available Generators</h2>
             <div class="generator-grid">
                 <a href="npc-generator.html" class="generator-card" aria-label="Go to NPC Generator">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
@@ -256,11 +68,28 @@
                 </div>
             </div>
         </section>
-        <section class="support-section">
+        <section class="forge-tools" aria-labelledby="forge-tools-heading">
+            <h2 id="forge-tools-heading">Your Forge</h2>
+            <p>Saved creations remain in this browser. Export a backup to move them to another browser or device, then import it when needed.</p>
+            <div class="forge-actions">
+                <button id="export-forge" class="btn-primary" type="button">Export Your Forge</button>
+                <button id="import-forge" class="btn-secondary" type="button">Import Your Forge</button>
+                <input id="import-forge-file" class="sr-only" type="file" accept="application/json">
+            </div>
+            <p id="forge-feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        </section>
+        <section class="support-section" aria-label="Support InstantForge">
             <a href="https://buymeacoffee.com/beewadd" class="support-button" target="_blank" rel="noopener noreferrer" aria-label="Support InstantForge">
                 Enjoy these tools? Support InstantForge so I can keep building more.
             </a>
         </section>
     </main>
+    <footer class="site-footer">
+        <details>
+            <summary>Privacy &amp; storage</summary>
+            <p>Saved creations are stored in this browser's local storage. This site uses Google Analytics and loads Google Fonts; the support link opens Buy Me a Coffee. Clearing this site's browser data removes local saves.</p>
+        </details>
+    </footer>
+    <script type="module" src="assets/js/index.js"></script>
 </body>
 </html>
