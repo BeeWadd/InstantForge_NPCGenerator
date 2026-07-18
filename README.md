@@ -8,6 +8,7 @@ InstantForge is a browser-based toolkit for generating roleplay-ready NPCs, magi
 
 - Four focused generators with editable fields and field locks.
 - Saved histories that persist in the current browser.
+- A unified Your Forge page for browsing, searching, filtering, and managing every saved creation.
 - JSON, CSV, Markdown, and print-to-PDF exports.
 - A tavern-to-NPC handoff for generating innkeepers and patrons.
 - A responsive static interface deployable to any ordinary web host.
@@ -29,7 +30,7 @@ Useful commands:
 npm run lint          # Validate source files, JavaScript syntax, and generator data
 npm run typecheck     # Type-check the Vite configuration
 npm run test:unit     # Run generator-data and shared-utility tests
-npm run build         # Build all five pages and verify the complete output
+npm run build         # Build all six pages and verify the complete output
 npm test              # Run every check and a production build
 npm run preview       # Serve dist/ after a build
 ```
@@ -41,15 +42,16 @@ InstantForge is intentionally small and framework-free:
 | Area | Files | Purpose |
 | --- | --- | --- |
 | Landing page | `index.html` | Links to each generator |
+| Saved collection | `forge.html` | Unified view of all browser-local creations |
 | Generator interfaces | `*-generator.html` | Page structure and content |
 | Shared styling | `assets/css/instantforge.css` | Responsive layout and visual system |
 | Generator behavior | `*-generator.js` | Page-specific generation and interaction modules |
-| Shared browser code | `assets/js/` | Storage, safe rendering, exports, and landing-page tools |
+| Shared browser code | `assets/js/` | Storage, safe rendering, Forge browsing, and transfer tools |
 | Content libraries | `*-data.json` | Source material used by each generator |
-| Build | `vite.config.ts` | Explicit five-page Vite build and runtime-file emission |
+| Build | `vite.config.ts` | Explicit six-page Vite build and runtime-file emission |
 | Verification | `scripts/` | Source and production-output integrity checks |
 
-The Vite build has five HTML entry points: the landing page and the NPC, magic item, tavern, and weapon generators. Browser code uses ES modules, so Vite follows and bundles the HTML entries and shared imports. Generator JSON libraries are loaded with `fetch()`, so the build configuration emits those data files at stable paths. `scripts/verify-build.mjs` confirms that every required page, bundled module, data file, and referenced asset exists in `dist/`.
+The Vite build has six HTML entry points: the landing page, Your Forge, and the NPC, magic item, tavern, and weapon generators. Browser code uses ES modules, so Vite follows and bundles the HTML entries and shared imports. Generator JSON libraries are loaded with `fetch()`, so the build configuration emits those data files at stable paths. `scripts/verify-build.mjs` confirms that every required page, bundled module, data file, and referenced asset exists in `dist/`.
 
 ## Data and privacy
 

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Forge | InstantForge</title>
+    <meta name="description" content="Browse, search, manage, import, and export every NPC, magic item, tavern, inn, and weapon saved in your InstantForge collection.">
+    <meta name="theme-color" content="#3a2e2c">
+    <link rel="canonical" href="https://beewadd.github.io/InstantForge_NPCGenerator/forge.html">
+    <link rel="icon" type="image/png" href="assets/img/InstantForge_logo.png">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="InstantForge">
+    <meta property="og:title" content="Your Forge | InstantForge">
+    <meta property="og:description" content="Browse and manage every creation saved in your InstantForge collection.">
+    <meta property="og:url" content="https://beewadd.github.io/InstantForge_NPCGenerator/forge.html">
+    <meta property="og:image" content="https://beewadd.github.io/InstantForge_NPCGenerator/assets/img/InstantForge_logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=MedievalSharp&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/instantforge.css">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-JC9YB7JQRN"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-JC9YB7JQRN');
+    </script>
+</head>
+<body class="forge-page">
+    <a class="skip-link" href="#main-content">Skip to your saved creations</a>
+    <header>
+        <a href="index.html" class="back-link" aria-label="Back to main InstantForge page">&larr; Back to InstantForge</a>
+        <a href="index.html" class="logo-link" aria-label="InstantForge Home">
+            <img src="assets/img/InstantForge_logo.png" alt="" class="logo">
+        </a>
+        <h1>Your Forge</h1>
+        <p>Every creation you have chosen to keep, gathered in one place.</p>
+    </header>
+
+    <main id="main-content">
+        <section class="forge-dashboard" aria-labelledby="forge-overview-heading">
+            <div class="forge-section-heading">
+                <div>
+                    <h2 id="forge-overview-heading">Forge Overview</h2>
+                    <p id="forge-total-summary" role="status" aria-live="polite">Loading saved creations...</p>
+                </div>
+                <div class="forge-actions">
+                    <button id="export-forge" class="btn-primary" type="button">Export Your Forge</button>
+                    <button id="import-forge" class="btn-secondary" type="button">Import Your Forge</button>
+                    <input id="import-forge-file" type="file" accept="application/json" hidden>
+                </div>
+            </div>
+
+            <div class="forge-stats" aria-label="Saved creation counts">
+                <button class="forge-stat is-active" type="button" data-forge-filter="all" aria-pressed="true">
+                    <span class="forge-stat-count" id="forge-count-all">0</span>
+                    <span>All Creations</span>
+                </button>
+                <button class="forge-stat" type="button" data-forge-filter="npc" aria-pressed="false">
+                    <span class="forge-stat-count" id="forge-count-npc">0</span>
+                    <span>NPCs</span>
+                </button>
+                <button class="forge-stat" type="button" data-forge-filter="magic-item" aria-pressed="false">
+                    <span class="forge-stat-count" id="forge-count-magic-item">0</span>
+                    <span>Magic Items</span>
+                </button>
+                <button class="forge-stat" type="button" data-forge-filter="tavern" aria-pressed="false">
+                    <span class="forge-stat-count" id="forge-count-tavern">0</span>
+                    <span>Taverns &amp; Inns</span>
+                </button>
+                <button class="forge-stat" type="button" data-forge-filter="weapon" aria-pressed="false">
+                    <span class="forge-stat-count" id="forge-count-weapon">0</span>
+                    <span>Weapons</span>
+                </button>
+            </div>
+            <p id="forge-feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        </section>
+
+        <section class="forge-browser" aria-labelledby="forge-collection-heading">
+            <div class="forge-section-heading">
+                <div>
+                    <h2 id="forge-collection-heading">Saved Creations</h2>
+                    <p id="forge-results-summary" aria-live="polite"></p>
+                </div>
+                <button id="clear-forge" class="btn-delete-item forge-clear-button" type="button">Clear Entire Forge</button>
+            </div>
+
+            <div class="forge-toolbar" role="search">
+                <div class="form-group">
+                    <label for="forge-search">Search your Forge</label>
+                    <input id="forge-search" type="search" placeholder="Search names, descriptions, hooks, rumors..." autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label for="forge-filter">Show</label>
+                    <select id="forge-filter">
+                        <option value="all">All creations</option>
+                        <option value="npc">NPCs</option>
+                        <option value="magic-item">Magic items</option>
+                        <option value="tavern">Taverns &amp; inns</option>
+                        <option value="weapon">Weapons</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="forge-entries" class="forge-entries" aria-live="polite" aria-relevant="additions removals"></div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <details>
+            <summary>Privacy &amp; storage</summary>
+            <p>Your Forge is assembled from creations stored in this browser's local storage. This site uses Google Analytics and loads Google Fonts. Clearing this site's browser data removes local saves; export a backup before clearing or changing browsers.</p>
+        </details>
+    </footer>
+
+    <script type="module" src="assets/js/forge.js"></script>
+</body>
+</html>

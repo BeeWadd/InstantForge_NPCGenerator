@@ -6,6 +6,7 @@ const root = resolve(import.meta.dirname, '..');
 
 const pages = [
   'index.html',
+  'forge.html',
   'npc-generator.html',
   'magic-item-generator.html',
   'tavern-generator.html',
@@ -21,6 +22,9 @@ const runtimePairs = [
 
 const sharedModules = [
   'assets/js/index.js',
+  'assets/js/forge.js',
+  'assets/js/forge-data.js',
+  'assets/js/forge-transfer.js',
   'assets/js/instantforge-utils.js',
 ];
 
@@ -54,6 +58,11 @@ function hasModuleScript(html, script) {
 const landingPage = await readFile(resolve(root, 'index.html'), 'utf8');
 if (!hasModuleScript(landingPage, 'assets/js/index.js')) {
   errors.push('index.html must load assets/js/index.js as a module');
+}
+
+const forgePage = await readFile(resolve(root, 'forge.html'), 'utf8');
+if (!hasModuleScript(forgePage, 'assets/js/forge.js')) {
+  errors.push('forge.html must load assets/js/forge.js as a module');
 }
 
 for (const [page, script, data] of runtimePairs) {
