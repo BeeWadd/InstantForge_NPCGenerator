@@ -13,6 +13,7 @@ import {
     setupDialog,
     setupRevealControl,
 } from './assets/js/instantforge-utils.js';
+import { initializeAnalytics, trackAnalyticsEvent } from './assets/js/instantforge-analytics.js';
 
 console.log("InstantForge: Magic Items script loaded.");
 let itemData;
@@ -192,6 +193,7 @@ function generateItem(forceRandomize = false) {
     ui.curseText.textContent = "(Click to reveal)";
     ui.curseText.dataset.curse = curse;
     curseRevealControl?.reset();
+    trackAnalyticsEvent('generation_complete', { generator_type: 'magic_item' });
 }
 
 function populateSelects() {
@@ -300,6 +302,7 @@ function saveItem() {
     }
     savedItems = nextItems;
     renderHistory();
+    trackAnalyticsEvent('save_complete', { generator_type: 'magic_item' });
     showCopyFeedback("Item Saved!");
 }
 
@@ -372,6 +375,7 @@ function exportAsJson() {
     if (savedItems.length === 0) { showCopyFeedback("No history to export.", true); return; }
     const dataStr = JSON.stringify(savedItems, null, 2);
     downloadFile(dataStr, "instantforge_item_history.json", "application/json");
+    trackAnalyticsEvent('export_complete', { format: 'json' });
     hideExportModal();
 }
 
@@ -384,6 +388,7 @@ function exportAsCsv() {
         csvContent += row.join(',') + '\n';
     });
     downloadFile(csvContent, "instantforge_item_history.csv", "text/csv;charset=utf-8;");
+    trackAnalyticsEvent('export_complete', { format: 'csv' });
     hideExportModal();
 }
 
@@ -393,6 +398,7 @@ function exportAsMarkdown() {
         return `## ${item.name}\n*${item.subtitle}*\n\n**Description**\n${item.description}\n\n**Powers**\n${item.powers}\n\n**History**\n${item.history}\n\n**Curse**\n${item.curse}`;
     }).join('\n\n---\n\n');
     downloadFile(markdownContent, "instantforge_item_history.md", "text/markdown;charset=utf-8;");
+    trackAnalyticsEvent('export_complete', { format: 'markdown' });
     hideExportModal();
 }
 
@@ -411,9 +417,8 @@ function exportAsPdf() {
     `).join('');
 
     const printStyles = `<style>
-        @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=MedievalSharp&display=swap');
-        body { font-family: 'Lora', serif; color: #333; }
-        h1, h2 { font-family: 'MedievalSharp', cursive; }
+        body { font-family: Georgia, serif; color: #333; }
+        h1, h2 { font-family: Georgia, serif; }
         h2 { font-size: 22pt; margin-bottom: 0; }
         .subtitle { font-size: 11pt; color: #666; margin-top: 0; }
         .output-group { margin-bottom: 1em; }
@@ -440,6 +445,7 @@ function exportAsPdf() {
     printWindow.document.close();
     printWindow.focus();
     setTimeout(() => { printWindow.print(); }, 250);
+    trackAnalyticsEvent('export_complete', { format: 'pdf' });
     hideExportModal();
 }
 
@@ -461,6 +467,7 @@ function setupLockButtons() {
 // --- EVENT LISTENERS & INITIALIZATION ---
 document.addEventListener('DOMContentLoaded', async () => {
     try {
+        initializeAnalytics();
         const response = await fetch('magic-item-data.json');
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         itemData = await response.json();

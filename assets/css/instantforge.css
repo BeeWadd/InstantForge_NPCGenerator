@@ -7,8 +7,8 @@
     --label-color: #6c5b5a;
     --border-color: #c9b7a2;
     --shadow-color: rgba(0, 0, 0, 0.3);
-    --font-heading: 'MedievalSharp', cursive;
-    --font-body: 'Lora', serif;
+    --font-heading: Georgia, 'Times New Roman', serif;
+    --font-body: Georgia, 'Times New Roman', serif;
 }
 
 *, *::before, *::after {
@@ -649,6 +649,74 @@ summary:focus-visible {
 
 .site-footer p {
     margin-top: 0.5rem;
+}
+
+.privacy-settings-button {
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: 2100;
+    text-shadow: none;
+}
+
+.privacy-banner,
+.privacy-dialog {
+    position: fixed;
+    z-index: 2200;
+    left: 50%;
+    width: min(92vw, 640px);
+    padding: 1rem;
+    border: 2px solid #5a3d3b;
+    border-radius: 5px;
+    background: var(--surface-color);
+    color: var(--text-color);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+}
+
+.privacy-banner {
+    bottom: 4.5rem;
+    transform: translateX(-50%);
+}
+
+.privacy-dialog {
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.privacy-dialog h2 {
+    font-family: var(--font-heading);
+    color: var(--primary-color);
+    font-size: 1.6rem;
+}
+
+.privacy-banner p,
+.privacy-dialog p {
+    margin: 0 0 0.75rem;
+}
+
+.privacy-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+}
+
+.privacy-actions button {
+    min-height: 2.75rem;
+}
+
+.privacy-dialog .privacy-actions button:last-child {
+    grid-column: 1 / -1;
+}
+
+@media (max-width: 600px) {
+    .privacy-settings-button {
+        right: 0.5rem;
+        bottom: 0.5rem;
+    }
+
+    .privacy-banner {
+        bottom: 4rem;
+    }
 }
 
 .npc-queue-panel,

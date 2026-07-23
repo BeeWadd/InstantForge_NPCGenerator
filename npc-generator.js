@@ -12,6 +12,7 @@ import {
     setupDialog,
     setupRevealControl,
 } from './assets/js/instantforge-utils.js';
+import { initializeAnalytics, trackAnalyticsEvent } from './assets/js/instantforge-analytics.js';
 
 console.log("InstantForge: NPCs script loaded.");
 let npcData;
@@ -215,6 +216,7 @@ function generateNpc(forceRandomize = false) {
     
     ui.secretText.textContent = "(Click to reveal)";
     ui.secretText.dataset.secret = secret;
+    trackAnalyticsEvent('generation_complete', { generator_type: 'npc' });
 }
 
 function populateSelects() {
@@ -349,6 +351,7 @@ function saveNpc(showFeedback = true) {
         return false;
     }
     renderHistory();
+    trackAnalyticsEvent('save_complete', { generator_type: 'npc' });
     if(showFeedback) showCopyFeedback("NPC Saved!");
     return true;
 }
@@ -426,6 +429,7 @@ function exportAsJson() {
     if (savedNpcs.length === 0) { showCopyFeedback("No history to export.", true); return; }
     const dataStr = JSON.stringify(savedNpcs, null, 2);
     downloadFile(dataStr, "instantforge_npc_history.json", "application/json");
+    trackAnalyticsEvent('export_complete', { format: 'json' });
     hideExportModal();
 }
 
@@ -438,6 +442,7 @@ function exportAsCsv() {
         csvContent += row.join(',') + '\n';
     });
     downloadFile(csvContent, "instantforge_npc_history.csv", "text/csv;charset=utf-8;");
+    trackAnalyticsEvent('export_complete', { format: 'csv' });
     hideExportModal();
 }
 
@@ -447,6 +452,7 @@ function exportAsMarkdown() {
         return `## ${npc.name}\n*${npc.subtitle}*\n\n**Appearance**\n${npc.appearance}\n\n**Details**\n${npc.details}\n\n**Voice & Mannerism**\n${npc.voiceMannerism}\n\n**Hook**\n${npc.hook}\n\n**Goal & Offer**\n${npc.goalOffer}\n\n**Secret**\n${npc.secret}`;
     }).join('\n\n---\n\n');
     downloadFile(markdownContent, "instantforge_npc_history.md", "text/markdown;charset=utf-8;");
+    trackAnalyticsEvent('export_complete', { format: 'markdown' });
     hideExportModal();
 }
 
@@ -468,10 +474,9 @@ function exportAsPdf() {
 
     const printStyles = `
         <style>
-            @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=MedievalSharp&display=swap');
-            body { font-family: 'Lora', serif; color: #333; }
-            h1 { font-family: 'MedievalSharp', cursive; }
-            h2 { font-family: 'MedievalSharp', cursive; font-size: 22pt; margin-bottom: 0; }
+            body { font-family: Georgia, serif; color: #333; }
+            h1, h2 { font-family: Georgia, serif; }
+            h2 { font-size: 22pt; margin-bottom: 0; }
             .subtitle { font-size: 11pt; color: #666; margin-top: 0; }
             .output-group { margin-bottom: 1em; }
             .output-group strong { color: #8B0000; display: block; font-size: 10pt; text-transform: uppercase; letter-spacing: 1px; }
@@ -493,6 +498,7 @@ function exportAsPdf() {
     printWindow.document.close();
     printWindow.focus();
     setTimeout(() => { printWindow.print(); }, 250);
+    trackAnalyticsEvent('export_complete', { format: 'pdf' });
     hideExportModal();
 }
 
@@ -585,6 +591,7 @@ async function processQueuedNpcs() {
 // --- EVENT LISTENERS & INITIALIZATION ---
 document.addEventListener('DOMContentLoaded', async () => {
     try {
+        initializeAnalytics();
         const response = await fetch('npc-data.json');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);

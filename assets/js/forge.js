@@ -6,6 +6,7 @@ import {
 } from './forge-data.js';
 import { setupForgeTransferControls } from './forge-transfer.js';
 import { createHistoryItem, getStorage, saveCollection } from './instantforge-utils.js';
+import { forgeSourcePage, initializeAnalytics, trackAnalyticsEvent } from './instantforge-analytics.js';
 
 const ui = {
   totalSummary: document.getElementById('forge-total-summary'),
@@ -25,6 +26,15 @@ const ui = {
 };
 
 let collections = Object.fromEntries(Object.keys(FORGE_COLLECTIONS).map((key) => [key, []]));
+let forgeOpenTracked = false;
+function trackForgeOpen() {
+  if (forgeOpenTracked) return;
+  forgeOpenTracked = trackAnalyticsEvent('forge_open', { source_page: forgeSourcePage() });
+}
+window.addEventListener('instantforgeanalyticsready', trackForgeOpen, { once: true });
+initializeAnalytics().then((loaded) => {
+  if (loaded) trackForgeOpen();
+});
 const transfer = setupForgeTransferControls({ onImported: loadForge });
 
 function flattenedEntries() {

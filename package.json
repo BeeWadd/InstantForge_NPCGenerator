@@ -6,13 +6,14 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build && npm run verify:build",
+    "build:analytics-test": "vite build --mode analytics-test && npm run verify:build",
     "preview": "vite preview",
     "lint": "node scripts/check-source.mjs",
     "typecheck": "tsc --noEmit",
     "verify:build": "node scripts/verify-build.mjs",
-    "test:unit": "node --test tests/utils.test.mjs tests/data-validation.test.mjs tests/forge-data.test.mjs",
-    "test:browser": "npm run build && playwright test",
-    "test": "npm run lint && npm run typecheck && npm run test:unit && npm run test:browser"
+    "test:unit": "node --test tests/utils.test.mjs tests/data-validation.test.mjs tests/forge-data.test.mjs tests/analytics.test.mjs",
+    "test:browser": "npm run build:analytics-test && playwright test",
+    "test": "npm run lint && npm run typecheck && npm run test:unit && npm run build && npm run test:browser"
   },
   "devDependencies": {
     "@playwright/test": "^1.61.1",

@@ -25,6 +25,7 @@ const sharedModules = [
   'assets/js/forge.js',
   'assets/js/forge-data.js',
   'assets/js/forge-transfer.js',
+  'assets/js/instantforge-analytics.js',
   'assets/js/instantforge-utils.js',
 ];
 
@@ -106,6 +107,13 @@ for (const fileName of ['package.json', 'vite.config.ts', 'README.md']) {
   const source = await readFile(resolve(root, fileName), 'utf8');
   if (/gemini|ai studio|process\.env\.(?:api_key|gemini_api_key)/i.test(source)) {
     errors.push(`${fileName} still contains an obsolete AI/API configuration reference`);
+  }
+}
+
+for (const page of pages) {
+  const source = await readFile(resolve(root, page), 'utf8');
+  if (/googletagmanager\.com\/gtag\/js|gtag\(['"]config/i.test(source)) {
+    errors.push(`${page} must not load or configure Google Analytics directly`);
   }
 }
 
