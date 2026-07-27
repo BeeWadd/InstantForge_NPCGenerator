@@ -81,8 +81,9 @@ test('revoking consent stops events and allowing again restores only future even
   const payloads = [];
   await page.route('https://www.googletagmanager.com/gtag/js**', (route) => route.fulfill({
     contentType: 'application/javascript',
-    body: `window.gtag = (...args) => {
-      if (args[0] === 'event') fetch('https://www.google-analytics.com/g/collect?event=' + args[1]);
+    body: `let consent = 'denied'; window.gtag = (...args) => {
+      if (args[0] === 'consent' && args[1] === 'update') consent = args[2].analytics_storage;
+      if (args[0] === 'event' && consent === 'granted') fetch('https://www.google-analytics.com/g/collect?event=' + args[1]);
     };`,
   }));
   await page.route('https://www.google-analytics.com/**', async (route) => {

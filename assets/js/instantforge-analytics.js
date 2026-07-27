@@ -115,7 +115,7 @@ function disableGoogle() {
 
 async function enableGoogle() {
   const loaded = await loadGoogleTag();
-  if (loaded) {
+  if (googleLoaded) {
     gtag('consent', 'update', {
       analytics_storage: 'granted',
       ad_storage: 'denied',
