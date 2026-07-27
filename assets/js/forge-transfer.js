@@ -1,4 +1,5 @@
 import { downloadFile, getStorage } from './instantforge-utils.js';
+import { trackAnalyticsEvent } from './instantforge-analytics.js';
 import {
   createForgePayload,
   replaceForgeCollections,
@@ -30,6 +31,7 @@ export function setupForgeTransferControls({ onImported } = {}) {
       `instantforge-forge-${payload.exportedAt.slice(0, 10)}.json`,
       'application/json',
     );
+    trackAnalyticsEvent('export_complete', { format: 'forge_json' });
     setFeedback('Your Forge was exported. Keep the JSON file somewhere safe.');
   });
 
@@ -70,6 +72,7 @@ export function setupForgeTransferControls({ onImported } = {}) {
     }
 
     setFeedback('Your Forge was imported successfully.');
+    trackAnalyticsEvent('import_complete', { result: 'success' });
     onImported?.(validation.collections);
   });
 

@@ -57,7 +57,11 @@ The Vite build has six HTML entry points: the landing page, Your Forge, and the 
 
 Generated results are created locally in the browser. Saved histories use `localStorage`, and the tavern-to-NPC handoff temporarily uses `sessionStorage`. Clearing a history in the app or clearing this site's browser data removes those records. Exports are created on the user's device.
 
-The hosted pages load Google Fonts and currently include Google Analytics, so opening the hosted site can make requests to Google. InstantForge does not require a login and does not send generated or saved content to an InstantForge server.
+Analytics are build-time disabled unless both `VITE_ENABLE_ANALYTICS=true` and a valid public `VITE_GA_MEASUREMENT_ID` are supplied. Even in an enabled build, the Google tag is not requested until the visitor explicitly allows analytics; Decline and Privacy settings keep the product fully usable. The consent record contains only `allow` or `decline` plus the policy version. Revoking consent stops future events and removes `_ga` cookies where the browser permits.
+
+The only possible custom events are `generation_complete` and `save_complete` with `generator_type`; `forge_open` with `source_page`; `export_complete` with `format`; and `import_complete` with `result`. The wrapper rejects all other event names and parameters. Generated, saved, searched, imported, and exported content is never sent. Ads-related storage/data/personalization, Google Signals, remarketing, and cross-domain measurement are disabled in code. The support link remains a separate third-party destination.
+
+Before enabling a production measurement ID, the property owner must complete [`docs/analytics-property-owner-checklist.md`](docs/analytics-property-owner-checklist.md). Those Google-property controls are deliberately separate from this static application and must be evidenced in the release PR.
 
 ## Deployment
 

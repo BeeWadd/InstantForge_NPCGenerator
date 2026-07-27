@@ -11,6 +11,7 @@ import {
     setupDialog,
     setupRevealControl,
 } from './assets/js/instantforge-utils.js';
+import { initializeAnalytics, trackAnalyticsEvent } from './assets/js/instantforge-analytics.js';
 
 console.log("InstantForge: Weapons script loaded.");
 let weaponData;
@@ -198,6 +199,7 @@ function generateWeapon(forceRandomize = false) {
     ui.featureText.textContent = "(Click to reveal)";
     ui.featureText.dataset.feature = feature;
     featureRevealControl?.reset();
+    trackAnalyticsEvent('generation_complete', { generator_type: 'weapon' });
 }
 
 function populateSubtypes(weaponType) {
@@ -336,6 +338,7 @@ function saveWeapon() {
     }
     savedWeapons = nextWeapons;
     renderHistory();
+    trackAnalyticsEvent('save_complete', { generator_type: 'weapon' });
     showCopyFeedback("Weapon Saved!");
 }
 
@@ -408,6 +411,7 @@ function exportAsJson() {
     if (savedWeapons.length === 0) { showCopyFeedback("No history to export.", true); return; }
     const dataStr = JSON.stringify(savedWeapons, null, 2);
     downloadFile(dataStr, "instantforge_weapon_history.json", "application/json");
+    trackAnalyticsEvent('export_complete', { format: 'json' });
     hideExportModal();
 }
 
@@ -420,6 +424,7 @@ function exportAsCsv() {
         csvContent += row.join(',') + '\n';
     });
     downloadFile(csvContent, "instantforge_weapon_history.csv", "text/csv;charset=utf-8;");
+    trackAnalyticsEvent('export_complete', { format: 'csv' });
     hideExportModal();
 }
 
@@ -429,6 +434,7 @@ function exportAsMarkdown() {
         return `## ${weapon.name}\n*${weapon.subtitle}*\n\n**Description**\n${weapon.description}\n\n**Properties**\n${weapon.properties}\n\n**History**\n${weapon.history}\n\n**Notable Feature**\n${weapon.feature}`;
     }).join('\n\n---\n\n');
     downloadFile(markdownContent, "instantforge_weapon_history.md", "text/markdown;charset=utf-8;");
+    trackAnalyticsEvent('export_complete', { format: 'markdown' });
     hideExportModal();
 }
 
@@ -447,9 +453,8 @@ function exportAsPdf() {
     `).join('');
 
     const printStyles = `<style>
-        @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=MedievalSharp&display=swap');
-        body { font-family: 'Lora', serif; color: #333; }
-        h1, h2 { font-family: 'MedievalSharp', cursive; }
+        body { font-family: Georgia, serif; color: #333; }
+        h1, h2 { font-family: Georgia, serif; }
         h2 { font-size: 22pt; margin-bottom: 0; }
         .subtitle { font-size: 11pt; color: #666; margin-top: 0; }
         .output-group { margin-bottom: 1em; }
@@ -476,6 +481,7 @@ function exportAsPdf() {
     printWindow.document.close();
     printWindow.focus();
     setTimeout(() => { printWindow.print(); }, 250);
+    trackAnalyticsEvent('export_complete', { format: 'pdf' });
     hideExportModal();
 }
 
@@ -496,6 +502,7 @@ function setupLockButtons() {
 // --- EVENT LISTENERS & INITIALIZATION ---
 document.addEventListener('DOMContentLoaded', async () => {
     try {
+        initializeAnalytics();
         const response = await fetch('weapon-data.json');
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         weaponData = await response.json();
